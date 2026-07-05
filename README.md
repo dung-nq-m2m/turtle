@@ -1,6 +1,6 @@
 # 🐢 Học viện Turtle Python
 
-Giáo trình điện tử dành cho học sinh lớp 6 — dễ học, trực quan và tương tác.
+Giáo trình điện tử dành cho học sinh lớp 6 — **Ths. Nguyễn Quốc Dũng**
 
 ## Cấu trúc dự án
 

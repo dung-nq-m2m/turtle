@@ -1,6 +1,12 @@
 {
   "title": "Khu vực Giáo viên",
   "subtitle": "Tài liệu giảng dạy và đánh giá",
+  "instructor": {
+    "degree": "Ths.",
+    "name": "Nguyễn Quốc Dũng",
+    "display": "Ths. Nguyễn Quốc Dũng",
+    "role": "Giảng viên — Học viện Turtle Python lớp 6"
+  },
   "resources": [
     {
       "category": "Slide PowerPoint",

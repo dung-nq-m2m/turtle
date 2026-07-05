@@ -6,6 +6,7 @@ const TurtleAcademy = {
   basePath: '',
   CODE_UNLOCK_KEY: 'turtle_gv_code_unlocked',
   teacherPin: 'dungnq',
+  teacherDisplay: 'Ths. Nguyễn Quốc Dũng',
   codeLockMessage: 'Code chỉ hiển thị khi giáo viên mở khóa.',
 
   async initConfig() {
@@ -13,7 +14,17 @@ const TurtleAcademy = {
       const cfg = await this.loadJSON('data/config.json');
       this.teacherPin = cfg.teacherPin || this.teacherPin;
       this.codeLockMessage = cfg.codeLockMessage || this.codeLockMessage;
+      if (cfg.teacher?.display) this.teacherDisplay = cfg.teacher.display;
     } catch (_) { /* dùng mặc định */ }
+  },
+
+  initSiteBranding() {
+    document.querySelectorAll('#site-teacher').forEach(el => {
+      el.textContent = this.teacherDisplay;
+    });
+    document.querySelectorAll('#site-footer-teacher').forEach(el => {
+      el.textContent = this.teacherDisplay;
+    });
   },
 
   isCodeUnlocked() {
@@ -160,6 +171,7 @@ function initContentProtection() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   await TurtleAcademy.initConfig();
+  TurtleAcademy.initSiteBranding();
   initMobileMenu();
   initContentProtection();
 });

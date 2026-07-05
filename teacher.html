@@ -27,6 +27,7 @@
         <div>
           <h1>Học viện Turtle Python</h1>
           <p>Khu vực Giáo viên</p>
+          <p class="site-teacher" id="site-teacher">Ths. Nguyễn Quốc Dũng</p>
         </div>
         <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
       </header>
@@ -35,6 +36,12 @@
         <div class="lesson-header">
           <h2>👨‍🏫 Khu vực Giáo viên</h2>
           <p style="color:#666" id="teacher-subtitle">Tài liệu giảng dạy và đánh giá</p>
+        </div>
+
+        <div class="instructor-card" id="instructor-card">
+          <div style="font-size:2.5rem">👨‍🏫</div>
+          <p class="instructor-name" id="instructor-name">Ths. Nguyễn Quốc Dũng</p>
+          <p class="instructor-role" id="instructor-role">Giảng viên — Học viện Turtle Python lớp 6</p>
         </div>
 
         <div class="teacher-unlock-panel" id="unlock-panel">
@@ -53,6 +60,10 @@
           <p>📌 Quy trình dạy Chương 6: (1) Kiến trúc 4 tầng → (2) Biểu đồ thuật toán → (3) Giả mã → (4) Học sinh tự gõ → (5) <strong>Mở code</strong> để đối chiếu.</p>
         </div>
       </main>
+
+      <footer class="site-footer">
+        Học viện Turtle Python · <strong id="site-footer-teacher">Ths. Nguyễn Quốc Dũng</strong>
+      </footer>
     </div>
   </div>
 
@@ -77,6 +88,10 @@
       await renderSidebar('teacher');
       const data = await TurtleAcademy.loadJSON('data/teacher.json');
       document.getElementById('teacher-subtitle').textContent = data.subtitle;
+      if (data.instructor) {
+        document.getElementById('instructor-name').textContent = data.instructor.display;
+        document.getElementById('instructor-role').textContent = data.instructor.role;
+      }
       updateUnlockStatus();
 
       document.getElementById('btn-unlock')?.addEventListener('click', () => {
