@@ -10,7 +10,7 @@ Hình ảnh & âm thanh (tùy chọn):
   assets/sounds/hung.wav      — tiếng hứng trúng
   assets/sounds/roi.wav       — tiếng táo xuất hiện
 
-Xem hướng dẫn chi tiết: assets/HUONG-DAN-HINH-AM.md
+Xem hướng dẫn chi tiết: assets/huong-dan-hung-tao.md (Chương 6: assets/HUONG-DAN-CHUONG-6.md)
 """
 import os
 import random

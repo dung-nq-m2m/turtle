@@ -1,20 +1,64 @@
 """
 Game: Bắn bóng ⚽
 Học viện Turtle Python - Lớp 6
+
 ← → di chuyển súng, SPACE bắn trúng mục tiêu
+
+Hình ảnh & âm thanh (tùy chọn):
+  assets/ban-bong/images/nen-san.gif, sung.gif, muc-tieu.gif
+  assets/ban-bong/sounds/ban.wav, trung.wav, thang.wav
+
+Xem: assets/huong-dan-ban-bong.md
 """
-import turtle
+import os
 import random
+import turtle
+
+THU_MUC = os.path.dirname(os.path.abspath(__file__))
+IMG = os.path.join(THU_MUC, "assets", "ban-bong", "images")
+SND = os.path.join(THU_MUC, "assets", "ban-bong", "sounds")
+NGUONG_TRUNG = 25
+
+
+def co_file(*phan):
+    duong_dan = os.path.join(*phan)
+    return duong_dan if os.path.isfile(duong_dan) else None
+
+
+try:
+    import winsound
+
+    def phat_am(ten_file):
+        path = co_file(SND, ten_file)
+        if path:
+            winsound.PlaySound(path, winsound.SND_ASYNC)
+except ImportError:
+    def phat_am(ten_file):
+        pass
+
 
 man_hinh = turtle.Screen()
 man_hinh.title("Bắn bóng ⚽")
-man_hinh.bgcolor("navy")
 man_hinh.setup(width=600, height=500)
 man_hinh.tracer(0)
 
+nen = co_file(IMG, "nen-san.gif")
+if nen:
+    man_hinh.bgpic(nen)
+else:
+    man_hinh.bgcolor("navy")
+
+SUNG_GIF = co_file(IMG, "sung.gif")
+MT_GIF = co_file(IMG, "muc-tieu.gif")
+if SUNG_GIF:
+    man_hinh.addshape(SUNG_GIF)
+
 sung = turtle.Turtle()
-sung.shape("triangle")
-sung.color("yellow")
+if SUNG_GIF:
+    sung.shape(SUNG_GIF)
+else:
+    sung.shape("triangle")
+    sung.color("yellow")
 sung.penup()
 sung.goto(0, -200)
 sung.setheading(90)
@@ -37,10 +81,16 @@ def ve_bang():
                align="center", font=("Arial", 14, "bold"))
 
 
+if MT_GIF:
+    man_hinh.addshape(MT_GIF)
+
 for i in range(5):
     mt = turtle.Turtle()
-    mt.shape("circle")
-    mt.color(random.choice(["red", "orange", "pink"]))
+    if MT_GIF:
+        mt.shape(MT_GIF)
+    else:
+        mt.shape("circle")
+        mt.color(random.choice(["red", "orange", "pink"]))
     mt.penup()
     mt.goto(-200 + i * 100, 150)
     muc_tieu.append(mt)
@@ -49,6 +99,7 @@ for i in range(5):
 def ban():
     if thang:
         return
+    phat_am("ban.wav")
     vien = turtle.Turtle()
     vien.shape("circle")
     vien.color("white")
@@ -70,17 +121,19 @@ def cap_nhat():
             dan.remove(vien)
             continue
         for mt in muc_tieu[:]:
-            if vien.distance(mt) < 25:
+            if vien.distance(mt) < NGUONG_TRUNG:
                 mt.hideturtle()
                 muc_tieu.remove(mt)
                 vien.hideturtle()
                 dan.remove(vien)
                 diem += 10
+                phat_am("trung.wav")
                 ve_bang()
                 break
 
     if not muc_tieu:
         thang = True
+        phat_am("thang.wav")
         bang.goto(0, 0)
         bang.write(f"🎉 THẮNG!\nĐiểm: {diem}",
                    align="center", font=("Arial", 22, "bold"))

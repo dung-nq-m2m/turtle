@@ -96,10 +96,19 @@ Code Chương 6 và trang Game **bị khóa** cho đến khi GV nhập mã trên
 | Đua xe | dua-xe.py | ← → |
 | Space Invader | space-invader.py | ← → Space |
 
-### Hình ảnh & âm thanh (Game Hứng táo)
+### Chương 6 — Hình ảnh & âm thanh
 
-Xem hướng dẫn chi tiết: [`games/assets/HUONG-DAN-HINH-AM.md`](games/assets/HUONG-DAN-HINH-AM.md)
+Tổng quan: [`games/assets/HUONG-DAN-CHUONG-6.md`](games/assets/HUONG-DAN-CHUONG-6.md)
 
-- **Hình nền:** `games/assets/images/nen-vuon.gif` (GIF, ~600×500 px)
-- **Hình táo:** `games/assets/images/tao.gif` hoặc hình vẽ sẵn trong code
-- **Âm thanh:** `games/assets/sounds/hung.wav`, `roi.wav` (WAV, Windows — `winsound`)
+| Bài | Hướng dẫn | File game |
+|-----|-----------|-----------|
+| Hứng táo | [huong-dan-hung-tao.md](games/assets/huong-dan-hung-tao.md) | `hung-tao.py` |
+| Né bom | [huong-dan-ne-bom.md](games/assets/huong-dan-ne-bom.md) | `ne-bom.py` |
+| Bắn bóng | [huong-dan-ban-bong.md](games/assets/huong-dan-ban-bong.md) | `ban-bong.py` |
+
+Trên website, mỗi bài Chương 6 có thẻ **Hình ảnh & âm thanh** tóm tắt file cần chuẩn bị.
+
+### Hình ảnh & âm thanh (tóm tắt)
+
+- **Hình:** chỉ **GIF** (`bgpic`, `addshape`) · ~600×500 nền · 32–64 px vật thể
+- **Âm thanh:** chỉ **WAV** trên Windows (`winsound`, `SND_ASYNC`)

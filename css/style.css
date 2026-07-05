@@ -951,6 +951,40 @@ body {
 .card-architecture { border-left: 4px solid var(--scratch-purple); }
 .card-flowchart { border-left: 4px solid var(--scratch-blue); }
 
+.card-assets-guide {
+  border-left: 4px solid var(--scratch-green);
+  background: linear-gradient(135deg, #ffffff, #f8fff8);
+}
+
+.assets-guide-body { font-size: 0.95rem; color: #444; }
+
+.assets-guide-body code {
+  background: #e8f8e8;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.assets-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.88rem;
+}
+
+.assets-table th,
+.assets-table td {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #dde8dd;
+  text-align: left;
+}
+
+.assets-table th {
+  background: #eef8ee;
+  color: var(--scratch-dark);
+  font-weight: 800;
+}
+
 .arch-layers {
   display: flex;
   flex-wrap: wrap;

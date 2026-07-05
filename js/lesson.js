@@ -103,6 +103,13 @@ function renderLesson(lesson) {
       <div class="turtle-demo" id="animation-demo"></div>
     </div>
 
+    ${lesson.assetsGuide ? `
+    <div class="card card-assets-guide">
+      <div class="card-title"><span class="icon">🎨</span> Hình ảnh & âm thanh (mở rộng)</div>
+      <div class="assets-guide-body">${lesson.assetsGuide}</div>
+    </div>
+    ` : ''}
+
     <div class="card" id="code-card">
       <div class="card-title"><span class="icon">💻</span> Code Python ${lesson.codeLocked ? '<span class="badge-locked">🔒 Chờ GV mở</span>' : ''}</div>
       <div id="code-editor-area"></div>
