@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Học viện Turtle Python - Lớp 6</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="index.html" class="active">🏠 Trang chủ</a>
+        <div class="sidebar-section">Menu</div>
+        <a href="index.html#bai-hoc">📘 Bài học</a>
+        <a href="challenges.html">🏆 Thử thách</a>
+        <a href="games.html">🎮 Thực hành</a>
+        <a href="teacher.html">👨‍🏫 Giáo viên</a>
+        <div class="sidebar-section">Chương trình</div>
+        <ul class="chapter-list" id="sidebar-chapters"></ul>
+      </nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="site-header">
+        <span class="logo">🐢</span>
+        <div>
+          <h1>Học viện Turtle Python</h1>
+          <p>Giáo trình điện tử dành cho học sinh lớp 6</p>
+        </div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
+      </header>
+
+      <main class="content-area">
+        <section class="hero">
+          <div class="big-turtle">🐢</div>
+          <h2>Chào em! Học Python vui vẻ cùng Rùa!</h2>
+          <p>Không cần website "đẹp" — em cần <strong>dễ học, trực quan và tương tác</strong>!</p>
+          <div style="margin-top:1.5rem">
+            <a href="lesson.html?lesson=turtle-la-gi" class="btn btn-orange">🚀 Bắt đầu học</a>
+            <a href="challenges.html" class="btn btn-primary" style="margin-left:0.5rem">🏆 Thử thách</a>
+          </div>
+          <div style="margin-top:1.5rem">
+            <span class="badge-earned" id="progress-badge">0 bài đã hoàn thành</span>
+          </div>
+          <div class="progress-bar-wrap" style="max-width:300px;margin:0.75rem auto 0">
+            <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+          </div>
+        </section>
+
+        <section id="bai-hoc">
+          <h2 style="margin-bottom:1rem;color:var(--scratch-dark)">📘 Chương trình học</h2>
+          <div class="chapter-grid" id="chapter-grid"></div>
+        </section>
+
+        <section style="margin-top:2rem">
+          <h2 style="margin-bottom:1rem;color:var(--scratch-dark)">Khám phá thêm</h2>
+          <div class="quick-links">
+            <a href="challenges.html" class="quick-link">
+              <div class="ql-icon">💡</div>
+              <h4>Thử thách</h4>
+              <p style="font-size:0.85rem;color:#888">50+ bài tập</p>
+            </a>
+            <a href="games.html" class="quick-link">
+              <div class="ql-icon">🎮</div>
+              <h4>Game</h4>
+              <p style="font-size:0.85rem;color:#888">Học qua chơi</p>
+            </a>
+            <a href="teacher.html" class="quick-link">
+              <div class="ql-icon">👨‍🏫</div>
+              <h4>Giáo viên</h4>
+              <p style="font-size:0.85rem;color:#888">Slide, giáo án</p>
+            </a>
+            <a href="lesson.html?lesson=forward" class="quick-link">
+              <div class="ql-icon">➡️</div>
+              <h4>forward()</h4>
+              <p style="font-size:0.85rem;color:#888">Bài mẫu</p>
+            </a>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    async function initHome() {
+      await renderSidebar('home');
+
+      const data = await TurtleAcademy.loadJSON('data/chapters.json');
+      const grid = document.getElementById('chapter-grid');
+      const totalLessons = data.chapters.reduce((s, ch) => s + ch.lessons.length, 0);
+      const completed = TurtleAcademy.getCompletedCount();
+      const pct = Math.round((completed / totalLessons) * 100);
+
+      document.getElementById('progress-badge').textContent =
+        `${completed}/${totalLessons} bài đã hoàn thành`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+
+      grid.innerHTML = data.chapters.map(ch => {
+        const firstLesson = ch.lessons[0];
+        return `
+          <a href="lesson.html?lesson=${firstLesson.id}" class="chapter-card">
+            <div class="ch-icon">${ch.icon}</div>
+            <h3>Chương ${ch.number}. ${ch.title}</h3>
+            <p>${ch.lessons.length} bài học</p>
+          </a>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', initHome);
+  </script>
+</body>
+</html>

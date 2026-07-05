@@ -1,0 +1,51 @@
+{
+  "id": "da-giac",
+  "chapter": 4,
+  "chapterTitle": "Hình học",
+  "title": "Đa giác",
+  "icon": "⬡",
+  "objectives": [
+    "Hiểu đa giác là hình nhiều cạnh (5, 6, 8...)",
+    "Tính góc quay: 360 ÷ số cạnh",
+    "Vẽ ngũ giác, lục giác bằng công thức chung"
+  ],
+  "explanation": "Đa giác đều có công thức chung:\n\n<strong>Góc quay = 360 ÷ số cạnh</strong>\n\n| Hình | Số cạnh | Góc quay |\n|------|---------|----------|\n| Ngũ giác | 5 | 360÷5 = 72° |\n| Lục giác | 6 | 360÷6 = 60° |\n| Bát giác | 8 | 360÷8 = 45° |\n\n<pre>n = 6  # lục giác\nfor i in range(n):\n    t.forward(80)\n    t.left(360 / n)</pre>",
+  "syntax": "left(360 / n)",
+  "syntaxNote": "n = số cạnh — công thức vẽ mọi đa giác đều.",
+  "animation": {
+    "type": "polygon",
+    "label": "Lục giác (6 cạnh)",
+    "sides": 6
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\n\n# Vẽ lục giác (6 cạnh)\nn = 6\ncanh = 80\ngoc = 360 / n\n\nt.pencolor(\"purple\")\nt.fillcolor(\"lavender\")\n\nt.begin_fill()\nfor i in range(n):\n    t.forward(canh)\n    t.left(goc)\nt.end_fill()\n\nturtle.done()",
+  "resultDescription": "Lục giác đều (6 cạnh) màu tím nhạt.",
+  "remember": [
+    { "command": "360 / n", "meaning": "Công thức góc quay đa giác" },
+    { "command": "n = số cạnh", "meaning": "5=ngũ giác, 6=lục giác, 8=bát giác" },
+    { "tip": "Càng nhiều cạnh, hình càng giống tròn!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Ngũ giác", "description": "Vẽ ngũ giác đều (n=5), tô xanh dương." },
+    { "number": 2, "title": "Bát giác", "description": "Vẽ bát giác (n=8), viền đỏ." },
+    { "number": 3, "title": "Hoa 12 cánh", "description": "Vẽ 12 đa giác nhỏ xếp thành vòng tròn." }
+  ],
+  "quiz": {
+    "question": "Lục giác (6 cạnh) cần left() bao nhiêu độ?",
+    "options": [
+      { "text": "45°", "correct": false },
+      { "text": "60°", "correct": true },
+      { "text": "72°", "correct": false },
+      { "text": "90°", "correct": false }
+    ],
+    "explanation": "360 ÷ 6 = 60° — dùng left(60) sau mỗi cạnh lục giác."
+  },
+  "infographic": {
+    "function": "Vẽ đa giác đều n cạnh",
+    "syntax": "goc = 360/n; for: forward + left(goc)",
+    "example": "n=6 → left(60)",
+    "result": "Lục giác, ngũ giác...",
+    "exercise": "Vẽ ngũ giác tô cam"
+  },
+  "prev": "ngoi-sao",
+  "next": "onclick"
+}

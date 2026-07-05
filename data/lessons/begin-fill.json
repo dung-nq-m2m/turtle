@@ -1,0 +1,50 @@
+{
+  "id": "begin-fill",
+  "chapter": 3,
+  "chapterTitle": "Màu sắc",
+  "title": "begin_fill()",
+  "icon": "🪣",
+  "objectives": [
+    "Hiểu begin_fill() bắt đầu vùng tô màu",
+    "Biết đặt begin_fill() TRƯỚC khi vẽ hình",
+    "Kết hợp với fillcolor() để tô hình"
+  ],
+  "explanation": "<code>begin_fill()</code> báo cho Python: <strong>\"Bắt đầu tô màu từ đây!\"</strong>\n\nEm đặt lệnh này <em>trước</em> khi vẽ hình kín (tam giác, vuông, tròn...). Sau khi vẽ xong, gọi <code>end_fill()</code> để Python tô màu vào bên trong.\n\nThứ tự đúng:\n1. <code>fillcolor(\"red\")</code>\n2. <code>begin_fill()</code>\n3. Vẽ hình\n4. <code>end_fill()</code>",
+  "syntax": "begin_fill()",
+  "syntaxNote": "Bắt đầu ghi nhận vùng cần tô màu.",
+  "animation": {
+    "type": "begin-fill",
+    "label": "begin_fill() → vẽ hình → end_fill()"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\n\n# Tô màu tam giác\nt.fillcolor(\"lightblue\")\nt.pencolor(\"navy\")\n\nt.begin_fill()  # ← Bắt đầu tô!\nfor i in range(3):\n    t.forward(120)\n    t.left(120)\nt.end_fill()    # ← Kết thúc tô\n\nturtle.done()",
+  "resultDescription": "Tam giác đều tô màu xanh nhạt, viền xanh đậm.",
+  "remember": [
+    { "command": "begin_fill()", "meaning": "Bắt đầu vùng tô màu" },
+    { "command": "Thứ tự", "meaning": "fillcolor → begin_fill → vẽ → end_fill" },
+    { "tip": "Hình phải kín (khép kín) mới tô đẹp!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Tam giác xanh", "description": "Vẽ tam giác tô màu xanh lá." },
+    { "number": 2, "title": "Ngôi sao tím", "description": "Vẽ ngôi sao 5 cánh, tô màu tím." },
+    { "number": 3, "title": "Bông hoa 6 cánh", "description": "Lặp 6 lần: vẽ cánh hoa + quay 60°." }
+  ],
+  "quiz": {
+    "question": "begin_fill() nên đặt ở đâu?",
+    "options": [
+      { "text": "Sau khi vẽ xong hình", "correct": false },
+      { "text": "Trước khi bắt đầu vẽ hình", "correct": true },
+      { "text": "Giữa chương trình, không quan trọng", "correct": false },
+      { "text": "Thay cho turtle.done()", "correct": false }
+    ],
+    "explanation": "begin_fill() phải đặt TRƯỚC khi vẽ — Python sẽ ghi nhận vùng hình để tô màu."
+  },
+  "infographic": {
+    "function": "Bắt đầu vùng tô màu",
+    "syntax": "t.begin_fill()",
+    "example": "fillcolor → begin_fill → vẽ",
+    "result": "Python ghi nhận hình cần tô",
+    "exercise": "Tô màu hình vuông đỏ"
+  },
+  "prev": "fillcolor",
+  "next": "end-fill"
+}

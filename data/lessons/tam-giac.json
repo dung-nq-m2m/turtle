@@ -1,0 +1,50 @@
+{
+  "id": "tam-giac",
+  "chapter": 4,
+  "chapterTitle": "Hình học",
+  "title": "Tam giác",
+  "icon": "🔺",
+  "objectives": [
+    "Vẽ tam giác đều bằng Turtle",
+    "Biết tam giác có 3 cạnh, tổng góc trong = 180°",
+    "Tính góc quay: 180° ÷ 3 = 60°... thực ra tam giác đều dùng 120°"
+  ],
+  "explanation": "Tam giác đều có <strong>3 cạnh bằng nhau</strong> và <strong>3 góc bằng nhau (60°)</strong>.\n\nKhi rùa vẽ tam giác đều, sau mỗi cạnh em quay <code>left(120)</code> vì:\n360° ÷ 3 = <strong>120°</strong>\n\n<pre>for i in range(3):\n    t.forward(120)\n    t.left(120)</pre>",
+  "syntax": "left(120)",
+  "syntaxNote": "Quay 120° sau mỗi cạnh — vẽ tam giác đều.",
+  "animation": {
+    "type": "triangle",
+    "label": "Tam giác đều"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\nt.pencolor(\"green\")\nt.fillcolor(\"lightgreen\")\n\nt.begin_fill()\nfor i in range(3):\n    t.forward(120)\n    t.left(120)\nt.end_fill()\n\nturtle.done()",
+  "resultDescription": "Tam giác đều cạnh 120 pixel, tô màu xanh lá nhạt.",
+  "remember": [
+    { "command": "range(3)", "meaning": "Lặp 3 lần — 3 cạnh tam giác" },
+    { "command": "left(120)", "meaning": "360 ÷ 3 = 120° mỗi góc ngoài" },
+    { "tip": "Tam giác đều: 3 cạnh bằng nhau, 3 góc 60°" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Tam giác nhỏ", "description": "Vẽ tam giác cạnh 80 pixel." },
+    { "number": 2, "title": "Tam giác đỏ", "description": "Tô màu đỏ, viền đen." },
+    { "number": 3, "title": "Ba tam giác", "description": "Vẽ 3 tam giác xếp thành hoa (quay 120° giữa mỗi tam giác)." }
+  ],
+  "quiz": {
+    "question": "Vẽ tam giác đều, sau mỗi cạnh quay bao nhiêu độ?",
+    "options": [
+      { "text": "60°", "correct": false },
+      { "text": "90°", "correct": false },
+      { "text": "120°", "correct": true },
+      { "text": "180°", "correct": false }
+    ],
+    "explanation": "360° ÷ 3 cạnh = 120° — dùng left(120) sau mỗi forward()."
+  },
+  "infographic": {
+    "function": "Vẽ tam giác đều",
+    "syntax": "for i in range(3): forward + left(120)",
+    "example": "t.forward(120); t.left(120)",
+    "result": "Tam giác 3 cạnh bằng nhau",
+    "exercise": "Vẽ tam giác tô cam"
+  },
+  "prev": "hinh-vuong",
+  "next": "ngoi-sao"
+}

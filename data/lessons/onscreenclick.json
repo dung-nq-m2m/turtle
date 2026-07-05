@@ -1,0 +1,51 @@
+{
+  "id": "onscreenclick",
+  "chapter": 5,
+  "chapterTitle": "Tương tác",
+  "title": "onscreenclick()",
+  "icon": "🖱️",
+  "objectives": [
+    "Hiểu onscreenclick() — bấm bất kỳ đâu trên màn hình",
+    "Biết hàm nhận tọa độ x, y khi click",
+    "Cho rùa di chuyển đến vị trí click"
+  ],
+  "explanation": "<code>onscreenclick()</code> khác <code>onclick()</code>: em bấm <strong>bất kỳ đâu</strong> trên màn hình đều được!\n\nHàm xử lý nhận 2 tham số <code>x, y</code> — tọa độ điểm bấm.\n\n<pre>def ve_cham(x, y):\n    t.goto(x, y)\n    t.dot(10, \"red\")\n\nman_hinh.onscreenclick(ve_cham)</pre>",
+  "syntax": "man_hinh.onscreenclick(ham)",
+  "syntaxNote": "Bấm màn hình → hàm nhận (x, y).",
+  "animation": {
+    "type": "onscreenclick",
+    "label": "onscreenclick(x, y)"
+  },
+  "code": "import turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Bấm để vẽ chấm!\")\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(0)\nt.penup()\n\n# Bấm đâu vẽ chấm đó\ndef ve_cham(x, y):\n    t.goto(x, y)\n    t.dot(15, \"red\")\n\nman_hinh.onscreenclick(ve_cham)\n\nturtle.done()",
+  "resultDescription": "Bấm chuột bất kỳ — xuất hiện chấm đỏ tại vị trí đó.",
+  "remember": [
+    { "command": "onscreenclick(ham)", "meaning": "Bấm màn hình → hàm(x, y)" },
+    { "command": "t.goto(x, y)", "meaning": "Di chuyển rùa đến tọa độ" },
+    { "command": "t.dot(size, color)", "meaning": "Vẽ chấm tròn" },
+    { "tip": "Gọi qua man_hinh (Screen), không phải Turtle" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Rùa đi theo chuột", "description": "onscreenclick → rùa goto(x, y)." },
+    { "number": 2, "title": "Vẽ sao", "description": "Mỗi click vẽ ngôi sao nhỏ tại (x, y)." },
+    { "number": 3, "title": "Bảng vẽ", "description": "Bấm liên tục tạo tranh nhiều chấm màu." }
+  ],
+  "quiz": {
+    "question": "onscreenclick() khác onclick() ở điểm nào?",
+    "options": [
+      { "text": "Phải bấm vào rùa", "correct": false },
+      { "text": "Bấm bất kỳ đâu trên màn hình", "correct": true },
+      { "text": "Chỉ hoạt động với phím", "correct": false },
+      { "text": "Không nhận tọa độ", "correct": false }
+    ],
+    "explanation": "onscreenclick() bắt mọi click trên màn hình và trả về tọa độ (x, y)."
+  },
+  "infographic": {
+    "function": "Bấm màn hình → hàm(x, y)",
+    "syntax": "screen.onscreenclick(ham)",
+    "example": "def f(x,y): t.goto(x,y)",
+    "result": "Tương tác theo vị trí chuột",
+    "exercise": "Bấm vẽ chấm đỏ"
+  },
+  "prev": "onclick",
+  "next": "onkeypress"
+}

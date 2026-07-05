@@ -1,0 +1,50 @@
+{
+  "id": "left",
+  "chapter": 2,
+  "chapterTitle": "Vẽ cơ bản",
+  "title": "left()",
+  "icon": "↩️",
+  "objectives": [
+    "Hiểu left() dùng để quay rùa sang trái",
+    "Biết góc quay tính bằng độ (degree)",
+    "Vận dụng left(90) để vẽ góc vuông"
+  ],
+  "explanation": "Lệnh <code>left()</code> (viết tắt <code>lt()</code>) cho rùa <strong>quay sang trái</strong> một góc. Số trong ngoặc là số <strong>độ</strong> (°).\n\n<code>left(90)</code> = quay trái 90° (góc vuông)",
+  "syntax": "left(90)",
+  "syntaxNote": "Rùa quay trái 90 độ (góc vuông).",
+  "animation": {
+    "type": "left",
+    "label": "left(90)",
+    "angle": 90
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\n\n# Quay trái 90 độ\nt.left(90)\nt.forward(100)\n\nturtle.done()",
+  "resultDescription": "Rùa quay trái 90° rồi đi thẳng — tạo góc vuông.",
+  "remember": [
+    { "command": "left()", "meaning": "Quay sang trái" },
+    { "command": "left(90)", "meaning": "Quay góc vuông" },
+    { "command": "lt()", "meaning": "Viết tắt của left()" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Tam giác", "description": "Dùng left(120) và forward() vẽ tam giác." },
+    { "number": 2, "title": "Hình vuông", "description": "Kết hợp left(90) và forward(80) vẽ hình vuông." }
+  ],
+  "quiz": {
+    "question": "left(90) cho rùa quay bao nhiêu độ?",
+    "options": [
+      { "text": "45 độ", "correct": false },
+      { "text": "90 độ", "correct": true },
+      { "text": "180 độ", "correct": false },
+      { "text": "360 độ", "correct": false }
+    ],
+    "explanation": "left(90) = quay trái 90 độ, tức góc vuông."
+  },
+  "infographic": {
+    "function": "Quay rùa sang trái",
+    "syntax": "t.left(số_độ)",
+    "example": "t.left(90)",
+    "result": "Rùa quay góc vuông",
+    "exercise": "Vẽ hình vuông"
+  },
+  "prev": "backward",
+  "next": "right"
+}

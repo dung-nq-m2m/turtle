@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game - Học viện Turtle Python</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="index.html">🏠 Trang chủ</a>
+        <div class="sidebar-section">Menu</div>
+        <a href="index.html#bai-hoc">📘 Bài học</a>
+        <a href="challenges.html">🏆 Thử thách</a>
+        <a href="games.html" class="active">🎮 Thực hành</a>
+        <a href="teacher.html">👨‍🏫 Giáo viên</a>
+        <div class="sidebar-section">Chương trình</div>
+        <ul class="chapter-list" id="sidebar-chapters"></ul>
+      </nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="site-header">
+        <span class="logo">🐢</span>
+        <div>
+          <h1>Học viện Turtle Python</h1>
+          <p>Game Turtle</p>
+        </div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
+      </header>
+
+      <main class="content-area">
+        <div class="lesson-header">
+          <h2>🎮 Game Turtle</h2>
+          <p style="color:#666" id="games-subtitle">Học kiến trúc & thuật toán trước — code do GV mở</p>
+          <span class="badge-game-mode">Thuật toán trước · Code sau</span>
+        </div>
+
+        <div class="card card-architecture">
+          <div class="card-title"><span class="icon">🏗️</span> Kiến trúc game chung</div>
+          <div id="game-arch-shared"></div>
+        </div>
+
+        <p style="margin:1rem 0;color:var(--scratch-dark);font-weight:600">Chọn game để học chi tiết tại Chương 6:</p>
+        <div class="games-grid" id="games-grid"></div>
+
+        <div class="card" style="margin-top:1rem">
+          <p>📘 Mỗi game có bài học riêng với <strong>biểu đồ thuật toán</strong> và <strong>giả mã</strong>:</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem">
+            <a href="lesson.html?lesson=game-hung-tao" class="btn btn-primary">🍎 Bài Hứng táo</a>
+            <a href="lesson.html?lesson=game-ne-bom" class="btn btn-primary">💣 Bài Né bom</a>
+            <a href="lesson.html?lesson=game-ban-bong" class="btn btn-primary">⚽ Bài Bắn bóng</a>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1.5rem" id="game-detail">
+          <div class="card-title">
+            <span class="icon">💻</span>
+            <span id="game-detail-title">Code game</span>
+            <span class="badge-locked" id="game-code-badge">🔒 Chờ GV mở</span>
+          </div>
+          <p style="margin-bottom:1rem;color:#666" id="game-detail-desc">Code chỉ hiển thị khi giáo viên mở khóa.</p>
+          <div id="game-code-area"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <script src="js/app.js"></script>
+  <script src="js/game-diagram.js"></script>
+  <script src="js/code-editor.js"></script>
+  <script>
+    const diffClass = { 'Dễ': 'easy', 'Trung bình': 'medium', 'Khó': 'hard' };
+    let gamesData = [];
+    let currentGame = null;
+    let cachedCode = '';
+
+    const sharedArch = {
+      intro: 'Mọi game Turtle đều có 4 tầng. Học sinh phải hiểu sơ đồ trước khi xem code.',
+      layers: [
+        { title: '1. Khởi tạo', items: ['Screen, Turtle', 'Biến điểm, trạng thái'] },
+        { title: '2. Nhập liệu', items: ['onkey / onclick', 'listen()'] },
+        { title: '3. Logic', items: ['Va chạm, random', 'ontimer — vòng game'] },
+        { title: '4. Hiển thị', items: ['update(), write()', 'Thắng / thua'] }
+      ],
+      note: 'Giáo viên mở code tại trang Giáo viên sau khi HS hoàn thành giả mã.'
+    };
+
+    function updateGameCodeBadge() {
+      const badge = document.getElementById('game-code-badge');
+      if (badge) badge.style.display = TurtleAcademy.isCodeUnlocked() ? 'none' : 'inline-block';
+    }
+
+    async function renderGameCodeArea() {
+      if (!currentGame) return;
+      if (TurtleAcademy.isCodeUnlocked()) {
+        if (!cachedCode) {
+          cachedCode = await fetch(currentGame.file).then(r => r.text()).catch(() => '# Không tải được file');
+        }
+      } else {
+        cachedCode = '';
+      }
+      CodeEditor.render(
+        document.getElementById('game-code-area'),
+        cachedCode,
+        currentGame.file.split('/').pop(),
+        { locked: true, runHint: 'Đối chiếu code với thuật toán đã học' }
+      );
+      updateGameCodeBadge();
+    }
+
+    async function loadGameCode(game) {
+      currentGame = game;
+      document.getElementById('game-detail-title').textContent = `${game.icon} ${game.title}`;
+      document.getElementById('game-detail-desc').textContent =
+        TurtleAcademy.isCodeUnlocked()
+          ? game.description + ' — Giáo viên đã mở code.'
+          : game.description + ' — Học thuật toán ở bài Chương 6 trước.';
+      document.querySelectorAll('.game-card').forEach(c => c.style.outline = '');
+      document.querySelector(`[data-game="${game.id}"]`)?.style.setProperty('outline', '3px solid var(--scratch-blue)');
+
+      cachedCode = '';
+      await renderGameCodeArea();
+    }
+
+    async function initGames() {
+      await TurtleAcademy.initConfig();
+      await renderSidebar('games');
+      GameDiagram.renderArchitecture(document.getElementById('game-arch-shared'), sharedArch);
+
+      const data = await TurtleAcademy.loadJSON('data/games.json');
+      gamesData = data.games;
+
+      document.getElementById('games-grid').innerHTML = data.games.map(g => `
+        <a href="#" class="game-card" data-game="${g.id}">
+          <div class="game-icon">${g.icon}</div>
+          <h3>${g.title}</h3>
+          <p style="font-size:0.85rem;color:#666;margin:0.5rem 0">${g.description}</p>
+          <span class="difficulty ${diffClass[g.difficulty] || ''}">${g.difficulty}</span>
+        </a>
+      `).join('');
+
+      document.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          const game = gamesData.find(g => g.id === card.dataset.game);
+          if (game) loadGameCode(game);
+        });
+      });
+
+      loadGameCode(data.games[0]);
+    }
+
+    window.addEventListener('code-unlocked', renderGameCodeArea);
+    window.addEventListener('code-locked', renderGameCodeArea);
+
+    document.addEventListener('DOMContentLoaded', initGames);
+  </script>
+</body>
+</html>

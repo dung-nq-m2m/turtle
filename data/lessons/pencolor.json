@@ -1,0 +1,51 @@
+{
+  "id": "pencolor",
+  "chapter": 3,
+  "chapterTitle": "Màu sắc",
+  "title": "pencolor()",
+  "icon": "🖍️",
+  "objectives": [
+    "Biết pencolor() dùng để đổi màu nét vẽ",
+    "Gọi được pencolor() bằng tên màu tiếng Anh",
+    "Vẽ hình có nhiều màu khác nhau"
+  ],
+  "explanation": "Lệnh <code>pencolor()</code> đổi <strong>màu bút vẽ</strong> — tức màu đường nét khi rùa di chuyển.\n\nEm có thể dùng <strong>tên màu tiếng Anh</strong>: <code>\"red\"</code>, <code>\"blue\"</code>, <code>\"green\"</code>, <code>\"yellow\"</code>, <code>\"purple\"</code>...\n\nHoặc mã RGB: <code>pencolor(255, 0, 0)</code> = đỏ.",
+  "syntax": "pencolor(\"red\")",
+  "syntaxNote": "Đổi màu nét vẽ sang màu đỏ.",
+  "animation": {
+    "type": "pencolor",
+    "label": "pencolor()",
+    "colors": ["#4c97ff", "#ff6680", "#59c059", "#ffab19"]
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.pensize(5)  # Nét vẽ dày hơn cho dễ thấy\n\n# Vẽ 3 đoạn thẳng 3 màu\nt.pencolor(\"red\")\nt.forward(80)\n\nt.left(90)\nt.pencolor(\"blue\")\nt.forward(80)\n\nt.left(90)\nt.pencolor(\"green\")\nt.forward(80)\n\nturtle.done()",
+  "resultDescription": "Ba cạnh hình chữ U với 3 màu: đỏ, xanh dương, xanh lá.",
+  "remember": [
+    { "command": "pencolor()", "meaning": "Đổi màu nét vẽ (viền)" },
+    { "command": "\"red\", \"blue\"...", "meaning": "Tên màu viết bằng tiếng Anh" },
+    { "tip": "pensize(5) giúp nét vẽ dày, dễ nhìn hơn" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Cầu vồng 7 màu", "description": "Vẽ 7 đoạn thẳng ngắn, mỗi đoạn một màu khác nhau." },
+    { "number": 2, "title": "Hình vuông 4 màu", "description": "Vẽ hình vuông, mỗi cạnh một màu pencolor khác nhau." },
+    { "number": 3, "title": "Ngôi sao vàng", "description": "Dùng pencolor(\"gold\") vẽ ngôi sao 5 cánh." }
+  ],
+  "quiz": {
+    "question": "pencolor(\"blue\") thay đổi màu gì?",
+    "options": [
+      { "text": "Màu nền màn hình", "correct": false },
+      { "text": "Màu nét vẽ (viền)", "correct": true },
+      { "text": "Màu bên trong hình", "correct": false },
+      { "text": "Màu con rùa", "correct": false }
+    ],
+    "explanation": "pencolor() đổi màu bút vẽ — tức màu đường nét khi rùa di chuyển."
+  },
+  "infographic": {
+    "function": "Đổi màu nét vẽ",
+    "syntax": "t.pencolor(\"tên_màu\")",
+    "example": "t.pencolor(\"red\")",
+    "result": "Nét vẽ đổi sang màu đỏ",
+    "exercise": "Vẽ hình vuông 4 màu"
+  },
+  "prev": "penup-pendown",
+  "next": "fillcolor"
+}

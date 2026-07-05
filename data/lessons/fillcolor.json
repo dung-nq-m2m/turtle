@@ -1,0 +1,52 @@
+{
+  "id": "fillcolor",
+  "chapter": 3,
+  "chapterTitle": "Màu sắc",
+  "title": "fillcolor()",
+  "icon": "🎨",
+  "objectives": [
+    "Biết fillcolor() đặt màu tô bên trong hình",
+    "Phân biệt pencolor() và fillcolor()",
+    "Chuẩn bị tô màu hình bằng begin_fill() / end_fill()"
+  ],
+  "explanation": "<code>fillcolor()</code> đặt <strong>màu tô bên trong</strong> hình — khác với <code>pencolor()</code> (màu viền).\n\nĐể thực sự tô màu, em cần thêm <code>begin_fill()</code> trước khi vẽ và <code>end_fill()</code> sau khi vẽ xong (bài tiếp theo).\n\nVí dụ: viền đỏ, ruột xanh:\n<code>pencolor(\"red\")</code> + <code>fillcolor(\"blue\")</code>",
+  "syntax": "fillcolor(\"yellow\")",
+  "syntaxNote": "Đặt màu tô bên trong là vàng.",
+  "animation": {
+    "type": "fillcolor",
+    "label": "fillcolor()",
+    "fillColor": "#ffab19",
+    "strokeColor": "#4c97ff"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\n\n# Viền xanh, ruột vàng\nt.pencolor(\"blue\")\nt.fillcolor(\"yellow\")\n\nt.begin_fill()\nfor i in range(4):\n    t.forward(100)\n    t.left(90)\nt.end_fill()\n\nturtle.done()",
+  "resultDescription": "Hình vuông viền xanh, bên trong tô màu vàng.",
+  "remember": [
+    { "command": "fillcolor()", "meaning": "Đặt màu tô bên trong hình" },
+    { "command": "pencolor()", "meaning": "Màu viền (nét vẽ)" },
+    { "tip": "Cần begin_fill() + end_fill() mới tô được màu!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Trái tim đỏ", "description": "Vẽ trái tim, fillcolor(\"red\"), pencolor(\"darkred\")." },
+    { "number": 2, "title": "Mặt trời vàng", "description": "Vẽ hình tròn tô vàng, viền cam." },
+    { "number": 3, "title": "Cờ Việt Nam", "description": "Hình chữ nhật đỏ, sao vàng ở giữa (gợi ý: dùng penup + goto)." }
+  ],
+  "quiz": {
+    "question": "fillcolor() và pencolor() khác nhau thế nào?",
+    "options": [
+      { "text": "Giống hệt nhau", "correct": false },
+      { "text": "fillcolor tô bên trong, pencolor là màu viền", "correct": true },
+      { "text": "fillcolor đổi màu rùa", "correct": false },
+      { "text": "pencolor chỉ dùng cho hình tròn", "correct": false }
+    ],
+    "explanation": "pencolor = màu nét vẽ (viền). fillcolor = màu bên trong khi tô hình."
+  },
+  "infographic": {
+    "function": "Đặt màu tô bên trong",
+    "syntax": "t.fillcolor(\"tên_màu\")",
+    "example": "t.fillcolor(\"yellow\")",
+    "result": "Hình được tô màu vàng bên trong",
+    "exercise": "Vẽ hình tròn tô cam"
+  },
+  "prev": "pencolor",
+  "next": "begin-fill"
+}

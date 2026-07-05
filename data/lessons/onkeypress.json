@@ -1,0 +1,51 @@
+{
+  "id": "onkeypress",
+  "chapter": 5,
+  "chapterTitle": "Tương tác",
+  "title": "onkeypress()",
+  "icon": "⌨️",
+  "objectives": [
+    "Hiểu onkey() / onkeypress() — nhấn phím chạy hàm",
+    "Điều khiển rùa bằng phím mũi tên",
+    "Làm nền tảng cho game Turtle"
+  ],
+  "explanation": "<code>onkey()</code> (hoặc <code>onkeypress()</code>) gắn phím với hàm:\n\n<pre>def len():\n    t.setheading(90)\n    t.forward(20)\n\nman_hinh.onkey(len, \"Up\")</pre>\n\nNhấn phím ↑ → rùa đi lên!\n\nPhím thường dùng: <code>\"Up\"</code>, <code>\"Down\"</code>, <code>\"Left\"</code>, <code>\"Right\"</code>, <code>\"space\"</code>",
+  "syntax": "man_hinh.onkey(ham, \"Up\")",
+  "syntaxNote": "Nhấn phím ↑ → gọi hàm ham().",
+  "animation": {
+    "type": "onkeypress",
+    "label": "onkey() — phím mũi tên"
+  },
+  "code": "import turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Điều khiển rùa ⌨️\")\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(0)\n\nbuoc = 30\n\ndef len():\n    t.setheading(90)\n    t.forward(buoc)\n\ndef xuong():\n    t.setheading(270)\n    t.forward(buoc)\n\ndef trai():\n    t.setheading(180)\n    t.forward(buoc)\n\ndef phai():\n    t.setheading(0)\n    t.forward(buoc)\n\nman_hinh.onkey(len, \"Up\")\nman_hinh.onkey(xuong, \"Down\")\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\nman_hinh.listen()  # Bật lắng nghe phím!\n\nturtle.done()",
+  "resultDescription": "Dùng phím ↑ ↓ ← → để di chuyển rùa trên màn hình.",
+  "remember": [
+    { "command": "onkey(ham, \"Up\")", "meaning": "Phím ↑ gọi hàm" },
+    { "command": "setheading(90)", "meaning": "Hướng lên = 90°" },
+    { "command": "listen()", "meaning": "BẮT BUỘC — bật nhận phím" },
+    { "tip": "Không có listen() thì phím không hoạt động!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Rùa nhanh hơn", "description": "Tăng buoc = 50." },
+    { "number": 2, "title": "Đổi màu", "description": "Phím \"r\" → pencolor đỏ, \"b\" → xanh." },
+    { "number": 3, "title": "Vẽ bằng phím", "description": "Space = penup/pendown, mũi tên = vẽ." }
+  ],
+  "quiz": {
+    "question": "Sau khi gọi onkey(), cần làm gì để phím hoạt động?",
+    "options": [
+      { "text": "Gọi turtle.done()", "correct": false },
+      { "text": "Gọi listen()", "correct": true },
+      { "text": "Gọi onclick()", "correct": false },
+      { "text": "Không cần gì thêm", "correct": false }
+    ],
+    "explanation": "listen() bật chế độ lắng nghe phím — thiếu bước này phím sẽ không phản hồi!"
+  },
+  "infographic": {
+    "function": "Nhấn phím → chạy hàm",
+    "syntax": "screen.onkey(ham, \"Up\")",
+    "example": "onkey(len,\"Up\") + listen()",
+    "result": "Điều khiển rùa bằng bàn phím",
+    "exercise": "Rùa đi 4 hướng"
+  },
+  "prev": "onscreenclick",
+  "next": "listen"
+}

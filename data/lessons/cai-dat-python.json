@@ -1,0 +1,57 @@
+{
+  "id": "cai-dat-python",
+  "chapter": 1,
+  "chapterTitle": "Làm quen Turtle",
+  "title": "Cài đặt Python",
+  "icon": "💾",
+  "objectives": [
+    "Biết cách tải và cài Python trên máy tính",
+    "Mở được IDLE hoặc trình soạn thảo code",
+    "Chạy thử chương trình Python đầu tiên"
+  ],
+  "explanation": "Để học Turtle, em cần cài <strong>Python</strong> trên máy tính. Python miễn phí và dễ cài!\n\n<strong>Bước 1:</strong> Vào trang python.org → Downloads → tải bản mới nhất.\n\n<strong>Bước 2:</strong> Chạy file cài đặt, tick ☑ <em>Add Python to PATH</em> rồi nhấn Install.\n\n<strong>Bước 3:</strong> Mở IDLE (tìm \"IDLE\" trong Start Menu) hoặc dùng VS Code.",
+  "syntax": "print(\"Xin chào!\")",
+  "syntaxNote": "Chương trình test đơn giản nhất — in ra màn hình.",
+  "animation": {
+    "type": "install",
+    "label": "Cài Python"
+  },
+  "code": "# Chương trình test sau khi cài Python\nprint(\"Xin chào! Python đã sẵn sàng!\")\nprint(\"Bây giờ em có thể học Turtle rồi 🐢\")",
+  "resultDescription": "Màn hình hiện 2 dòng chữ chào mừng.",
+  "remember": [
+    { "command": "python.org", "meaning": "Trang tải Python chính thức" },
+    { "command": "IDLE", "meaning": "Trình soạn thảo Python có sẵn" },
+    { "tip": "Nhớ tick 'Add Python to PATH' khi cài!" }
+  ],
+  "exercises": [
+    {
+      "number": 1,
+      "title": "In tên em",
+      "description": "Viết chương trình in tên và lớp của em."
+    },
+    {
+      "number": 2,
+      "title": "Máy tính mini",
+      "description": "In kết quả của 5 + 3 và 10 * 2."
+    }
+  ],
+  "quiz": {
+    "question": "Khi cài Python trên Windows, em cần tick gì?",
+    "options": [
+      { "text": "Install for all users", "correct": false },
+      { "text": "Add Python to PATH", "correct": true },
+      { "text": "Disable antivirus", "correct": false },
+      { "text": "Install Turtle separately", "correct": false }
+    ],
+    "explanation": "Tick 'Add Python to PATH' giúp máy tính tìm được Python ở mọi nơi — rất quan trọng!"
+  },
+  "infographic": {
+    "function": "Cài Python để chạy chương trình Turtle",
+    "syntax": "python.org → Download",
+    "example": "print(\"Hello!\")",
+    "result": "Chữ hiện trên màn hình",
+    "exercise": "In tên em ra màn hình"
+  },
+  "prev": "turtle-la-gi",
+  "next": "chuong-trinh-dau-tien"
+}

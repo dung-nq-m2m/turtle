@@ -1,0 +1,50 @@
+{
+  "id": "listen",
+  "chapter": 5,
+  "chapterTitle": "Tương tác",
+  "title": "listen()",
+  "icon": "👂",
+  "objectives": [
+    "Hiểu listen() bật chế độ nhận phím",
+    "Kết hợp listen() + onkey() + onclick()",
+    "Tổng hợp Chương 5 — mini game điều khiển"
+  ],
+  "explanation": "<code>listen()</code> là lệnh <strong>bật tai</strong> — báo màn hình: \"Em sẵn sàng nghe phím rồi!\"\n\nLuôn đặt <code>listen()</code> <em>sau</em> khi đăng ký <code>onkey()</code>.\n\nChương 5 tổng hợp:\n• <code>onclick()</code> — bấm rùa\n• <code>onscreenclick()</code> — bấm màn hình\n• <code>onkey()</code> — nhấn phím\n• <code>listen()</code> — kích hoạt phím",
+  "syntax": "man_hinh.listen()",
+  "syntaxNote": "Bật lắng nghe — bắt buộc trước khi dùng phím.",
+  "animation": {
+    "type": "listen",
+    "label": "listen() — sẵn sàng!"
+  },
+  "code": "import turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mini Game — Chương 5 🎮\")\nman_hinh.bgcolor(\"black\")\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.color(\"lime\")\nt.penup()\nt.speed(0)\n\ndiem = 0\nmuc_tieu = turtle.Turtle()\nmuc_tieu.shape(\"circle\")\nmuc_tieu.color(\"gold\")\nmuc_tieu.penup()\nmuc_tieu.goto(100, 100)\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"white\")\nbang.goto(0, 200)\nbang.write(\"Điểm: 0  |  ↑↓←→ di chuyển\", align=\"center\", font=(\"Arial\", 12, \"bold\"))\n\ndef cap_nhat_diem():\n    global diem\n    if t.distance(muc_tieu) < 30:\n        diem += 1\n        muc_tieu.goto(0, 0)  # đơn giản: về giữa\n        bang.clear()\n        bang.write(f\"Điểm: {diem}  |  ↑↓←→\", align=\"center\", font=(\"Arial\", 12, \"bold\"))\n\ndef len(): t.sety(t.ycor() + 20); cap_nhat_diem()\ndef xuong(): t.sety(t.ycor() - 20); cap_nhat_diem()\ndef trai(): t.setx(t.xcor() - 20); cap_nhat_diem()\ndef phai(): t.setx(t.xcor() + 20); cap_nhat_diem()\n\nman_hinh.onkey(len, \"Up\")\nman_hinh.onkey(xuong, \"Down\")\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\nman_hinh.listen()  # ← QUAN TRỌNG!\n\nturtle.done()",
+  "resultDescription": "Mini game: di chuyển rùa chạm vàng để ghi điểm — dùng listen() + onkey().",
+  "remember": [
+    { "command": "listen()", "meaning": "Bật nhận phím — luôn cần!" },
+    { "command": "Thứ tự", "meaning": "onkey() trước → listen() sau" },
+    { "tip": "Game Turtle luôn cần listen()!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Thêm Space", "description": "Space = rùa đổi màu ngẫu nhiên." },
+    { "number": 2, "title": "Click + Phím", "description": "Kết hợp onscreenclick vẽ chấm + phím di chuyển." },
+    { "number": 3, "title": "Chuẩn bị Game", "description": "Viết khung game đơn giản — sang Chương 6!" }
+  ],
+  "quiz": {
+    "question": "listen() dùng để làm gì?",
+    "options": [
+      { "text": "Nghe nhạc", "correct": false },
+      { "text": "Bật chế độ nhận phím bàn phím", "correct": true },
+      { "text": "Bấm chuột", "correct": false },
+      { "text": "Vẽ hình tròn", "correct": false }
+    ],
+    "explanation": "listen() kích hoạt màn hình lắng nghe phím — thiếu nó onkey() không hoạt động."
+  },
+  "infographic": {
+    "function": "Bật lắng nghe phím",
+    "syntax": "screen.listen()",
+    "example": "onkey(...) → listen() → done()",
+    "result": "Phím điều khiển hoạt động",
+    "exercise": "Mini game ghi điểm"
+  },
+  "prev": "onkeypress",
+  "next": "game-hung-tao"
+}

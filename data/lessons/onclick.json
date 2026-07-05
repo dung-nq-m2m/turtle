@@ -1,0 +1,50 @@
+{
+  "id": "onclick",
+  "chapter": 5,
+  "chapterTitle": "Tương tác",
+  "title": "onclick()",
+  "icon": "👆",
+  "objectives": [
+    "Hiểu onclick() — bấm vào rùa sẽ chạy hàm",
+    "Viết hàm xử lý khi click",
+    "Tạo chương trình tương tác đơn giản"
+  ],
+  "explanation": "<code>onclick()</code> đăng ký sự kiện: khi em <strong>bấm chuột vào rùa</strong>, Python gọi một hàm.\n\n<pre>def doi_mau():\n    t.fillcolor(\"red\")\n\nt.onclick(doi_mau)</pre>\n\nBấm rùa → hàm <code>doi_mau()</code> chạy → rùa đổi màu!",
+  "syntax": "t.onclick(ten_ham)",
+  "syntaxNote": "Bấm vào rùa → gọi hàm ten_ham().",
+  "animation": {
+    "type": "onclick",
+    "label": "onclick() — bấm vào rùa!"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.fillcolor(\"green\")\n\n# Hàm chạy khi bấm rùa\ndef doi_mau():\n    if t.fillcolor()[0] == \"green\":\n        t.fillcolor(\"red\")\n    else:\n        t.fillcolor(\"green\")\n    t.clear()  # xóa hình cũ nếu cần\n\nt.onclick(doi_mau)\n\nturtle.done()",
+  "resultDescription": "Bấm vào rùa — màu đổi xanh ↔ đỏ.",
+  "remember": [
+    { "command": "onclick(ham)", "meaning": "Bấm rùa → chạy hàm" },
+    { "command": "def ten_ham():", "meaning": "Định nghĩa hàm xử lý" },
+    { "tip": "Tên hàm KHÔNG có () khi truyền vào onclick" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Rùa nhảy", "description": "onclick → rùa forward(50)." },
+    { "number": 2, "title": "Đổi hình", "description": "onclick → đổi shape(\"circle\") và ngược lại." },
+    { "number": 3, "title": "Đếm click", "description": "Mỗi lần bấm in ra số lần đã bấm." }
+  ],
+  "quiz": {
+    "question": "onclick() kích hoạt khi nào?",
+    "options": [
+      { "text": "Bấm bất kỳ đâu trên màn hình", "correct": false },
+      { "text": "Bấm chuột vào rùa", "correct": true },
+      { "text": "Nhấn phím Space", "correct": false },
+      { "text": "Khi chương trình kết thúc", "correct": false }
+    ],
+    "explanation": "onclick() chỉ phản hồi khi em bấm trực tiếp lên hình rùa."
+  },
+  "infographic": {
+    "function": "Bấm rùa → chạy hàm",
+    "syntax": "t.onclick(ten_ham)",
+    "example": "def hello(): ... t.onclick(hello)",
+    "result": "Tương tác khi click rùa",
+    "exercise": "Bấm rùa đổi màu"
+  },
+  "prev": "da-giac",
+  "next": "onscreenclick"
+}

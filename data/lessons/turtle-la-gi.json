@@ -1,0 +1,57 @@
+{
+  "id": "turtle-la-gi",
+  "chapter": 1,
+  "chapterTitle": "Làm quen Turtle",
+  "title": "Turtle là gì?",
+  "icon": "🐢",
+  "objectives": [
+    "Biết Turtle Graphics là gì",
+    "Hiểu rùa ảo giúp vẽ hình như thế nào",
+    "Nhận biết các thành phần: màn hình, rùa, bút vẽ"
+  ],
+  "explanation": "<strong>Turtle Graphics</strong> (Đồ họa Rùa) là cách học lập trình rất thân thiện. Em tưởng tượng có một <strong>con rùa nhỏ</strong> cầm bút trên màn hình. Khi em ra lệnh, rùa sẽ đi và vẽ theo đường đi của mình.\n\nGiống như Scratch, em không cần nhớ công thức toán phức tạp — chỉ cần nói với rùa: <em>\"Đi thẳng!\"</em>, <em>\"Quay trái!\"</em>, <em>\"Đổi màu!\"</em>",
+  "syntax": "import turtle",
+  "syntaxNote": "Dòng đầu tiên để mở thư viện Turtle trong Python.",
+  "animation": {
+    "type": "intro",
+    "label": "Chào rùa!"
+  },
+  "code": "import turtle\n\n# Tạo màn hình và rùa\nman_hinh = turtle.Screen()\nman_hinh.title(\"Rùa của em!\")\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")  # Hiện hình con rùa\n\nturtle.done()",
+  "resultDescription": "Một cửa sổ hiện ra với con rùa ở giữa màn hình.",
+  "remember": [
+    { "command": "import turtle", "meaning": "Mở thư viện Turtle" },
+    { "command": "turtle.Turtle()", "meaning": "Tạo con rùa" },
+    { "command": "turtle.done()", "meaning": "Giữ cửa sổ không đóng" }
+  ],
+  "exercises": [
+    {
+      "number": 1,
+      "title": "Đổi tiêu đề cửa sổ",
+      "description": "Thay \"Rùa của em!\" bằng tên của em."
+    },
+    {
+      "number": 2,
+      "title": "Đổi màu nền",
+      "description": "Dùng bgcolor() để đổi màu nền màn hình."
+    }
+  ],
+  "quiz": {
+    "question": "Turtle Graphics dùng hình ảnh gì để giúp em học lập trình?",
+    "options": [
+      { "text": "Con mèo", "correct": false },
+      { "text": "Con rùa", "correct": true },
+      { "text": "Con chim", "correct": false },
+      { "text": "Con cá", "correct": false }
+    ],
+    "explanation": "Turtle Graphics dùng hình con rùa — rùa cầm bút và vẽ trên màn hình theo lệnh của em."
+  },
+  "infographic": {
+    "function": "Học lập trình qua hình ảnh rùa vẽ",
+    "syntax": "import turtle",
+    "example": "t = turtle.Turtle()",
+    "result": "Rùa xuất hiện trên màn hình",
+    "exercise": "Chạy chương trình đầu tiên"
+  },
+  "prev": null,
+  "next": "cai-dat-python"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "end-fill",
+  "chapter": 3,
+  "chapterTitle": "Màu sắc",
+  "title": "end_fill()",
+  "icon": "✅",
+  "objectives": [
+    "Hiểu end_fill() kết thúc và thực hiện tô màu",
+    "Vẽ được hình có màu viền và màu ruột khác nhau",
+    "Tổng hợp pencolor + fillcolor + begin_fill + end_fill"
+  ],
+  "explanation": "<code>end_fill()</code> báo: <strong>\"Vẽ xong rồi, tô màu đi!\"</strong>\n\nPython sẽ lấy màu từ <code>fillcolor()</code> và tô vào vùng hình em vừa vẽ (từ <code>begin_fill()</code> đến đây).\n\nĐây là bài tổng hợp Chương 3 — em đã biết đủ 4 lệnh màu sắc! 🎨",
+  "syntax": "end_fill()",
+  "syntaxNote": "Kết thúc vùng tô — Python tô màu vào hình.",
+  "animation": {
+    "type": "end-fill",
+    "label": "end_fill() — tô màu!",
+    "fillColor": "#59c059"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\n\n# Vẽ ngôi sao 5 cánh đỏ, viền vàng\nt.pencolor(\"gold\")\nt.fillcolor(\"red\")\nt.pensize(3)\n\nt.begin_fill()\nfor i in range(5):\n    t.forward(100)\n    t.right(144)\nt.end_fill()  # ← Tô màu đỏ vào ngôi sao!\n\nturtle.done()",
+  "resultDescription": "Ngôi sao 5 cánh ruột đỏ, viền vàng — bài tổng hợp Chương 3.",
+  "remember": [
+    { "command": "end_fill()", "meaning": "Kết thúc tô màu" },
+    { "command": "Bộ 4 lệnh", "meaning": "pencolor + fillcolor + begin_fill + end_fill" },
+    { "tip": "Luôn begin_fill và end_fill đi cặp!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Ngôi nhà đầy màu", "description": "Thân nhà xanh, mái đỏ, cửa nâu — mỗi phần một màu." },
+    { "number": 2, "title": "Cầu vồng", "description": "Vẽ 7 cung tròn (semicircle), mỗi cung một màu." },
+    { "number": 3, "title": "Dự án mini", "description": "Vẽ tranh tự chọn: cây, mặt trời, mây — dùng hết 4 lệnh màu." }
+  ],
+  "quiz": {
+    "question": "Thứ tự đúng để tô màu hình vuông xanh?",
+    "options": [
+      { "text": "begin_fill → vẽ → end_fill → fillcolor", "correct": false },
+      { "text": "fillcolor → begin_fill → vẽ → end_fill", "correct": true },
+      { "text": "vẽ → end_fill → begin_fill → fillcolor", "correct": false },
+      { "text": "pencolor → vẽ → done()", "correct": false }
+    ],
+    "explanation": "Đúng thứ tự: fillcolor (chọn màu) → begin_fill → vẽ hình kín → end_fill (tô)."
+  },
+  "infographic": {
+    "function": "Kết thúc và tô màu hình",
+    "syntax": "t.end_fill()",
+    "example": "begin_fill → vẽ → end_fill",
+    "result": "Hình được tô màu fillcolor",
+    "exercise": "Vẽ ngôi sao đỏ viền vàng"
+  },
+  "prev": "begin-fill",
+  "next": "hinh-vuong"
+}

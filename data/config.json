@@ -1,0 +1,5 @@
+{
+  "teacherPin": "dungnq",
+  "codeLockMessage": "Em hãy đọc kiến trúc, biểu đồ thuật toán và giả mã trước. Giáo viên sẽ mở code Python khi em đã nắm logic.",
+  "gameArchitectureIntro": "Mọi game Turtle đều xây dựng trên 4 tầng: Khởi tạo → Nhập liệu → Logic → Hiển thị. Học sinh cần hiểu sơ đồ trước khi xem code."
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thử thách - Học viện Turtle Python</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="index.html">🏠 Trang chủ</a>
+        <div class="sidebar-section">Menu</div>
+        <a href="index.html#bai-hoc">📘 Bài học</a>
+        <a href="challenges.html" class="active">🏆 Thử thách</a>
+        <a href="games.html">🎮 Thực hành</a>
+        <a href="teacher.html">👨‍🏫 Giáo viên</a>
+        <div class="sidebar-section">Chương trình</div>
+        <ul class="chapter-list" id="sidebar-chapters"></ul>
+      </nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="site-header">
+        <span class="logo">🐢</span>
+        <div>
+          <h1>Học viện Turtle Python</h1>
+          <p>Thử thách</p>
+        </div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
+      </header>
+
+      <main class="content-area">
+        <div class="lesson-header">
+          <h2>💡 Thử thách</h2>
+          <p style="color:#666" id="challenge-subtitle">Rèn luyện kỹ năng vẽ với Turtle Python</p>
+        </div>
+        <div id="challenges-list"></div>
+        <div class="card" style="margin-top:1rem;background:#fff8e6;border:2px solid var(--scratch-orange)">
+          <p>📌 <strong>Mẹo:</strong> Mỗi thử thách có độ khó (⭐) và điểm thưởng. Hoàn thành để tích điểm!</p>
+          <p style="margin-top:0.5rem">Đáp án đầy đủ xem tại trang <a href="teacher.html">Giáo viên</a>.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    function renderStars(n) {
+      return '⭐'.repeat(n);
+    }
+
+    async function initChallenges() {
+      await renderSidebar('challenges');
+      const data = await TurtleAcademy.loadJSON('data/challenges.json');
+      document.getElementById('challenge-subtitle').textContent = data.subtitle;
+
+      document.getElementById('challenges-list').innerHTML = data.challenges.map(ch => `
+        <div class="challenge-card">
+          <div>
+            <div class="stars">${renderStars(ch.stars)}</div>
+            <h3 style="margin:0.25rem 0">${ch.title}</h3>
+            <p style="color:#666;font-size:0.9rem">${ch.description}</p>
+            <p style="margin-top:0.5rem;font-size:0.85rem;color:#888">💡 Gợi ý: ${ch.hint}</p>
+          </div>
+          <span class="points-badge">+${ch.points} điểm</span>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', initChallenges);
+  </script>
+</body>
+</html>

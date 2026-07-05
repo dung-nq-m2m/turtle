@@ -1,0 +1,101 @@
+{
+  "id": "game-ne-bom",
+  "chapter": 6,
+  "chapterTitle": "Làm Game",
+  "title": "Né bom",
+  "icon": "💣",
+  "codeLocked": true,
+  "objectives": [
+    "Hiểu biến trạng thái song (còn sống / game over)",
+    "Đọc thuật toán vòng lặp ontimer tự gọi",
+    "Phân biệt thắng (sống lâu) và thua (va chạm)",
+    "Dùng tracer(0) + update() trong kiến trúc game"
+  ],
+  "explanation": "Game <strong>Né bom</strong> thêm khái niệm <strong>trạng thái game</strong>:\n\n• <code>song = True</code> — còn chơi được\n• <code>song = False</code> — GAME OVER, dừng mọi hàm\n\nBom rơi liên tục — em né bằng ← →. Càng sống lâu càng nhiều điểm!",
+  "architecture": {
+    "intro": "Né bom mở rộng kiến trúc Hứng táo — thêm trạng thái và game loop nhanh.",
+    "layers": [
+      { "title": "1. Khởi tạo", "items": ["Screen + tracer(0)", "nguoi, bom", "diem=0, song=True"] },
+      { "title": "2. Nhập liệu", "items": ["onkey ← →", "listen()"] },
+      { "title": "3. Logic", "items": ["roi_bom() — bom rơi", "if not song: return", "Va chạm → song=False"] },
+      { "title": "4. Hiển thị", "items": ["update() mỗi khung", "write GAME OVER", "ontimer lặp"] }
+    ],
+    "note": "Mọi hàm đều kiểm tra song trước — mô hình quan trọng cho mọi game!"
+  },
+  "variables": [
+    { "name": "nguoi", "meaning": "Nhân vật né bom", "initial": "Turtle(), dưới màn hình" },
+    { "name": "bom", "meaning": "Quả bom rơi", "initial": "Turtle(), ẩn" },
+    { "name": "diem", "meaning": "Số bom đã né", "initial": "0" },
+    { "name": "song", "meaning": "Còn sống?", "initial": "True" },
+    { "name": "toc_do", "meaning": "Tốc độ bom rơi", "initial": "8 (tăng dần)" }
+  ],
+  "algorithm": {
+    "title": "Thuật toán Game Né bom",
+    "steps": [
+      { "type": "start", "label": "BẮT ĐẦU" },
+      { "type": "process", "label": "Khởi tạo + tracer(0) + song=True" },
+      { "type": "process", "label": "bom_moi() — bom ở vị trí x ngẫu nhiên, y cao" },
+      { "type": "decision", "label": "song == True?", "yes": "Tiếp tục", "no": "Dừng game" },
+      { "type": "process", "label": "Bom rơi xuống (y giảm)" },
+      { "type": "input", "label": "Phím ← → di chuyển người" },
+      { "type": "decision", "label": "Bom chạm người?", "yes": "song=False, GAME OVER", "no": "Tiếp tục" },
+      { "type": "decision", "label": "Bom chạm đất?", "yes": "diem+1, bom mới", "no": "Rơi tiếp" },
+      { "type": "process", "label": "update() + ontimer(roi_bom, 50ms)" },
+      { "type": "end", "label": "KẾT THÚC" }
+    ]
+  },
+  "pseudocode": {
+    "note": "Viết code từ giả mã — chú ý kiểm tra song ở đầu mỗi hàm:",
+    "lines": [
+      "BẮT ĐẦU",
+      "  song ← True, diem ← 0",
+      "  bật tracer(0) — game nhanh",
+      "",
+      "  HÀM roi_bom():",
+      "    NẾU song = False: DỪNG",
+      "    bom.y ← bom.y - toc_do",
+      "    NẾU bom chạm người: song ← False, hiện GAME OVER",
+      "    NẾU bom chạm đất: diem+1, tạo bom mới",
+      "    update(), gọi lại roi_bom sau 50ms",
+      "",
+      "  Phím ← →: di chuyển + update()",
+      "  listen(), bom_moi()",
+      "KẾT THÚC"
+    ]
+  },
+  "syntax": "if not song: return",
+  "syntaxNote": "Thoát hàm ngay khi game over — không xử lý thêm.",
+  "animation": { "type": "game-bomb", "label": "Né bom 💣" },
+  "code": "import turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Né bom 💣\")\nman_hinh.bgcolor(\"black\")\nman_hinh.tracer(0)\n\nnguoi = turtle.Turtle()\nnguoi.shape(\"turtle\")\nnguoi.color(\"lime\")\nnguoi.penup()\nnguoi.goto(0, -200)\n\nbom = turtle.Turtle()\nbom.shape(\"circle\")\nbom.color(\"red\")\nbom.penup()\nbom.hideturtle()\n\ndiem = 0\nsong = True\n\ndef roi_bom():\n    global diem, song\n    if not song:\n        return\n    bom.sety(bom.ycor() - 8)\n    if bom.ycor() < -220:\n        bom.hideturtle()\n        diem += 1\n        man_hinh.ontimer(bom_moi, 300)\n        return\n    if abs(bom.xcor() - nguoi.xcor()) < 25:\n        song = False\n        return\n    man_hinh.update()\n    man_hinh.ontimer(roi_bom, 50)\n\ndef bom_moi():\n    bom.showturtle()\n    bom.goto(random.randint(-250, 250), 250)\n    man_hinh.ontimer(roi_bom, 50)\n\ndef trai(): nguoi.setx(nguoi.xcor() - 30); man_hinh.update()\ndef phai(): nguoi.setx(nguoi.xcor() + 30); man_hinh.update()\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\n\nbom_moi()\nturtle.done()",
+  "resultDescription": "Né bom càng lâu càng nhiều điểm — chạm bom là thua.",
+  "remember": [
+    { "command": "song = True/False", "meaning": "Biến trạng thái game" },
+    { "command": "if not song: return", "meaning": "Dừng logic khi thua" },
+    { "command": "tracer(0)+update()", "meaning": "Game loop mượt" },
+    { "tip": "Vẽ nhánh GAME OVER trên sơ đồ!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Sơ đồ nhánh", "description": "Vẽ 2 nhánh: né được vs chạm bom." },
+    { "number": 2, "title": "Tự code", "description": "Viết game từ giả mã, test trên máy." },
+    { "number": 3, "title": "Tăng độ khó", "description": "Mỗi 5 điểm tăng toc_do." }
+  ],
+  "quiz": {
+    "question": "Khi song = False, hàm roi_bom() phải làm gì đầu tiên?",
+    "options": [
+      { "text": "Tạo bom mới", "correct": false },
+      { "text": "return — thoát ngay", "correct": true },
+      { "text": "Cộng điểm", "correct": false },
+      { "text": "Gọi listen()", "correct": false }
+    ],
+    "explanation": "if not song: return — dừng vòng lặp game khi đã thua."
+  },
+  "infographic": {
+    "function": "Game loop + trạng thái song",
+    "syntax": "ontimer tự gọi + va chạm",
+    "example": "Né bom → điểm / chạm → thua",
+    "result": "Game over khi va chạm",
+    "exercise": "Thêm màn hình GAME OVER"
+  },
+  "prev": "game-hung-tao",
+  "next": "game-ban-bong"
+}

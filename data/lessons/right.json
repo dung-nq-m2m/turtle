@@ -1,0 +1,49 @@
+{
+  "id": "right",
+  "chapter": 2,
+  "chapterTitle": "Vẽ cơ bản",
+  "title": "right()",
+  "icon": "↪️",
+  "objectives": [
+    "Hiểu right() dùng để quay rùa sang phải",
+    "So sánh left() và right()",
+    "Vẽ hình bằng right()"
+  ],
+  "explanation": "Lệnh <code>right()</code> (viết tắt <code>rt()</code>) cho rùa <strong>quay sang phải</strong>. Cách dùng giống hệt left(), chỉ khác hướng quay.",
+  "syntax": "right(90)",
+  "syntaxNote": "Rùa quay phải 90 độ.",
+  "animation": {
+    "type": "right",
+    "label": "right(90)",
+    "angle": 90
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\n\n# Quay phải và vẽ\nt.forward(80)\nt.right(90)\nt.forward(80)\n\nturtle.done()",
+  "resultDescription": "Rùa vẽ 2 cạnh vuông góc tạo hình chữ L.",
+  "remember": [
+    { "command": "right()", "meaning": "Quay sang phải" },
+    { "command": "rt()", "meaning": "Viết tắt của right()" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Hình chữ L", "description": "Dùng forward và right vẽ chữ L." },
+    { "number": 2, "title": "Ngôi sao 5 cánh", "description": "Dùng right(144) lặp 5 lần." }
+  ],
+  "quiz": {
+    "question": "right(90) và left(90) khác nhau ở điểm nào?",
+    "options": [
+      { "text": "Số độ khác nhau", "correct": false },
+      { "text": "Hướng quay khác nhau", "correct": true },
+      { "text": "right không vẽ", "correct": false },
+      { "text": "Không khác gì", "correct": false }
+    ],
+    "explanation": "Cả hai đều quay 90°, nhưng right quay phải, left quay trái."
+  },
+  "infographic": {
+    "function": "Quay rùa sang phải",
+    "syntax": "t.right(số_độ)",
+    "example": "t.right(90)",
+    "result": "Rùa quay góc vuông phải",
+    "exercise": "Vẽ ngôi sao 5 cánh"
+  },
+  "prev": "left",
+  "next": "penup-pendown"
+}

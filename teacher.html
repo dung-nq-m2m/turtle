@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giáo viên - Học viện Turtle Python</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="index.html">🏠 Trang chủ</a>
+        <div class="sidebar-section">Menu</div>
+        <a href="index.html#bai-hoc">📘 Bài học</a>
+        <a href="challenges.html">🏆 Thử thách</a>
+        <a href="games.html">🎮 Thực hành</a>
+        <a href="teacher.html" class="active">👨‍🏫 Giáo viên</a>
+        <div class="sidebar-section">Chương trình</div>
+        <ul class="chapter-list" id="sidebar-chapters"></ul>
+      </nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="site-header">
+        <span class="logo">🐢</span>
+        <div>
+          <h1>Học viện Turtle Python</h1>
+          <p>Khu vực Giáo viên</p>
+        </div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
+      </header>
+
+      <main class="content-area">
+        <div class="lesson-header">
+          <h2>👨‍🏫 Khu vực Giáo viên</h2>
+          <p style="color:#666" id="teacher-subtitle">Tài liệu giảng dạy và đánh giá</p>
+        </div>
+
+        <div class="teacher-unlock-panel" id="unlock-panel">
+          <h3>🔐 Mở / Khóa code Game (Chương 6)</h3>
+          <p>Học sinh chỉ xem được <strong>kiến trúc, thuật toán, giả mã</strong>. Sau khi em nắm logic, giáo viên nhập mã để mở code Python trên trang bài học và Game.</p>
+          <div class="unlock-form">
+            <input type="password" id="teacher-pin" placeholder="Mã giáo viên" autocomplete="off">
+            <button class="btn btn-orange" id="btn-unlock">🔓 Mở code</button>
+            <button class="btn btn-outline" id="btn-lock" style="background:rgba(255,255,255,0.9)">🔒 Khóa lại</button>
+          </div>
+          <div class="unlock-status closed" id="unlock-status">🔒 Code đang khóa trên trình duyệt này</div>
+        </div>
+
+        <div id="teacher-resources"></div>
+        <div class="card" style="background:#eef6ff">
+          <p>📌 Quy trình dạy Chương 6: (1) Kiến trúc 4 tầng → (2) Biểu đồ thuật toán → (3) Giả mã → (4) Học sinh tự gõ → (5) <strong>Mở code</strong> để đối chiếu.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    function updateUnlockStatus() {
+      const el = document.getElementById('unlock-status');
+      if (!el) return;
+      if (TurtleAcademy.isCodeUnlocked()) {
+        el.className = 'unlock-status open';
+        el.textContent = '✅ Code đã mở — học sinh xem được trên trình duyệt này';
+      } else {
+        el.className = 'unlock-status closed';
+        el.textContent = '🔒 Code đang khóa — học sinh chỉ thấy thuật toán & giả mã';
+      }
+    }
+
+    async function initTeacher() {
+      await TurtleAcademy.initConfig();
+      await renderSidebar('teacher');
+      const data = await TurtleAcademy.loadJSON('data/teacher.json');
+      document.getElementById('teacher-subtitle').textContent = data.subtitle;
+      updateUnlockStatus();
+
+      document.getElementById('btn-unlock')?.addEventListener('click', () => {
+        const pin = document.getElementById('teacher-pin')?.value || '';
+        if (TurtleAcademy.unlockCode(pin)) {
+          TurtleAcademy.showToast('✅ Đã mở code cho học sinh!');
+          updateUnlockStatus();
+        } else {
+          TurtleAcademy.showToast('❌ Mã không đúng!');
+        }
+      });
+
+      document.getElementById('btn-lock')?.addEventListener('click', () => {
+        TurtleAcademy.lockCode();
+        TurtleAcademy.showToast('🔒 Đã khóa code');
+        updateUnlockStatus();
+      });
+
+      document.getElementById('teacher-resources').innerHTML = data.resources.map(cat => `
+        <div class="resource-category">
+          <h3>${cat.icon} ${cat.category}</h3>
+          <ul class="resource-list">
+            ${cat.items.map(item => `
+              <li>
+                <span>${item.title}</span>
+                <span>
+                  <span class="format-badge">${item.format}</span>
+                  ${item.format === 'VIDEO'
+                    ? `<a href="${item.file}" target="_blank" class="btn btn-primary" style="padding:0.3rem 0.8rem;font-size:0.75rem;margin-left:0.5rem">Xem</a>`
+                    : `<button class="btn btn-outline" style="padding:0.3rem 0.8rem;font-size:0.75rem;margin-left:0.5rem" onclick="TurtleAcademy.showToast('File ${item.file} sẽ được bổ sung sớm!')">Tải</button>`
+                  }
+                </span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', initTeacher);
+  </script>
+</body>
+</html>

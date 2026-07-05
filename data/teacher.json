@@ -1,0 +1,64 @@
+{
+  "title": "Khu vực Giáo viên",
+  "subtitle": "Tài liệu giảng dạy và đánh giá",
+  "resources": [
+    {
+      "category": "Slide PowerPoint",
+      "icon": "📊",
+      "items": [
+        { "title": "Chương 1 - Làm quen Turtle", "file": "teacher/slides/ch1.pptx", "format": "PPTX" },
+        { "title": "Chương 2 - Vẽ cơ bản", "file": "teacher/slides/ch2.pptx", "format": "PPTX" },
+        { "title": "Chương 3 - Màu sắc", "file": "teacher/slides/ch3.pptx", "format": "PPTX" }
+      ]
+    },
+    {
+      "category": "Giáo án",
+      "icon": "📋",
+      "items": [
+        { "title": "Giáo án Chương 1 (45 phút)", "file": "teacher/lesson-plans/ch1.md", "format": "MD" },
+        { "title": "Giáo án Chương 2 (45 phút)", "file": "teacher/lesson-plans/ch2.md", "format": "MD" },
+        { "title": "Giáo án Chương 3 (45 phút)", "file": "teacher/lesson-plans/ch3.md", "format": "MD" }
+      ]
+    },
+    {
+      "category": "Infographic",
+      "icon": "🖼️",
+      "items": [
+        { "title": "Bộ poster lệnh Turtle cơ bản", "file": "teacher/infographics/turtle-commands.pdf", "format": "PDF" },
+        { "title": "Poster màu sắc và tô màu", "file": "teacher/infographics/colors.pdf", "format": "PDF" }
+      ]
+    },
+    {
+      "category": "Đề kiểm tra",
+      "icon": "📝",
+      "items": [
+        { "title": "Kiểm tra giữa kỳ - 30 câu", "file": "teacher/exams/midterm.pdf", "format": "PDF" },
+        { "title": "Kiểm tra cuối kỳ - 40 câu", "file": "teacher/exams/final.pdf", "format": "PDF" }
+      ]
+    },
+    {
+      "category": "Đáp án",
+      "icon": "✅",
+      "items": [
+        { "title": "Đáp án 50 bài tập thử thách", "file": "teacher/answers/challenges.py", "format": "PY" },
+        { "title": "Đáp án kiểm tra", "file": "teacher/answers/exams.pdf", "format": "PDF" }
+      ]
+    },
+    {
+      "category": "File Python mẫu",
+      "icon": "💻",
+      "items": [
+        { "title": "Bộ code mẫu toàn khóa", "file": "teacher/code/all-lessons.zip", "format": "ZIP" },
+        { "title": "Game mẫu Chương 6", "file": "teacher/code/games.zip", "format": "ZIP" }
+      ]
+    },
+    {
+      "category": "Video hướng dẫn",
+      "icon": "🎬",
+      "items": [
+        { "title": "Hướng dẫn cài Python trên Windows", "file": "https://youtube.com", "format": "VIDEO" },
+        { "title": "Demo bài forward() - 3 phút", "file": "https://youtube.com", "format": "VIDEO" }
+      ]
+    }
+  ]
+}

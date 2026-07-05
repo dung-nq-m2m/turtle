@@ -1,0 +1,50 @@
+{
+  "id": "ngoi-sao",
+  "chapter": 4,
+  "chapterTitle": "Hình học",
+  "title": "Ngôi sao",
+  "icon": "⭐",
+  "objectives": [
+    "Vẽ ngôi sao 5 cánh bằng vòng lặp",
+    "Hiểu góc quay 144° cho ngôi sao",
+    "Kết hợp màu sắc tô ngôi sao đẹp"
+  ],
+  "explanation": "Ngôi sao 5 cánh là hình rất phổ biến! Bí quyết là góc quay <code>144°</code>.\n\nTại sao 144? Vì 5 × 144 = 720, và 720 ÷ 2 = 360° (một vòng tròn).\n\nEm chỉ cần nhớ: <strong>right(144)</strong> lặp 5 lần!\n\n<pre>for i in range(5):\n    t.forward(100)\n    t.right(144)</pre>",
+  "syntax": "right(144)",
+  "syntaxNote": "Quay 144° — vẽ ngôi sao 5 cánh.",
+  "animation": {
+    "type": "star",
+    "label": "Ngôi sao 5 cánh"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\nt.pencolor(\"gold\")\nt.fillcolor(\"yellow\")\nt.pensize(2)\n\nt.begin_fill()\nfor i in range(5):\n    t.forward(100)\n    t.right(144)\nt.end_fill()\n\nturtle.done()",
+  "resultDescription": "Ngôi sao 5 cánh màu vàng, viền gold.",
+  "remember": [
+    { "command": "range(5)", "meaning": "5 cánh = lặp 5 lần" },
+    { "command": "right(144)", "meaning": "Góc bí mật của ngôi sao!" },
+    { "tip": "Ngôi sao 6 cánh dùng góc 120° (range 6)" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Sao đỏ", "description": "Ngôi sao tô đỏ, viền vàng." },
+    { "number": 2, "title": "Sao nhỏ to", "description": "Vẽ 3 ngôi sao kích cỡ khác nhau." },
+    { "number": 3, "title": "Bầu trời sao", "description": "Nền xanh đen, vẽ 10 ngôi sao ngẫu nhiên (penup + goto)." }
+  ],
+  "quiz": {
+    "question": "Ngôi sao 5 cánh dùng góc quay nào?",
+    "options": [
+      { "text": "72°", "correct": false },
+      { "text": "90°", "correct": false },
+      { "text": "144°", "correct": true },
+      { "text": "180°", "correct": false }
+    ],
+    "explanation": "right(144) lặp 5 lần tạo ngôi sao 5 cánh hoàn hảo!"
+  },
+  "infographic": {
+    "function": "Vẽ ngôi sao 5 cánh",
+    "syntax": "for i in range(5): forward + right(144)",
+    "example": "t.forward(100); t.right(144)",
+    "result": "Ngôi sao vàng 5 cánh",
+    "exercise": "Vẽ sao tô đỏ"
+  },
+  "prev": "tam-giac",
+  "next": "da-giac"
+}

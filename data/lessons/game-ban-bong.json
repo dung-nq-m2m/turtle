@@ -1,0 +1,107 @@
+{
+  "id": "game-ban-bong",
+  "chapter": 6,
+  "chapterTitle": "Làm Game",
+  "title": "Bắn bóng",
+  "icon": "⚽",
+  "codeLocked": true,
+  "objectives": [
+    "Quản lý nhiều đối tượng bằng list",
+    "Hiểu thuật toán: tạo đạn → di chuyển → kiểm tra distance()",
+    "Thiết kế điều kiện thắng (hết mục tiêu)",
+    "Tổng hợp kiến trúc game — dự án cuối khóa"
+  ],
+  "explanation": "Game <strong>Bắn bóng</strong> là đỉnh cao Chương 6 — em quản lý <strong>nhiều đối tượng</strong> cùng lúc bằng <strong>list</strong>.\n\n• <code>dan = []</code> — danh sách viên đạn đang bay\n• <code>muc_tieu = []</code> — danh sách mục tiêu\n• Vòng lặp duyệt list, xóa phần tử trúng\n\nĐiều kiện thắng: <strong>hết mục tiêu</strong> trên màn hình.",
+  "architecture": {
+    "intro": "Bắn bóng kết hợp list + game loop + điều kiện thắng — mô hình game hoàn chỉnh.",
+    "layers": [
+      { "title": "1. Khởi tạo", "items": ["sung, dan=[], muc_tieu=[]", "Tạo N mục tiêu (for)", "diem=0"] },
+      { "title": "2. Nhập liệu", "items": ["← → di chuyển súng", "Space → ban() thêm đạn"] },
+      { "title": "3. Logic", "items": ["cap_nhat(): duyệt dan", "Đạn bay lên", "distance() trúng → xóa"] },
+      { "title": "4. Hiển thị", "items": ["update() 40ms", "Hết mục tiêu → THẮNG", "write điểm"] }
+    ],
+    "note": "Duyệt list dùng dan[:] — copy để xóa an toàn khi đang lặp!"
+  },
+  "variables": [
+    { "name": "sung", "meaning": "Súng bắn", "initial": "Turtle(), dưới màn hình" },
+    { "name": "dan", "meaning": "List viên đạn đang bay", "initial": "[]" },
+    { "name": "muc_tieu", "meaning": "List mục tiêu", "initial": "[] (5 vòng tròn)" },
+    { "name": "diem", "meaning": "Điểm bắn trúng", "initial": "0" },
+    { "name": "thang", "meaning": "Đã thắng?", "initial": "False" }
+  ],
+  "algorithm": {
+    "title": "Thuật toán Game Bắn bóng",
+    "steps": [
+      { "type": "start", "label": "BẮT ĐẦU" },
+      { "type": "process", "label": "Khởi tạo súng, dan=[], tạo 5 muc_tieu" },
+      { "type": "input", "label": "Space → tạo viên đạn, append vào dan" },
+      { "type": "input", "label": "← → di chuyển súng" },
+      { "type": "process", "label": "Với mỗi viên trong dan: bay lên (y+8)" },
+      { "type": "decision", "label": "Đạn trúng mục tiêu (distance<25)?", "yes": "Xóa cả hai, diem+10", "no": "Tiếp tục" },
+      { "type": "decision", "label": "dan rỗng và hết muc_tieu?", "yes": "THẮNG!", "no": "Lặp cap_nhat" },
+      { "type": "process", "label": "update() + ontimer 40ms" },
+      { "type": "end", "label": "KẾT THÚC" }
+    ]
+  },
+  "pseudocode": {
+    "note": "Dự án cuối — em tự hoàn thiện code Python từ giả mã:",
+    "lines": [
+      "BẮT ĐẦU",
+      "  dan ← list rỗng",
+      "  muc_tieu ← tạo 5 hình tròn trên cao",
+      "  diem ← 0",
+      "",
+      "  HÀM ban():",
+      "    tạo viên đạn tại vị trí súng",
+      "    dan.append(viên_đạn)",
+      "",
+      "  HÀM cap_nhat():",
+      "    VỚI MỖI viên TRONG dan:",
+      "      viên.y ← viên.y + 8",
+      "      NẾU viên bay quá cao: xóa khỏi dan",
+      "      VỚI MỖI mt TRONG muc_tieu:",
+      "        NẾU khoảng_cách(viên, mt) < 25:",
+      "          xóa viên, xóa mt, diem ← diem + 10",
+      "    NẾU muc_tieu rỗng: hiện THẮNG",
+      "    update(), gọi cap_nhat sau 40ms",
+      "",
+      "  listen(), cap_nhat()",
+      "KẾT THÚC"
+    ]
+  },
+  "syntax": "for vien in dan[:]:",
+  "syntaxNote": "dan[:] — copy list để xóa phần tử an toàn khi lặp.",
+  "animation": { "type": "game-shoot", "label": "Bắn bóng ⚽" },
+  "code": "import turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Bắn bóng ⚽\")\nman_hinh.bgcolor(\"navy\")\nman_hinh.tracer(0)\n\nsung = turtle.Turtle()\nsung.shape(\"triangle\")\nsung.color(\"yellow\")\nsung.penup()\nsung.goto(0, -200)\nsung.setheading(90)\n\ndan = []\nmuc_tieu = []\ndiem = 0\n\nfor i in range(5):\n    mt = turtle.Turtle()\n    mt.shape(\"circle\")\n    mt.color(\"orange\")\n    mt.penup()\n    mt.goto(-200 + i * 100, 150)\n    muc_tieu.append(mt)\n\ndef ban():\n    vien = turtle.Turtle()\n    vien.shape(\"circle\")\n    vien.color(\"white\")\n    vien.shapesize(0.4, 0.4)\n    vien.penup()\n    vien.goto(sung.xcor(), sung.ycor() + 20)\n    dan.append(vien)\n\ndef cap_nhat():\n    global diem\n    for vien in dan[:]:\n        vien.sety(vien.ycor() + 8)\n        if vien.ycor() > 260:\n            dan.remove(vien)\n            continue\n        for mt in muc_tieu[:]:\n            if vien.distance(mt) < 25:\n                mt.hideturtle()\n                muc_tieu.remove(mt)\n                dan.remove(vien)\n                diem += 10\n                break\n    if not muc_tieu:\n        return\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)\n\ndef trai(): sung.setx(sung.xcor() - 30)\ndef phai(): sung.setx(sung.xcor() + 30)\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\nman_hinh.onkey(ban, \"space\")\n\ncap_nhat()\nturtle.done()",
+  "resultDescription": "Bắn hết 5 mục tiêu — chiến thắng!",
+  "remember": [
+    { "command": "dan = []", "meaning": "List quản lý nhiều đạn" },
+    { "command": "append / remove", "meaning": "Thêm / xóa trong list" },
+    { "command": "distance()", "meaning": "Kiểm tra trúng mục tiêu" },
+    { "tip": "Chúc mừng — em đã học xong kiến trúc game Turtle! 🏆" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Sơ đồ list", "description": "Vẽ sơ đồ duyệt dan và xóa phần tử trúng." },
+    { "number": 2, "title": "Dự án cuối", "description": "Hoàn thiện game từ giả mã, thêm màn THẮNG." },
+    { "number": 3, "title": "Game riêng", "description": "Thiết kế game mới — vẽ kiến trúc + thuật toán trước!" }
+  ],
+  "quiz": {
+    "question": "Tại sao dùng for vien in dan[:] thay vì for vien in dan?",
+    "options": [
+      { "text": "Nhanh hơn", "correct": false },
+      { "text": "Xóa phần tử an toàn khi đang lặp", "correct": true },
+      { "text": "Tiết kiệm bộ nhớ", "correct": false },
+      { "text": "Không có lý do", "correct": false }
+    ],
+    "explanation": "dan[:] tạo bản copy — tránh lỗi khi remove() trong vòng lặp for."
+  },
+  "infographic": {
+    "function": "List + loop + distance + thắng",
+    "syntax": "Kiến trúc game đầy đủ",
+    "example": "Giả mã → code → test",
+    "result": "Game hoàn chỉnh",
+    "exercise": "Tự thiết kế game mới"
+  },
+  "prev": "game-ne-bom",
+  "next": null
+}

@@ -1,0 +1,80 @@
+{
+  "site": {
+    "title": "Học viện Turtle Python",
+    "subtitle": "Giáo trình điện tử dành cho học sinh lớp 6",
+    "logo": "🐢"
+  },
+  "chapters": [
+    {
+      "id": "ch1",
+      "number": 1,
+      "icon": "📘",
+      "title": "Làm quen Turtle",
+      "lessons": [
+        { "id": "turtle-la-gi", "title": "Turtle là gì?", "slug": "turtle-la-gi" },
+        { "id": "cai-dat-python", "title": "Cài đặt Python", "slug": "cai-dat-python" },
+        { "id": "chuong-trinh-dau-tien", "title": "Chương trình đầu tiên", "slug": "chuong-trinh-dau-tien" }
+      ]
+    },
+    {
+      "id": "ch2",
+      "number": 2,
+      "icon": "🖊",
+      "title": "Vẽ cơ bản",
+      "lessons": [
+        { "id": "forward", "title": "forward()", "slug": "forward" },
+        { "id": "backward", "title": "backward()", "slug": "backward" },
+        { "id": "left", "title": "left()", "slug": "left" },
+        { "id": "right", "title": "right()", "slug": "right" },
+        { "id": "penup-pendown", "title": "penup(), pendown()", "slug": "penup-pendown" }
+      ]
+    },
+    {
+      "id": "ch3",
+      "number": 3,
+      "icon": "🎨",
+      "title": "Màu sắc",
+      "lessons": [
+        { "id": "pencolor", "title": "pencolor()", "slug": "pencolor" },
+        { "id": "fillcolor", "title": "fillcolor()", "slug": "fillcolor" },
+        { "id": "begin-fill", "title": "begin_fill()", "slug": "begin-fill" },
+        { "id": "end-fill", "title": "end_fill()", "slug": "end-fill" }
+      ]
+    },
+    {
+      "id": "ch4",
+      "number": 4,
+      "icon": "⭐",
+      "title": "Hình học",
+      "lessons": [
+        { "id": "hinh-vuong", "title": "Hình vuông", "slug": "hinh-vuong" },
+        { "id": "tam-giac", "title": "Tam giác", "slug": "tam-giac" },
+        { "id": "ngoi-sao", "title": "Ngôi sao", "slug": "ngoi-sao" },
+        { "id": "da-giac", "title": "Đa giác", "slug": "da-giac" }
+      ]
+    },
+    {
+      "id": "ch5",
+      "number": 5,
+      "icon": "🐭",
+      "title": "Tương tác",
+      "lessons": [
+        { "id": "onclick", "title": "onclick()", "slug": "onclick" },
+        { "id": "onscreenclick", "title": "onscreenclick()", "slug": "onscreenclick" },
+        { "id": "onkeypress", "title": "onkeypress()", "slug": "onkeypress" },
+        { "id": "listen", "title": "listen()", "slug": "listen" }
+      ]
+    },
+    {
+      "id": "ch6",
+      "number": 6,
+      "icon": "🎮",
+      "title": "Làm Game",
+      "lessons": [
+        { "id": "game-hung-tao", "title": "Hứng táo", "slug": "game-hung-tao" },
+        { "id": "game-ne-bom", "title": "Né bom", "slug": "game-ne-bom" },
+        { "id": "game-ban-bong", "title": "Bắn bóng", "slug": "game-ban-bong" }
+      ]
+    }
+  ]
+}

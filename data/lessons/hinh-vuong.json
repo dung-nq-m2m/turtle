@@ -1,0 +1,50 @@
+{
+  "id": "hinh-vuong",
+  "chapter": 4,
+  "chapterTitle": "Hình học",
+  "title": "Hình vuông",
+  "icon": "⬜",
+  "objectives": [
+    "Vẽ hình vuông bằng forward() và left()",
+    "Hiểu hình vuông có 4 cạnh bằng nhau, 4 góc 90°",
+    "Dùng vòng lặp for để vẽ nhanh hơn"
+  ],
+  "explanation": "Hình vuông có <strong>4 cạnh bằng nhau</strong> và <strong>4 góc vuông (90°)</strong>.\n\nCách 1 — viết 4 lần:\n<code>forward(100)</code> + <code>left(90)</code> × 4\n\nCách 2 — dùng vòng lặp (gọn hơn!):\n<pre>for i in range(4):\n    t.forward(100)\n    t.left(90)</pre>",
+  "syntax": "for i in range(4):",
+  "syntaxNote": "Lặp 4 lần — vẽ 4 cạnh hình vuông.",
+  "animation": {
+    "type": "square",
+    "label": "Hình vuông cạnh 100"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\nt.speed(3)\nt.pencolor(\"blue\")\nt.fillcolor(\"lightblue\")\n\nt.begin_fill()\nfor i in range(4):\n    t.forward(100)\n    t.left(90)\nt.end_fill()\n\nturtle.done()",
+  "resultDescription": "Hình vuông cạnh 100 pixel, tô màu xanh nhạt.",
+  "remember": [
+    { "command": "4 cạnh", "meaning": "forward + left(90) lặp 4 lần" },
+    { "command": "range(4)", "meaning": "Vòng lặp từ 0 đến 3 (4 lần)" },
+    { "tip": "Mọi cạnh hình vuông đều bằng nhau!" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Vuông lớn", "description": "Vẽ hình vuông cạnh 150 pixel." },
+    { "number": 2, "title": "Hai vuông", "description": "Vẽ 2 hình vuông cạnh nhau, màu khác nhau." },
+    { "number": 3, "title": "Vuông xoay", "description": "Vẽ 5 hình vuông lồng nhau, mỗi lần xoay 15°." }
+  ],
+  "quiz": {
+    "question": "Vẽ hình vuông cần quay bao nhiêu độ mỗi góc?",
+    "options": [
+      { "text": "60°", "correct": false },
+      { "text": "90°", "correct": true },
+      { "text": "120°", "correct": false },
+      { "text": "180°", "correct": false }
+    ],
+    "explanation": "Mỗi góc hình vuông là 90° — dùng left(90) sau mỗi cạnh."
+  },
+  "infographic": {
+    "function": "Vẽ hình vuông",
+    "syntax": "for i in range(4): forward + left(90)",
+    "example": "t.forward(100); t.left(90)",
+    "result": "Hình vuông 4 cạnh bằng nhau",
+    "exercise": "Vẽ vuông cạnh 80, tô vàng"
+  },
+  "prev": "end-fill",
+  "next": "tam-giac"
+}

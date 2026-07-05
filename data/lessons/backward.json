@@ -1,0 +1,49 @@
+{
+  "id": "backward",
+  "chapter": 2,
+  "chapterTitle": "Vẽ cơ bản",
+  "title": "backward()",
+  "icon": "⬅️",
+  "objectives": [
+    "Hiểu lệnh backward() cho rùa đi lùi",
+    "Biết backward() cũng vẽ đoạn thẳng",
+    "So sánh forward() và backward()"
+  ],
+  "explanation": "Lệnh <code>backward()</code> (viết tắt <code>bk()</code>) cho rùa <strong>đi lùi</strong> — ngược hướng với forward(). Rùa vẫn vẽ đoạn thẳng khi đi lùi!",
+  "syntax": "backward(100)",
+  "syntaxNote": "Rùa đi lùi 100 pixel (vẫn vẽ đường).",
+  "animation": {
+    "type": "backward",
+    "label": "backward(100)",
+    "distance": 100
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\n\n# Đi thẳng rồi lùi lại\nt.forward(100)\nt.backward(50)  # Lùi 50 pixel\n\nturtle.done()",
+  "resultDescription": "Rùa đi 100px rồi lùi 50px — tổng cộng vẽ 150px trên cùng một đường.",
+  "remember": [
+    { "command": "backward()", "meaning": "Đi lùi (ngược hướng)" },
+    { "command": "bk()", "meaning": "Viết tắt của backward()" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Đi và lùi", "description": "Cho rùa forward(200) rồi backward(200) — em thấy gì?" },
+    { "number": 2, "title": "Zic zac", "description": "Dùng forward và backward xen kẽ tạo đường zic zac." }
+  ],
+  "quiz": {
+    "question": "backward(80) có nghĩa là gì?",
+    "options": [
+      { "text": "Quay 80 độ", "correct": false },
+      { "text": "Đi lùi 80 pixel", "correct": true },
+      { "text": "Đi thẳng 80 pixel", "correct": false },
+      { "text": "Xóa 80 pixel", "correct": false }
+    ],
+    "explanation": "backward() cho rùa đi ngược hướng 80 pixel."
+  },
+  "infographic": {
+    "function": "Cho rùa đi lùi",
+    "syntax": "t.backward(số_pixel)",
+    "example": "t.backward(100)",
+    "result": "Vẽ đoạn thẳng ngược hướng",
+    "exercise": "forward(100) rồi backward(100)"
+  },
+  "prev": "forward",
+  "next": "left"
+}

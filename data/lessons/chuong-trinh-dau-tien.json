@@ -1,0 +1,58 @@
+{
+  "id": "chuong-trinh-dau-tien",
+  "chapter": 1,
+  "chapterTitle": "Làm quen Turtle",
+  "title": "Chương trình đầu tiên",
+  "icon": "🚀",
+  "objectives": [
+    "Viết và chạy chương trình Turtle đầu tiên",
+    "Hiểu cấu trúc cơ bản: import, tạo rùa, done()",
+    "Thấy rùa vẽ một đoạn thẳng nhỏ"
+  ],
+  "explanation": "Chương trình Turtle luôn có <strong>3 phần chính</strong>:\n\n1. <code>import turtle</code> — mở thư viện\n2. <code>t = turtle.Turtle()</code> — tạo rùa\n3. Các lệnh vẽ + <code>turtle.done()</code> — giữ cửa sổ mở",
+  "syntax": "t.forward(50)",
+  "syntaxNote": "Lệnh vẽ đầu tiên — rùa đi 50 pixel.",
+  "animation": {
+    "type": "forward",
+    "label": "Chương trình đầu tiên",
+    "distance": 50
+  },
+  "code": "import turtle\n\n# Bước 1: Tạo rùa\nt = turtle.Turtle()\nt.shape(\"turtle\")\n\n# Bước 2: Ra lệnh cho rùa\nt.forward(50)\n\n# Bước 3: Giữ cửa sổ\nturtle.done()",
+  "resultDescription": "Rùa vẽ một đoạn thẳng ngắn 50 pixel.",
+  "remember": [
+    { "command": "import turtle", "meaning": "Luôn là dòng đầu tiên" },
+    { "command": "t = turtle.Turtle()", "meaning": "Tạo rùa tên t" },
+    { "command": "turtle.done()", "meaning": "Luôn là dòng cuối" }
+  ],
+  "exercises": [
+    {
+      "number": 1,
+      "title": "Đoạn thẳng dài hơn",
+      "description": "Đổi 50 thành 150 và chạy lại."
+    },
+    {
+      "number": 2,
+      "title": "Hai đoạn thẳng",
+      "description": "Thêm t.forward(80) lần nữa để vẽ 2 đoạn nối tiếp."
+    }
+  ],
+  "quiz": {
+    "question": "Dòng nào PHẢI có ở cuối chương trình Turtle?",
+    "options": [
+      { "text": "import turtle", "correct": false },
+      { "text": "t.forward(100)", "correct": false },
+      { "text": "turtle.done()", "correct": true },
+      { "text": "print(\"Xong!\")", "correct": false }
+    ],
+    "explanation": "turtle.done() giữ cửa sổ vẽ mở — không có dòng này cửa sổ sẽ đóng ngay!"
+  },
+  "infographic": {
+    "function": "Chương trình Turtle 3 bước",
+    "syntax": "import → Turtle() → lệnh → done()",
+    "example": "t.forward(50)",
+    "result": "Rùa vẽ trên màn hình",
+    "exercise": "Vẽ đoạn thẳng 100px"
+  },
+  "prev": "cai-dat-python",
+  "next": "forward"
+}

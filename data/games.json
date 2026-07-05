@@ -1,0 +1,78 @@
+{
+  "title": "Game Turtle",
+  "subtitle": "Chơi và học cùng lúc!",
+  "games": [
+    {
+      "id": "ban-bong",
+      "title": "Bắn bóng",
+      "icon": "⚽",
+      "description": "Di chuyển súng và bắn trúng các mục tiêu.",
+      "chapter": 6,
+      "difficulty": "Trung bình",
+      "file": "games/ban-bong.py"
+    },
+    {
+      "id": "hung-tao",
+      "title": "Hứng táo",
+      "icon": "🍎",
+      "description": "Di chuyển rùa để hứng táo rơi từ trên xuống.",
+      "chapter": 6,
+      "difficulty": "Dễ",
+      "file": "games/hung-tao.py"
+    },
+    {
+      "id": "ne-bom",
+      "title": "Né bom",
+      "icon": "💣",
+      "description": "Tránh các quả bom rơi xuống bằng phím mũi tên.",
+      "chapter": 6,
+      "difficulty": "Trung bình",
+      "file": "games/ne-bom.py"
+    },
+    {
+      "id": "me-cung",
+      "title": "Mê cung",
+      "icon": "🏰",
+      "description": "Tìm đường thoát khỏi mê cung bằng Turtle.",
+      "chapter": 6,
+      "difficulty": "Trung bình",
+      "file": "games/me-cung.py"
+    },
+    {
+      "id": "ran-san-moi",
+      "title": "Rắn săn mồi",
+      "icon": "🐍",
+      "description": "Game rắn cổ điển viết bằng Turtle.",
+      "chapter": 6,
+      "difficulty": "Khó",
+      "file": "games/ran-san-moi.py"
+    },
+    {
+      "id": "flappy-bird",
+      "title": "Flappy Bird",
+      "icon": "🐦",
+      "description": "Nhấn phím để rùa bay qua các ống.",
+      "chapter": 6,
+      "difficulty": "Khó",
+      "file": "games/flappy-bird.py"
+    },
+    {
+      "id": "dua-xe",
+      "title": "Đua xe",
+      "icon": "🏎️",
+      "description": "Đua xe trên đường bằng phím điều khiển.",
+      "chapter": 6,
+      "difficulty": "Trung bình",
+      "file": "games/dua-xe.py"
+    },
+    {
+      "id": "space-invader",
+      "title": "Space Invader",
+      "icon": "👾",
+      "description": "Bắn tàu ngoài hành tinh xuống.",
+      "chapter": 6,
+      "difficulty": "Khó",
+      "file": "games/space-invader.py"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "title": "Thử thách",
+  "subtitle": "Rèn luyện kỹ năng vẽ với Turtle Python",
+  "challenges": [
+    {
+      "id": "ve-ngoi-nha",
+      "title": "Vẽ ngôi nhà",
+      "stars": 2,
+      "points": 10,
+      "description": "Vẽ một ngôi nhà đơn giản gồm thân vuông, mái tam giác và cửa.",
+      "hint": "Dùng forward(), left() và begin_fill() để tô màu.",
+      "skills": ["forward", "left", "begin-fill"]
+    },
+    {
+      "id": "ve-bong-hoa",
+      "title": "Vẽ bông hoa",
+      "stars": 3,
+      "points": 20,
+      "description": "Vẽ bông hoa 6 cánh bằng cách lặp lại hình tam giác hoặc vòng tròn.",
+      "hint": "Dùng vòng lặp for và góc 360/6 = 60 độ.",
+      "skills": ["for-loop", "pencolor", "fillcolor"]
+    },
+    {
+      "id": "ve-dong-ho",
+      "title": "Làm đồng hồ",
+      "stars": 5,
+      "points": 50,
+      "description": "Vẽ mặt đồng hồ tròn với 12 vạch giờ và 2 kim chỉ giờ, phút.",
+      "hint": "Dùng circle() và penup() để đặt kim đúng vị trí.",
+      "skills": ["circle", "penup", "goto"]
+    },
+    {
+      "id": "ve-co-vua",
+      "title": "Vẽ cờ vua",
+      "stars": 2,
+      "points": 10,
+      "description": "Vẽ bàn cờ 8x8 với 2 màu xen kẽ.",
+      "hint": "Dùng vòng lặp lồng nhau và begin_fill().",
+      "skills": ["for-loop", "fillcolor"]
+    },
+    {
+      "id": "ve-mat-cuoi",
+      "title": "Vẽ mặt cười",
+      "stars": 3,
+      "points": 15,
+      "description": "Vẽ khuôn mặt tròn, 2 mắt và miệng cười.",
+      "hint": "Dùng circle() cho mặt, dot() cho mắt.",
+      "skills": ["circle", "dot", "penup"]
+    }
+  ]
+}

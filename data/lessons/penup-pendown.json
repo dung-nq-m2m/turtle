@@ -1,0 +1,49 @@
+{
+  "id": "penup-pendown",
+  "chapter": 2,
+  "chapterTitle": "Vẽ cơ bản",
+  "title": "penup(), pendown()",
+  "icon": "✏️",
+  "objectives": [
+    "Hiểu penup() nhấc bút — rùa đi không vẽ",
+    "Hiểu pendown() hạ bút — rùa đi có vẽ",
+    "Vẽ nhiều hình riêng biệt trên cùng màn hình"
+  ],
+  "explanation": "<code>penup()</code> (viết tắt <code>pu()</code>) <strong>nhấc bút</strong> — rùa di chuyển nhưng không vẽ.\n\n<code>pendown()</code> (viết tắt <code>pd()</code>) <strong>hạ bút</strong> — rùa vẽ lại khi di chuyển.\n\nRất hữu ích khi muốn vẽ nhiều hình ở vị trí khác nhau!",
+  "syntax": "penup() / pendown()",
+  "syntaxNote": "Nhấc bút → di chuyển → hạ bút → vẽ tiếp.",
+  "animation": {
+    "type": "penup",
+    "label": "penup() → di chuyển → pendown()"
+  },
+  "code": "import turtle\n\nt = turtle.Turtle()\nt.shape(\"turtle\")\n\n# Vẽ hình 1\nt.forward(50)\n\n# Nhấc bút, di chuyển không vẽ\nt.penup()\nt.forward(30)\nt.pendown()\n\n# Vẽ hình 2\nt.forward(50)\n\nturtle.done()",
+  "resultDescription": "Hai đoạn thẳng cách nhau — không nối liền.",
+  "remember": [
+    { "command": "penup()", "meaning": "Nhấc bút — đi không vẽ" },
+    { "command": "pendown()", "meaning": "Hạ bút — đi có vẽ" },
+    { "command": "pu() / pd()", "meaning": "Viết tắt" }
+  ],
+  "exercises": [
+    { "number": 1, "title": "Hai hình vuông", "description": "Vẽ 2 hình vuông cạnh nhau không nối liền." },
+    { "number": 2, "title": "Chấm tròn", "description": "Dùng penup, goto và dot() vẽ 3 chấm." }
+  ],
+  "quiz": {
+    "question": "Khi gọi penup(), rùa di chuyển thì sao?",
+    "options": [
+      { "text": "Vẫn vẽ bình thường", "correct": false },
+      { "text": "Di chuyển nhưng không vẽ", "correct": true },
+      { "text": "Dừng hẳn", "correct": false },
+      { "text": "Xóa hình cũ", "correct": false }
+    ],
+    "explanation": "penup() nhấc bút lên — rùa đi mà không để lại vết vẽ."
+  },
+  "infographic": {
+    "function": "Nhấc/hạ bút vẽ",
+    "syntax": "t.penup() / t.pendown()",
+    "example": "pu() → forward → pd()",
+    "result": "Di chuyển không vẽ đường",
+    "exercise": "Vẽ 2 hình tách biệt"
+  },
+  "prev": "right",
+  "next": "pencolor"
+}

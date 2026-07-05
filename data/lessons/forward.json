@@ -1,0 +1,63 @@
+{
+  "id": "forward",
+  "chapter": 2,
+  "chapterTitle": "Vẽ cơ bản",
+  "title": "forward()",
+  "icon": "➡️",
+  "objectives": [
+    "Hiểu lệnh forward() dùng để làm gì",
+    "Biết cách cho rùa đi thẳng một khoảng cách",
+    "Vận dụng forward() để vẽ đoạn thẳng và hình cơ bản"
+  ],
+  "explanation": "Lệnh <code>forward()</code> (viết tắt là <code>fd()</code>) dùng để cho rùa <strong>đi thẳng về phía trước</strong>. Số bên trong ngoặc là số pixel (điểm ảnh) trên màn hình — số càng lớn, rùa đi càng xa.",
+  "syntax": "forward(100)",
+  "syntaxNote": "Rùa đi thẳng 100 pixel về phía trước.",
+  "animation": {
+    "type": "forward",
+    "label": "forward(100)",
+    "distance": 100
+  },
+  "code": "import turtle\n\n# Tạo rùa\nt = turtle.Turtle()\nt.shape(\"turtle\")  # Hiển thị hình con rùa\n\n# Rùa đi thẳng 100 pixel\nt.forward(100)\n\nturtle.done()",
+  "resultDescription": "Rùa vẽ một đoạn thẳng dài 100 pixel theo hướng đang nhìn.",
+  "remember": [
+    { "command": "forward()", "meaning": "Đi thẳng về phía trước" },
+    { "command": "fd()", "meaning": "Viết tắt của forward()" },
+    { "tip": "Số trong ngoặc = số pixel (độ dài đoạn thẳng)" }
+  ],
+  "exercises": [
+    {
+      "number": 1,
+      "title": "Vẽ đoạn thẳng 200px",
+      "description": "Viết chương trình cho rùa vẽ một đoạn thẳng dài 200 pixel."
+    },
+    {
+      "number": 2,
+      "title": "Vẽ hình chữ L",
+      "description": "Dùng forward() và left() để vẽ hình chữ L."
+    },
+    {
+      "number": 3,
+      "title": "Vẽ hình vuông",
+      "description": "Vẽ hình vuông cạnh 100 pixel bằng 4 lệnh forward() và 4 lệnh left()."
+    }
+  ],
+  "quiz": {
+    "question": "Khi gõ lệnh forward(100), rùa sẽ làm gì?",
+    "options": [
+      { "text": "Quay trái 100 độ", "correct": false },
+      { "text": "Đi thẳng 100 pixel", "correct": true },
+      { "text": "Quay phải 100 độ", "correct": false },
+      { "text": "Dừng lại", "correct": false }
+    ],
+    "explanation": "forward(100) cho rùa đi thẳng về phía trước 100 pixel và vẽ một đoạn thẳng."
+  },
+  "infographic": {
+    "function": "Cho rùa đi thẳng về phía trước",
+    "syntax": "t.forward(số_pixel)",
+    "example": "t.forward(100)",
+    "result": "Vẽ đoạn thẳng dài 100 pixel",
+    "exercise": "Vẽ hình vuông cạnh 80px"
+  },
+  "prev": "chuong-trinh-dau-tien",
+  "next": "backward"
+}
