@@ -200,13 +200,15 @@ function renderLesson(lesson) {
 }
 
 function renderLessonCode(lesson) {
-  const showCode = !lesson.codeLocked || TurtleAcademy.isCodeUnlocked();
+  const unlocked = TurtleAcademy.isCodeUnlocked(lesson.id);
+  const showCode = !lesson.codeLocked || unlocked;
   CodeEditor.render(
     document.getElementById('code-editor-area'),
     showCode ? lesson.code : '',
     `${lesson.id || 'turtle'}.py`,
     {
       locked: !!lesson.codeLocked,
+      lessonId: lesson.id,
       runHint: lesson.pseudocode
         ? 'Gõ code theo giả mã và biểu đồ thuật toán phía trên'
         : 'Gõ lại code theo hướng dẫn trong bài'
@@ -215,14 +217,21 @@ function renderLessonCode(lesson) {
 
   const badge = document.querySelector('#code-card .badge-locked');
   if (badge) {
-    badge.style.display = TurtleAcademy.isCodeUnlocked() ? 'none' : 'inline-block';
+    badge.style.display = unlocked ? 'none' : 'inline-block';
   }
 }
 
-window.addEventListener('code-unlocked', () => {
-  if (currentLesson) renderLessonCode(currentLesson);
-});
-window.addEventListener('code-locked', () => {
+function onCodeUnlockChange(e) {
+  if (!currentLesson) return;
+  const changedId = e.detail?.lessonId;
+  if (!changedId || changedId === currentLesson.id) {
+    renderLessonCode(currentLesson);
+  }
+}
+
+window.addEventListener('code-unlocked', onCodeUnlockChange);
+window.addEventListener('code-locked', onCodeUnlockChange);
+window.addEventListener('code-lock-all', () => {
   if (currentLesson) renderLessonCode(currentLesson);
 });
 

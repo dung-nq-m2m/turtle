@@ -45,19 +45,18 @@
         </div>
 
         <div class="teacher-unlock-panel" id="unlock-panel">
-          <h3>🔐 Mở / Khóa code Game (Chương 6)</h3>
-          <p>Học sinh chỉ xem được <strong>kiến trúc, thuật toán, giả mã</strong>. Sau khi em nắm logic, giáo viên nhập mã để mở code Python trên trang bài học và Game.</p>
+          <h3>🔐 Mở / Khóa code từng bài (Chương 6 & Game)</h3>
+          <p>Học sinh chỉ xem được <strong>kiến trúc, thuật toán, giả mã</strong>. Giáo viên mở code <strong>từng bài</strong> sau khi em nắm logic.</p>
           <div class="unlock-form">
             <input type="password" id="teacher-pin" placeholder="Mã giáo viên" autocomplete="off">
-            <button class="btn btn-orange" id="btn-unlock">🔓 Mở code</button>
-            <button class="btn btn-outline" id="btn-lock" style="background:rgba(255,255,255,0.9)">🔒 Khóa lại</button>
+            <button class="btn btn-outline" id="btn-lock-all" style="background:rgba(255,255,255,0.9)">🔒 Khóa tất cả</button>
           </div>
-          <div class="unlock-status closed" id="unlock-status">🔒 Code đang khóa trên trình duyệt này</div>
+          <div class="lesson-unlock-list" id="lesson-unlock-list"></div>
         </div>
 
         <div id="teacher-resources"></div>
         <div class="card" style="background:#eef6ff">
-          <p>📌 Quy trình dạy Chương 6: (1) Kiến trúc 4 tầng → (2) Biểu đồ thuật toán → (3) Giả mã → (4) Học sinh tự gõ → (5) <strong>Mở code</strong> để đối chiếu.</p>
+          <p>📌 Quy trình dạy Chương 6: (1) Kiến trúc 4 tầng → (2) Biểu đồ thuật toán → (3) Giả mã → (4) Học sinh tự gõ → (5) <strong>Mở code từng bài</strong> để đối chiếu.</p>
         </div>
       </main>
 
@@ -71,16 +70,80 @@
 
   <script src="js/app.js"></script>
   <script>
-    function updateUnlockStatus() {
-      const el = document.getElementById('unlock-status');
-      if (!el) return;
-      if (TurtleAcademy.isCodeUnlocked()) {
-        el.className = 'unlock-status open';
-        el.textContent = '✅ Code đã mở — học sinh xem được trên trình duyệt này';
-      } else {
-        el.className = 'unlock-status closed';
-        el.textContent = '🔒 Code đang khóa — học sinh chỉ thấy thuật toán & giả mã';
+    async function buildUnlockItems() {
+      const chapters = await TurtleAcademy.loadJSON('data/chapters.json');
+      const games = await TurtleAcademy.loadJSON('data/games.json');
+      const ch6 = chapters.chapters.find(c => c.number === 6);
+      const items = [];
+      const seen = new Set();
+
+      if (ch6) {
+        ch6.lessons.forEach(l => {
+          items.push({ id: l.id, title: l.title, group: 'Bài học Chương 6', icon: '📘' });
+          seen.add(l.id);
+        });
       }
+
+      games.games.forEach(g => {
+        const id = g.lessonId || `practice-${g.id}`;
+        if (seen.has(id)) return;
+        items.push({ id, title: g.title, group: 'Game thực hành thêm', icon: g.icon || '🎮' });
+        seen.add(id);
+      });
+
+      return items;
+    }
+
+    function renderUnlockList(items) {
+      const list = document.getElementById('lesson-unlock-list');
+      if (!list) return;
+
+      const groups = [...new Set(items.map(i => i.group))];
+      list.innerHTML = groups.map(group => {
+        const groupItems = items.filter(i => i.group === group);
+        return `
+          <div class="unlock-group">
+            <div class="unlock-group-title">${group}</div>
+            ${groupItems.map(item => {
+              const open = TurtleAcademy.isCodeUnlocked(item.id);
+              return `
+                <div class="unlock-lesson-row" data-lesson-id="${item.id}">
+                  <div class="unlock-lesson-info">
+                    <span class="unlock-lesson-icon">${item.icon}</span>
+                    <span class="unlock-lesson-title">${item.title}</span>
+                    <span class="unlock-lesson-status ${open ? 'open' : 'closed'}">${open ? '✅ Đã mở' : '🔒 Đang khóa'}</span>
+                  </div>
+                  <div class="unlock-lesson-actions">
+                    <button class="btn btn-orange btn-sm btn-unlock-one" data-lesson-id="${item.id}" ${open ? 'disabled' : ''}>🔓 Mở</button>
+                    <button class="btn btn-outline btn-sm btn-lock-one" data-lesson-id="${item.id}" style="background:rgba(255,255,255,0.9)" ${open ? '' : 'disabled'}>🔒 Khóa</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }).join('');
+
+      list.querySelectorAll('.btn-unlock-one').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lessonId = btn.dataset.lessonId;
+          const pin = document.getElementById('teacher-pin')?.value || '';
+          if (TurtleAcademy.unlockCode(pin, lessonId)) {
+            TurtleAcademy.showToast('✅ Đã mở code bài này!');
+            renderUnlockList(items);
+          } else {
+            TurtleAcademy.showToast('❌ Mã không đúng!');
+          }
+        });
+      });
+
+      list.querySelectorAll('.btn-lock-one').forEach(btn => {
+        btn.addEventListener('click', () => {
+          TurtleAcademy.lockCode(btn.dataset.lessonId);
+          TurtleAcademy.showToast('🔒 Đã khóa bài này');
+          renderUnlockList(items);
+        });
+      });
     }
 
     async function initTeacher() {
@@ -92,23 +155,19 @@
         document.getElementById('instructor-name').textContent = data.instructor.display;
         document.getElementById('instructor-role').textContent = data.instructor.role;
       }
-      updateUnlockStatus();
 
-      document.getElementById('btn-unlock')?.addEventListener('click', () => {
-        const pin = document.getElementById('teacher-pin')?.value || '';
-        if (TurtleAcademy.unlockCode(pin)) {
-          TurtleAcademy.showToast('✅ Đã mở code cho học sinh!');
-          updateUnlockStatus();
-        } else {
-          TurtleAcademy.showToast('❌ Mã không đúng!');
-        }
+      const unlockItems = await buildUnlockItems();
+      renderUnlockList(unlockItems);
+
+      document.getElementById('btn-lock-all')?.addEventListener('click', () => {
+        TurtleAcademy.lockAllCode();
+        TurtleAcademy.showToast('🔒 Đã khóa tất cả bài');
+        renderUnlockList(unlockItems);
       });
 
-      document.getElementById('btn-lock')?.addEventListener('click', () => {
-        TurtleAcademy.lockCode();
-        TurtleAcademy.showToast('🔒 Đã khóa code');
-        updateUnlockStatus();
-      });
+      window.addEventListener('code-unlocked', () => renderUnlockList(unlockItems));
+      window.addEventListener('code-locked', () => renderUnlockList(unlockItems));
+      window.addEventListener('code-lock-all', () => renderUnlockList(unlockItems));
 
       document.getElementById('teacher-resources').innerHTML = data.resources.map(cat => `
         <div class="resource-category">

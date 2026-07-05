@@ -4,10 +4,10 @@
 
 const TurtleAcademy = {
   basePath: '',
-  CODE_UNLOCK_KEY: 'turtle_gv_code_unlocked',
+  CODE_UNLOCK_KEY: 'turtle_gv_unlocked_lessons',
   teacherPin: 'dungnq',
   teacherDisplay: 'Ths. Nguyễn Quốc Dũng',
-  codeLockMessage: 'Code chỉ hiển thị khi giáo viên mở khóa.',
+  codeLockMessage: 'Code chỉ hiển thị khi giáo viên mở khóa bài này.',
 
   async initConfig() {
     try {
@@ -16,6 +16,67 @@ const TurtleAcademy = {
       this.codeLockMessage = cfg.codeLockMessage || this.codeLockMessage;
       if (cfg.teacher?.display) this.teacherDisplay = cfg.teacher.display;
     } catch (_) { /* dùng mặc định */ }
+    this._migrateGlobalUnlock();
+  },
+
+  _migrateGlobalUnlock() {
+    const legacy = sessionStorage.getItem('turtle_gv_code_unlocked');
+    if (legacy !== '1') return;
+    sessionStorage.removeItem('turtle_gv_code_unlocked');
+    ['game-hung-tao', 'game-ne-bom', 'game-ban-bong'].forEach(id => this._addUnlockedLesson(id));
+  },
+
+  _readUnlockedLessons() {
+    try {
+      const raw = sessionStorage.getItem(this.CODE_UNLOCK_KEY);
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    } catch (_) {
+      return [];
+    }
+  },
+
+  _writeUnlockedLessons(list) {
+    sessionStorage.setItem(this.CODE_UNLOCK_KEY, JSON.stringify([...new Set(list)]));
+  },
+
+  _addUnlockedLesson(lessonId) {
+    const list = this._readUnlockedLessons();
+    if (!list.includes(lessonId)) {
+      list.push(lessonId);
+      this._writeUnlockedLessons(list);
+    }
+  },
+
+  getUnlockedLessons() {
+    return this._readUnlockedLessons();
+  },
+
+  isCodeUnlocked(lessonId) {
+    if (!lessonId) return false;
+    return this._readUnlockedLessons().includes(lessonId);
+  },
+
+  unlockCode(pin, lessonId) {
+    if (!lessonId) return false;
+    if (String(pin).trim() === this.teacherPin) {
+      this._addUnlockedLesson(lessonId);
+      window.dispatchEvent(new CustomEvent('code-unlocked', { detail: { lessonId } }));
+      return true;
+    }
+    return false;
+  },
+
+  lockCode(lessonId) {
+    if (!lessonId) return;
+    const list = this._readUnlockedLessons().filter(id => id !== lessonId);
+    this._writeUnlockedLessons(list);
+    window.dispatchEvent(new CustomEvent('code-locked', { detail: { lessonId } }));
+  },
+
+  lockAllCode() {
+    this._writeUnlockedLessons([]);
+    window.dispatchEvent(new Event('code-lock-all'));
   },
 
   initSiteBranding() {
@@ -25,24 +86,6 @@ const TurtleAcademy = {
     document.querySelectorAll('#site-footer-teacher').forEach(el => {
       el.textContent = this.teacherDisplay;
     });
-  },
-
-  isCodeUnlocked() {
-    return sessionStorage.getItem(this.CODE_UNLOCK_KEY) === '1';
-  },
-
-  unlockCode(pin) {
-    if (String(pin).trim() === this.teacherPin) {
-      sessionStorage.setItem(this.CODE_UNLOCK_KEY, '1');
-      window.dispatchEvent(new Event('code-unlocked'));
-      return true;
-    }
-    return false;
-  },
-
-  lockCode() {
-    sessionStorage.removeItem(this.CODE_UNLOCK_KEY);
-    window.dispatchEvent(new Event('code-locked'));
   },
 
   async loadJSON(path) {

@@ -62,7 +62,7 @@
             <span id="game-detail-title">Code game</span>
             <span class="badge-locked" id="game-code-badge">🔒 Chờ GV mở</span>
           </div>
-          <p style="margin-bottom:1rem;color:#666" id="game-detail-desc">Code chỉ hiển thị khi giáo viên mở khóa.</p>
+          <p style="margin-bottom:1rem;color:#666" id="game-detail-desc">Code chỉ hiển thị khi giáo viên mở khóa bài này.</p>
           <div id="game-code-area"></div>
         </div>
       </main>
@@ -92,17 +92,24 @@
         { title: '3. Logic', items: ['Va chạm, random', 'ontimer — vòng game'] },
         { title: '4. Hiển thị', items: ['update(), write()', 'Thắng / thua'] }
       ],
-      note: 'Giáo viên mở code tại trang Giáo viên sau khi HS hoàn thành giả mã.'
+      note: 'Giáo viên mở code từng bài tại trang Giáo viên sau khi HS hoàn thành giả mã.'
     };
+
+    function getGameLessonId(game) {
+      return game.lessonId || `practice-${game.id}`;
+    }
 
     function updateGameCodeBadge() {
       const badge = document.getElementById('game-code-badge');
-      if (badge) badge.style.display = TurtleAcademy.isCodeUnlocked() ? 'none' : 'inline-block';
+      if (!badge || !currentGame) return;
+      badge.style.display = TurtleAcademy.isCodeUnlocked(getGameLessonId(currentGame)) ? 'none' : 'inline-block';
     }
 
     async function renderGameCodeArea() {
       if (!currentGame) return;
-      if (TurtleAcademy.isCodeUnlocked()) {
+      const lessonId = getGameLessonId(currentGame);
+      const unlocked = TurtleAcademy.isCodeUnlocked(lessonId);
+      if (unlocked) {
         if (!cachedCode) {
           cachedCode = await fetch(currentGame.file).then(r => r.text()).catch(() => '# Không tải được file');
         }
@@ -113,18 +120,19 @@
         document.getElementById('game-code-area'),
         cachedCode,
         currentGame.file.split('/').pop(),
-        { locked: true, runHint: 'Đối chiếu code với thuật toán đã học' }
+        { locked: true, lessonId, runHint: 'Đối chiếu code với thuật toán đã học' }
       );
       updateGameCodeBadge();
     }
 
     async function loadGameCode(game) {
       currentGame = game;
+      const lessonId = getGameLessonId(game);
       document.getElementById('game-detail-title').textContent = `${game.icon} ${game.title}`;
       document.getElementById('game-detail-desc').textContent =
-        TurtleAcademy.isCodeUnlocked()
-          ? game.description + ' — Giáo viên đã mở code.'
-          : game.description + ' — Học thuật toán ở bài Chương 6 trước.';
+        TurtleAcademy.isCodeUnlocked(lessonId)
+          ? game.description + ' — Giáo viên đã mở code bài này.'
+          : game.description + ' — Học thuật toán trước, GV mở code từng bài.';
       document.querySelectorAll('.game-card').forEach(c => c.style.outline = '');
       document.querySelector(`[data-game="${game.id}"]`)?.style.setProperty('outline', '3px solid var(--scratch-blue)');
 
@@ -160,8 +168,22 @@
       loadGameCode(data.games[0]);
     }
 
-    window.addEventListener('code-unlocked', renderGameCodeArea);
-    window.addEventListener('code-locked', renderGameCodeArea);
+    function onGameCodeUnlockChange(e) {
+      if (!currentGame) return;
+      const lessonId = getGameLessonId(currentGame);
+      const changedId = e.detail?.lessonId;
+      if (!changedId || changedId === lessonId) {
+        cachedCode = '';
+        renderGameCodeArea();
+      }
+    }
+
+    window.addEventListener('code-unlocked', onGameCodeUnlockChange);
+    window.addEventListener('code-locked', onGameCodeUnlockChange);
+    window.addEventListener('code-lock-all', () => {
+      cachedCode = '';
+      renderGameCodeArea();
+    });
 
     document.addEventListener('DOMContentLoaded', initGames);
   </script>

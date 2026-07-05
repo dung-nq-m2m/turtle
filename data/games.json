@@ -4,6 +4,7 @@
   "games": [
     {
       "id": "ban-bong",
+      "lessonId": "game-ban-bong",
       "title": "Bắn bóng",
       "icon": "⚽",
       "description": "Di chuyển súng và bắn trúng các mục tiêu.",
@@ -13,6 +14,7 @@
     },
     {
       "id": "hung-tao",
+      "lessonId": "game-hung-tao",
       "title": "Hứng táo",
       "icon": "🍎",
       "description": "Di chuyển rùa để hứng táo rơi từ trên xuống.",
@@ -22,6 +24,7 @@
     },
     {
       "id": "ne-bom",
+      "lessonId": "game-ne-bom",
       "title": "Né bom",
       "icon": "💣",
       "description": "Tránh các quả bom rơi xuống bằng phím mũi tên.",
@@ -31,6 +34,7 @@
     },
     {
       "id": "me-cung",
+      "lessonId": "practice-me-cung",
       "title": "Mê cung",
       "icon": "🏰",
       "description": "Tìm đường thoát khỏi mê cung bằng Turtle.",
@@ -40,6 +44,7 @@
     },
     {
       "id": "ran-san-moi",
+      "lessonId": "practice-ran-san-moi",
       "title": "Rắn săn mồi",
       "icon": "🐍",
       "description": "Game rắn cổ điển viết bằng Turtle.",
@@ -49,6 +54,7 @@
     },
     {
       "id": "flappy-bird",
+      "lessonId": "practice-flappy-bird",
       "title": "Flappy Bird",
       "icon": "🐦",
       "description": "Nhấn phím để rùa bay qua các ống.",
@@ -58,6 +64,7 @@
     },
     {
       "id": "dua-xe",
+      "lessonId": "practice-dua-xe",
       "title": "Đua xe",
       "icon": "🏎️",
       "description": "Đua xe trên đường bằng phím điều khiển.",
@@ -67,6 +74,7 @@
     },
     {
       "id": "space-invader",
+      "lessonId": "practice-space-invader",
       "title": "Space Invader",
       "icon": "👾",
       "description": "Bắn tàu ngoài hành tinh xuống.",

@@ -6,7 +6,7 @@ const CodeEditor = {
   render(container, code, filename = 'turtle.py', options = {}) {
     if (!container) return;
 
-    const locked = options.locked && !TurtleAcademy.isCodeUnlocked();
+    const locked = options.locked && !TurtleAcademy.isCodeUnlocked(options.lessonId);
     const runHint = options.runHint || 'Gõ lại code theo giả mã và thuật toán đã học';
 
     if (locked) {
@@ -15,7 +15,7 @@ const CodeEditor = {
           <div class="code-locked-icon">🔒</div>
           <h4>Code được giáo viên mở</h4>
           <p>${TurtleAcademy.codeLockMessage || 'Em cần nắm kiến trúc và thuật toán trước. Giáo viên sẽ mở code khi sẵn sàng.'}</p>
-          <p class="code-locked-hint">👨‍🏫 Giáo viên mở khóa tại trang <a href="teacher.html">Giáo viên</a></p>
+          <p class="code-locked-hint">👨‍🏫 Giáo viên mở khóa từng bài tại trang <a href="teacher.html">Giáo viên</a></p>
         </div>
       `;
       return;
