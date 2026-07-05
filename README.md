@@ -95,3 +95,11 @@ Code Chương 6 và trang Game **bị khóa** cho đến khi GV nhập mã trên
 | Flappy Bird | flappy-bird.py | Space |
 | Đua xe | dua-xe.py | ← → |
 | Space Invader | space-invader.py | ← → Space |
+
+### Hình ảnh & âm thanh (Game Hứng táo)
+
+Xem hướng dẫn chi tiết: [`games/assets/HUONG-DAN-HINH-AM.md`](games/assets/HUONG-DAN-HINH-AM.md)
+
+- **Hình nền:** `games/assets/images/nen-vuon.gif` (GIF, ~600×500 px)
+- **Hình táo:** `games/assets/images/tao.gif` hoặc hình vẽ sẵn trong code
+- **Âm thanh:** `games/assets/sounds/hung.wav`, `roi.wav` (WAV, Windows — `winsound`)
