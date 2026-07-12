@@ -4,142 +4,165 @@ Học viện Turtle Python - Lớp 6
 
 Phím ← → di chuyển, tránh bom rơi
 
-Hình ảnh & âm thanh (tùy chọn):
-  assets/ne-bom/images/nen-dem.gif
-  assets/ne-bom/images/bom.gif
-  assets/ne-bom/sounds/diem.wav, no.wav
+Âm thanh (tùy chọn, Windows):
+  assets/ne-bom/sounds/nhac-nen.wav  — nhạc nền lặp
+  assets/ne-bom/sounds/no.wav        — GAME OVER
 
 Xem: assets/huong-dan-ne-bom.md
 """
 import os
 import random
+import time
 import turtle
 
 THU_MUC = os.path.dirname(os.path.abspath(__file__))
-IMG = os.path.join(THU_MUC, "assets", "ne-bom", "images")
 SND = os.path.join(THU_MUC, "assets", "ne-bom", "sounds")
-NGUONG_VA_CHAM = 25
 
 
-def co_file(*phan):
-    duong_dan = os.path.join(*phan)
-    return duong_dan if os.path.isfile(duong_dan) else None
+def co_am(ten_file):
+    path = os.path.join(SND, ten_file)
+    return path if os.path.isfile(path) else None
 
 
 try:
     import winsound
 
+    def phat_nhac_nen():
+        path = co_am("nhac-nen.wav")
+        if path:
+            winsound.PlaySound(path, winsound.SND_ASYNC | winsound.SND_LOOP)
+
+    def dung_nhac_nen():
+        winsound.PlaySound(None, winsound.SND_PURGE)
+
     def phat_am(ten_file):
-        path = co_file(SND, ten_file)
+        path = co_am(ten_file)
         if path:
             winsound.PlaySound(path, winsound.SND_ASYNC)
 except ImportError:
+    def phat_nhac_nen():
+        pass
+
+    def dung_nhac_nen():
+        pass
+
     def phat_am(ten_file):
         pass
 
 
-man_hinh = turtle.Screen()
-man_hinh.title("Né bom 💣")
-man_hinh.setup(width=600, height=500)
-man_hinh.tracer(0)
+screen = turtle.Screen()
+screen.setup(600, 600)
+screen.title("Né Bom 💣")
+screen.bgcolor("black")
+screen.tracer(0)
 
-nen = co_file(IMG, "nen-dem.gif")
-if nen:
-    man_hinh.bgpic(nen)
-else:
-    man_hinh.bgcolor("black")
+player = turtle.Turtle()
+player.shape("turtle")
+player.color("lime")
+player.penup()
+player.goto(0, -250)
 
-BOM_GIF = co_file(IMG, "bom.gif")
-if BOM_GIF:
-    man_hinh.addshape(BOM_GIF)
-    HINH_BOM = BOM_GIF
-else:
-    HINH_BOM = "bom_ve"
-    man_hinh.register_shape(HINH_BOM, (
-        (0, 14), (10, 8), (12, 0), (10, -10), (0, -14),
-        (-10, -10), (-12, 0), (-10, 8),
-    ))
+score = 0
+game_running = True
 
-nguoi = turtle.Turtle()
-nguoi.shape("turtle")
-nguoi.color("lime")
-nguoi.penup()
-nguoi.goto(0, -200)
+score_writer = turtle.Turtle()
+score_writer.hideturtle()
+score_writer.color("white")
+score_writer.penup()
+score_writer.goto(0, 260)
 
-bom = turtle.Turtle()
-bom.shape(HINH_BOM)
-if not BOM_GIF:
-    bom.color("red")
-bom.penup()
-bom.hideturtle()
+game_over_writer = turtle.Turtle()
+game_over_writer.hideturtle()
+game_over_writer.color("yellow")
+game_over_writer.penup()
 
-diem = 0
-song = True
-toc_do = 8
+danh_sach_bom = []
 
-bang = turtle.Turtle()
-bang.hideturtle()
-bang.penup()
-bang.color("white" if nen else "white")
-bang.goto(0, 220)
+for x in range(3):
+    bomb = turtle.Turtle()
+    bomb.shape("circle")
+    bomb.color("red")
+    bomb.penup()
+
+    danh_sach_bom.append({
+        "obj": bomb,
+        "speed": random.randint(6, 12)
+    })
 
 
-def ve_bang():
-    bang.clear()
-    bang.write(f"Điểm: {diem}  |  ← → di chuyển",
-               align="center", font=("Arial", 14, "bold"))
+def update_score():
+    score_writer.clear()
+    score_writer.write(
+        f"Điểm: {score}",
+        align="center",
+        font=("Arial", 16, "bold")
+    )
 
 
-def bom_moi():
-    x = random.randint(-250, 250)
-    bom.showturtle()
-    bom.goto(x, 250)
+def reset_bom():
+    for item in danh_sach_bom:
+        item["obj"].goto(
+            random.randint(-270, 270),
+            random.randint(280, 500)
+        )
 
 
-def roi_bom():
-    global diem, song, toc_do
-    if not song:
-        return
-    bom.sety(bom.ycor() - toc_do)
-    if bom.ycor() < -220:
-        bom.hideturtle()
-        diem += 1
-        if diem % 5 == 0:
-            toc_do += 2
-        phat_am("diem.wav")
-        ve_bang()
-        man_hinh.ontimer(bom_moi, 300)
-        return
-    if (abs(bom.xcor() - nguoi.xcor()) < NGUONG_VA_CHAM
-            and abs(bom.ycor() - nguoi.ycor()) < NGUONG_VA_CHAM):
-        song = False
-        phat_am("no.wav")
-        bang.goto(0, 0)
-        bang.write("GAME OVER!\nĐiểm: " + str(diem),
-                   align="center", font=("Arial", 20, "bold"))
-        return
-    man_hinh.update()
-    man_hinh.ontimer(roi_bom, 50)
+def game_over():
+    dung_nhac_nen()
+    phat_am("no.wav")
+    game_over_writer.goto(0, 0)
+    game_over_writer.write(
+        f"GAME OVER\nĐiểm: {score}",
+        align="center",
+        font=("Arial", 24, "bold")
+    )
 
 
-def trai():
-    if song:
-        nguoi.setx(max(nguoi.xcor() - 30, -270))
-        man_hinh.update()
+def move_left():
+    x = player.xcor() - 30
+    if x < -280:
+        x = -280
+    player.setx(x)
 
 
-def phai():
-    if song:
-        nguoi.setx(min(nguoi.xcor() + 30, 270))
-        man_hinh.update()
+def move_right():
+    x = player.xcor() + 30
+    if x > 280:
+        x = 280
+    player.setx(x)
 
 
-man_hinh.listen()
-man_hinh.onkey(trai, "Left")
-man_hinh.onkey(phai, "Right")
+screen.listen()
+screen.onkeypress(move_left, "Left")
+screen.onkeypress(move_right, "Right")
 
-ve_bang()
-bom_moi()
-man_hinh.ontimer(roi_bom, 500)
+update_score()
+reset_bom()
+phat_nhac_nen()
+
+while True:
+    screen.update()
+    if not game_running:
+        break
+
+    for item in danh_sach_bom:
+        bomb = item["obj"]
+        speed = item["speed"]
+        bomb.sety(bomb.ycor() - speed)
+        if bomb.ycor() < -320:
+            score += 1
+            update_score()
+            bomb.goto(
+                random.randint(-270, 270),
+                random.randint(320, 500)
+            )
+            item["speed"] = random.randint(6, 12)
+
+        if bomb.distance(player) < 25:
+            game_running = False
+            game_over()
+            screen.update()
+            break
+    time.sleep(0.00001)
 
 turtle.done()
