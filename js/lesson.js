@@ -98,6 +98,13 @@ function renderLesson(lesson) {
     </div>
     ` : ''}
 
+    ${lesson.codeGuide?.steps?.length ? `
+    <div class="card card-code-guide">
+      <div class="card-title"><span class="icon">🪜</span> Hướng dẫn code từng bước</div>
+      <div id="code-guide-area"></div>
+    </div>
+    ` : ''}
+
     <div class="card">
       <div class="card-title"><span class="icon">🎬</span> Hình minh họa</div>
       <div class="turtle-demo" id="animation-demo"></div>
@@ -189,6 +196,9 @@ function renderLesson(lesson) {
   }
   if (lesson.pseudocode) {
     GameDiagram.renderPseudocode(document.getElementById('pseudocode-area'), lesson.pseudocode);
+  }
+  if (lesson.codeGuide?.steps?.length) {
+    CodeGuide.render(document.getElementById('code-guide-area'), lesson.codeGuide, lesson.id);
   }
   if (lesson.animation) {
     TurtleAnimation.render(document.getElementById('animation-demo'), lesson.animation);

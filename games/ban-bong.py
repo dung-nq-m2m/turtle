@@ -4,9 +4,9 @@ Học viện Turtle Python - Lớp 6
 
 ← → di chuyển súng, SPACE bắn trúng mục tiêu
 
-Hình ảnh & âm thanh (tùy chọn):
-  assets/ban-bong/images/nen-san.gif, sung.gif, muc-tieu.gif
-  assets/ban-bong/sounds/ban.wav, trung.wav, thang.wav
+Hình ảnh & âm thanh (tùy chọn) — cùng thư mục với file .py:
+  nen-san.gif, sung.gif, muc-tieu.gif
+  ban.wav, trung.wav, thang.wav
 
 Xem: assets/huong-dan-ban-bong.md
 """
@@ -15,13 +15,11 @@ import random
 import turtle
 
 THU_MUC = os.path.dirname(os.path.abspath(__file__))
-IMG = os.path.join(THU_MUC, "assets", "ban-bong", "images")
-SND = os.path.join(THU_MUC, "assets", "ban-bong", "sounds")
 NGUONG_TRUNG = 25
 
 
-def co_file(*phan):
-    duong_dan = os.path.join(*phan)
+def co_file(ten_file):
+    duong_dan = os.path.join(THU_MUC, ten_file)
     return duong_dan if os.path.isfile(duong_dan) else None
 
 
@@ -29,7 +27,7 @@ try:
     import winsound
 
     def phat_am(ten_file):
-        path = co_file(SND, ten_file)
+        path = co_file(ten_file)
         if path:
             winsound.PlaySound(path, winsound.SND_ASYNC)
 except ImportError:
@@ -42,16 +40,18 @@ man_hinh.title("Bắn bóng ⚽")
 man_hinh.setup(width=600, height=500)
 man_hinh.tracer(0)
 
-nen = co_file(IMG, "nen-san.gif")
+nen = co_file("nen-san.gif")
 if nen:
     man_hinh.bgpic(nen)
 else:
     man_hinh.bgcolor("navy")
 
-SUNG_GIF = co_file(IMG, "sung.gif")
-MT_GIF = co_file(IMG, "muc-tieu.gif")
+SUNG_GIF = co_file("sung.gif")
+MT_GIF = co_file("muc-tieu.gif")
 if SUNG_GIF:
     man_hinh.addshape(SUNG_GIF)
+if MT_GIF:
+    man_hinh.addshape(MT_GIF)
 
 sung = turtle.Turtle()
 if SUNG_GIF:
@@ -77,12 +77,13 @@ bang.goto(0, 220)
 
 def ve_bang():
     bang.clear()
-    bang.write(f"Điểm: {diem}  |  ← → Space",
-               align="center", font=("Arial", 14, "bold"))
+    bang.goto(0, 220)
+    bang.write(
+        f"Điểm: {diem}  |  ← → Space",
+        align="center",
+        font=("Arial", 14, "bold")
+    )
 
-
-if MT_GIF:
-    man_hinh.addshape(MT_GIF)
 
 for i in range(5):
     mt = turtle.Turtle()
@@ -134,9 +135,14 @@ def cap_nhat():
     if not muc_tieu:
         thang = True
         phat_am("thang.wav")
+        bang.clear()
         bang.goto(0, 0)
-        bang.write(f"🎉 THẮNG!\nĐiểm: {diem}",
-                   align="center", font=("Arial", 22, "bold"))
+        bang.write(
+            f"🎉 THẮNG!\nĐiểm: {diem}",
+            align="center",
+            font=("Arial", 22, "bold")
+        )
+        man_hinh.update()
         return
 
     man_hinh.update()
@@ -161,5 +167,6 @@ man_hinh.onkey(phai, "Right")
 man_hinh.onkey(ban, "space")
 
 ve_bang()
+man_hinh.update()
 cap_nhat()
 turtle.done()

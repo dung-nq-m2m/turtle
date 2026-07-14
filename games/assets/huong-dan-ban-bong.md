@@ -9,16 +9,15 @@ Dành cho học sinh lớp 6 · Học viện Turtle Python — **Dự án cuối
 ```
 games/
 ├── ban-bong.py
-└── assets/ban-bong/
-    ├── images/
-    │   ├── nen-san.gif      ← sân / không gian bắn (tùy chọn)
-    │   ├── sung.gif         ← súng / tàu (tùy chọn)
-    │   └── muc-tieu.gif     ← mục tiêu / bóng bay (tùy chọn)
-    └── sounds/
-        ├── ban.wav          ← bắn đạn
-        ├── trung.wav        ← trúng mục tiêu
-        └── thang.wav        ← thắng — hết mục tiêu
+├── nen-san.gif      ← sân / không gian bắn (tùy chọn)
+├── sung.gif         ← súng / tàu (tùy chọn)
+├── muc-tieu.gif     ← mục tiêu / bóng bay (tùy chọn)
+├── ban.wav          ← bắn đạn
+├── trung.wav        ← trúng mục tiêu
+└── thang.wav        ← thắng — hết mục tiêu
 ```
+
+**Lưu ý:** File ảnh/âm đặt **cùng thư mục** với `ban-bong.py` — không cần thư mục `assets` con.
 
 Chưa có file → nền navy, súng tam giác vàng, mục tiêu hình tròn.
 
@@ -33,10 +32,21 @@ Chưa có file → nền navy, súng tam giác vàng, mục tiêu hình tròn.
 | Gợi ý | Sân cỏ, không gian, gradient xanh đậm |
 
 ```python
+nen = co_file("nen-san.gif")
 if nen:
     man_hinh.bgpic(nen)
 else:
     man_hinh.bgcolor("navy")
+```
+
+Code tìm file bằng:
+
+```python
+THU_MUC = os.path.dirname(os.path.abspath(__file__))
+
+def co_file(ten_file):
+    duong_dan = os.path.join(THU_MUC, ten_file)
+    return duong_dan if os.path.isfile(duong_dan) else None
 ```
 
 ---
@@ -51,6 +61,8 @@ Súng đứng **dưới màn hình**, hướng lên (`setheading(90)`).
 man_hinh.addshape(SUNG_GIF)
 sung.shape(SUNG_GIF)
 ```
+
+`SUNG_GIF = co_file("sung.gif")`
 
 | Yêu cầu | Gợi ý |
 |---------|-------|
@@ -83,6 +95,8 @@ for i in range(5):
     mt.goto(-200 + i * 100, 150)
     muc_tieu.append(mt)
 ```
+
+`MT_GIF = co_file("muc-tieu.gif")`
 
 | Yêu cầu | Gợi ý |
 |---------|-------|

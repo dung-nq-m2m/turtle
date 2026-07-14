@@ -1308,7 +1308,214 @@ body {
   box-shadow: none !important;
 }
 
+/* —— Hướng dẫn code từng bước —— */
+.card-code-guide {
+  border-left: 4px solid var(--scratch-orange);
+  background: linear-gradient(135deg, #fff, #fffaf3);
+}
+
+.code-guide-intro {
+  margin-bottom: 1rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.code-guide-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.code-guide-progress-bar {
+  flex: 1;
+  height: 10px;
+  background: #eee;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.code-guide-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--scratch-green), var(--scratch-orange));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.code-guide-progress-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+  white-space: nowrap;
+}
+
+.code-guide-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.code-guide-step {
+  border: 2px solid #e8e8e8;
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.code-guide-step.current {
+  border-color: var(--scratch-orange);
+  box-shadow: 0 4px 14px rgba(255, 140, 0, 0.15);
+}
+
+.code-guide-step.done {
+  border-color: var(--scratch-green);
+  background: #f6fff8;
+}
+
+.code-guide-step.locked {
+  opacity: 0.72;
+  background: #f7f7f7;
+}
+
+.code-guide-step-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.code-guide-badge {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: #e8e8e8;
+  color: #555;
+}
+
+.code-guide-step.current .code-guide-badge {
+  background: var(--scratch-orange);
+  color: #fff;
+}
+
+.code-guide-step.done .code-guide-badge {
+  background: var(--scratch-green);
+  color: #fff;
+}
+
+.code-guide-step-title {
+  font-weight: 800;
+  color: var(--scratch-dark);
+  font-size: 0.95rem;
+}
+
+.code-guide-flow-ref {
+  font-size: 0.78rem;
+  color: var(--scratch-blue);
+  margin-top: 0.2rem;
+}
+
+.code-guide-locked-msg {
+  margin: 0.65rem 0 0 2.75rem;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.code-guide-step-body {
+  margin-top: 0.85rem;
+  padding-left: 2.75rem;
+}
+
+.code-guide-explain {
+  font-size: 0.92rem;
+  color: #444;
+  line-height: 1.55;
+  margin-bottom: 0.65rem;
+}
+
+.code-guide-checklist {
+  margin: 0 0 0.75rem 1.1rem;
+  font-size: 0.88rem;
+  color: #555;
+}
+
+.code-guide-checklist li {
+  margin-bottom: 0.3rem;
+}
+
+.code-guide-hint {
+  margin-bottom: 0.75rem;
+  border: 1px dashed #c5d4e8;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  background: #f5f9ff;
+}
+
+.code-guide-hint summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--scratch-blue);
+}
+
+.code-guide-hint-code {
+  margin: 0.5rem 0 0;
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-guide-goal {
+  font-size: 0.88rem;
+  background: #eef8ee;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 0.75rem;
+  color: #2d5a2d;
+}
+
+.code-guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.code-guide-done-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--scratch-green);
+}
+
+.code-guide-reopen {
+  margin-top: 0.5rem;
+  margin-left: 2.75rem;
+}
+
+.code-guide-finish {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: #fff8e6;
+  border: 2px solid var(--scratch-orange);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+}
+
 @media (max-width: 768px) {
   .arch-layers { flex-direction: column; align-items: center; }
   .arch-arrow { transform: rotate(90deg); }
+  .code-guide-step-body,
+  .code-guide-locked-msg,
+  .code-guide-reopen { padding-left: 0; margin-left: 0; }
 }
