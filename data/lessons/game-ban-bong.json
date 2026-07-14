@@ -4,7 +4,7 @@
   "chapterTitle": "Làm Game",
   "title": "Bắn bóng",
   "icon": "⚽",
-  "codeLocked": false,
+  "codeLocked": true,
   "objectives": [
     "Quản lý nhiều đối tượng bằng list",
     "Hiểu thuật toán: tạo đạn → di chuyển → kiểm tra distance()",
