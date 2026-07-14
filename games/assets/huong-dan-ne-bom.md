@@ -9,14 +9,13 @@ Dành cho học sinh lớp 6 · Học viện Turtle Python
 ```
 games/
 ├── ne-bom.py
-└── assets/ne-bom/
-    ├── images/
-    │   ├── nen-dem.gif     ← nền bầu trời đêm (tùy chọn)
-    │   └── bom.gif         ← hình quả bom (tùy chọn)
-    └── sounds/
-        ├── diem.wav        ← né được, +điểm
-        └── no.wav          ← va chạm — GAME OVER
+├── nhac-nen.wav    ← nhạc nền lặp (tùy chọn)
+├── no.wav          ← va chạm — GAME OVER
+├── nen-dem.gif     ← nền bầu trời đêm (tùy chọn, mở rộng)
+└── bom.gif         ← hình quả bom (tùy chọn, mở rộng)
 ```
+
+**Lưu ý:** File ảnh/âm đặt **cùng thư mục** với `ne-bom.py`.
 
 Chưa có file → nền đen, bom hình tròn đỏ, rùa xanh lá.
 
@@ -33,7 +32,7 @@ Game Né bom thường dùng **nền tối** (bầu trời đêm, thành phố).
 | Gợi ý | Sao, tòa nhà silhouette, gradient đêm |
 
 ```python
-nen = co_file(IMG, "nen-dem.gif")
+nen = co_file("nen-dem.gif")  # cùng thư mục với ne-bom.py
 if nen:
     man_hinh.bgpic(nen)
 else:
@@ -99,18 +98,25 @@ Giữ nhân vật **ở dưới màn hình** (`y ≈ -200`) để dễ né.
 
 | File | Khi phát | Gợi ý âm thanh |
 |------|----------|----------------|
-| `diem.wav` | Bom chạm đất (né được) | Tiếng "ting" nhẹ |
+| `nhac-nen.wav` | Bắt đầu game | Nhạc nền lặp (`SND_LOOP`) |
 | `no.wav` | Va chạm bom | Tiếng nổ / "boom" ngắn |
 
 ```python
-# Né được
-phat_am("diem.wav")
+THU_MUC = os.path.dirname(os.path.abspath(__file__))
+
+def co_am(ten_file):
+    path = os.path.join(THU_MUC, ten_file)
+    return path if os.path.isfile(path) else None
+
+# Bắt đầu
+phat_nhac_nen()   # nhac-nen.wav
 
 # GAME OVER
+dung_nhac_nen()
 phat_am("no.wav")
 ```
 
-**Lưu ý:** Game dùng `tracer(0)` + `update()` — âm thanh vẫn dùng `SND_ASYNC` để không lag.
+**Lưu ý:** File đặt cạnh `ne-bom.py`. Âm thanh dùng `SND_ASYNC` để không lag.
 
 ---
 

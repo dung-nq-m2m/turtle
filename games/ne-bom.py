@@ -4,9 +4,9 @@ Học viện Turtle Python - Lớp 6
 
 Phím ← → di chuyển, tránh bom rơi
 
-Âm thanh (tùy chọn, Windows):
-  assets/ne-bom/sounds/nhac-nen.wav  — nhạc nền lặp
-  assets/ne-bom/sounds/no.wav        — GAME OVER
+Âm thanh (tùy chọn, Windows) — cùng thư mục với file .py:
+  nhac-nen.wav  — nhạc nền lặp
+  no.wav        — GAME OVER
 
 Xem: assets/huong-dan-ne-bom.md
 """
@@ -16,11 +16,10 @@ import time
 import turtle
 
 THU_MUC = os.path.dirname(os.path.abspath(__file__))
-SND = os.path.join(THU_MUC, "assets", "ne-bom", "sounds")
 
 
 def co_am(ten_file):
-    path = os.path.join(SND, ten_file)
+    path = os.path.join(THU_MUC, ten_file)
     return path if os.path.isfile(path) else None
 
 
