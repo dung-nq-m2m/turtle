@@ -11,55 +11,118 @@ const CodeGuide = {
     try {
       const raw = localStorage.getItem(this.storageKey(lessonId));
       const data = raw ? JSON.parse(raw) : {};
-      return {
-        completed: Array.isArray(data.completed) ? data.completed : [],
-        current: typeof data.current === 'number' ? data.current : 0
-      };
+      const completed = (Array.isArray(data.completed) ? data.completed : [])
+        .map(n => Number(n))
+        .filter(n => Number.isInteger(n) && n >= 0);
+      let expanded = Number(data.expanded);
+      if (!Number.isInteger(expanded) || expanded < 0) {
+        expanded = Number(data.current);
+      }
+      if (!Number.isInteger(expanded) || expanded < 0) expanded = 0;
+      return { completed, expanded };
     } catch {
-      return { completed: [], current: 0 };
+      return { completed: [], expanded: 0 };
     }
   },
 
   saveProgress(lessonId, progress) {
-    localStorage.setItem(this.storageKey(lessonId), JSON.stringify(progress));
+    localStorage.setItem(this.storageKey(lessonId), JSON.stringify({
+      completed: progress.completed,
+      expanded: progress.expanded,
+      current: progress.expanded
+    }));
   },
 
-  /** Bước đang làm tiếp theo (chưa hoàn thành đầu tiên) */
-  nextWorkingIndex(steps, completed) {
-    for (let i = 0; i < steps.length; i++) {
+  nextWorkingIndex(stepsLen, completed) {
+    for (let i = 0; i < stepsLen; i++) {
       if (!completed.includes(i)) return i;
     }
-    return Math.max(0, steps.length - 1);
+    return Math.max(0, stepsLen - 1);
   },
 
-  renderQuiz(step, stepIndex, { reviewMode = false } = {}) {
-    const questions = step.quiz || [];
+  isUnlocked(index, completed) {
+    return index === 0 || completed.includes(index - 1);
+  },
 
+  escape(text) {
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  },
+
+  gradeQuiz(root, step, stepIndex) {
+    const questions = step.quiz || [];
+    const quizEl = root.querySelector(`[data-guide-quiz="${stepIndex}"]`);
+    const feedback = quizEl?.querySelector('[data-guide-feedback]');
+    let wrong = 0;
+    let unanswered = 0;
+
+    questions.forEach((q, qi) => {
+      const qEl = quizEl?.querySelector(`[data-guide-q="${qi}"]`);
+      const selected = qEl?.querySelector(`input[name="guide-q-${stepIndex}-${qi}"]:checked`);
+      qEl?.classList.remove('is-correct', 'is-wrong');
+
+      if (!selected) {
+        unanswered += 1;
+        qEl?.classList.add('is-wrong');
+        return;
+      }
+
+      if (Number(selected.value) === q.correct) {
+        qEl?.classList.add('is-correct');
+      } else {
+        wrong += 1;
+        qEl?.classList.add('is-wrong');
+      }
+    });
+
+    if (!feedback) return false;
+    feedback.hidden = false;
+
+    if (unanswered > 0) {
+      feedback.className = 'code-guide-quiz-feedback is-error';
+      feedback.textContent = `Em còn ${unanswered} câu chưa chọn đáp án. Hãy trả lời đủ rồi nộp lại.`;
+      return false;
+    }
+    if (wrong > 0) {
+      feedback.className = 'code-guide-quiz-feedback is-error';
+      feedback.innerHTML =
+        `Chưa đúng ${wrong} câu. Đọc lại giải thích / gợi ý code phía trên rồi thử lại.`
+        + '<br><span class="code-guide-quiz-hint-text">Gợi ý: xem lại checklist và gợi ý code của bước này.</span>';
+      return false;
+    }
+
+    feedback.className = 'code-guide-quiz-feedback is-ok';
+    feedback.textContent = 'Chính xác! Em đã nắm bước này — mở khóa bước tiếp theo.';
+    return true;
+  },
+
+  quizHtml(step, stepIndex, reviewMode) {
     if (reviewMode) {
       return `
         <div class="code-guide-quiz code-guide-quiz-review">
           <div class="code-guide-quiz-title">✅ Em đã vượt qua trắc nghiệm bước này</div>
-          <p class="code-guide-quiz-note">Đây là chế độ xem lại — nội dung gợi ý vẫn hiển thị phía trên.</p>
-        </div>
-      `;
+          <p class="code-guide-quiz-note">Chế độ xem lại — em có thể đọc lại nội dung bên trên.</p>
+        </div>`;
     }
 
+    const questions = step.quiz || [];
     if (!questions.length) {
       return `
         <div class="code-guide-actions">
-          <button type="button" class="btn btn-primary btn-complete-step" data-step="${stepIndex}">
+          <button type="button" class="btn btn-primary" data-guide-action="complete" data-step="${stepIndex}">
             ✅ Em đã hoàn thành bước này
           </button>
-        </div>
-      `;
+        </div>`;
     }
 
     return `
-      <div class="code-guide-quiz" data-step="${stepIndex}">
+      <div class="code-guide-quiz" data-guide-quiz="${stepIndex}">
         <div class="code-guide-quiz-title">❓ Kiểm tra nhanh — trả lời đúng mới sang bước tiếp</div>
         <p class="code-guide-quiz-note">Em cần nắm chắc nội dung bước này trước khi mở khóa bước sau.</p>
         ${questions.map((q, qi) => `
-          <div class="code-guide-q" data-q="${qi}">
+          <div class="code-guide-q" data-guide-q="${qi}">
             <div class="code-guide-q-text"><strong>Câu ${qi + 1}.</strong> ${q.question}</div>
             <div class="code-guide-q-options">
               ${(q.options || []).map((opt, oi) => `
@@ -71,17 +134,16 @@ const CodeGuide = {
             </div>
           </div>
         `).join('')}
-        <div class="code-guide-quiz-feedback" hidden></div>
+        <div class="code-guide-quiz-feedback" data-guide-feedback hidden></div>
         <div class="code-guide-actions">
-          <button type="button" class="btn btn-primary btn-submit-quiz" data-step="${stepIndex}">
+          <button type="button" class="btn btn-primary" data-guide-action="submit-quiz" data-step="${stepIndex}">
             ✅ Nộp bài & mở bước tiếp
           </button>
         </div>
-      </div>
-    `;
+      </div>`;
   },
 
-  renderStepBody(step, i, { reviewMode, workingIndex, stepsLen }) {
+  bodyHtml(step, i, { reviewMode, workingIndex, stepsLen }) {
     return `
       <div class="code-guide-step-body">
         <div class="code-guide-explain">${step.explain || ''}</div>
@@ -97,88 +159,99 @@ const CodeGuide = {
           </details>
         ` : ''}
         ${step.goal ? `<p class="code-guide-goal"><strong>Kiểm tra thực hành:</strong> ${step.goal}</p>` : ''}
-        ${this.renderQuiz(step, i, { reviewMode })}
+        ${this.quizHtml(step, i, reviewMode)}
         ${reviewMode ? `
           <div class="code-guide-actions" style="margin-top:0.75rem">
-            ${i < stepsLen - 1 && i + 1 <= workingIndex ? `
-              <button type="button" class="btn btn-outline btn-goto-step" data-step="${i + 1}">
+            ${i + 1 < stepsLen ? `
+              <button type="button" class="btn btn-outline" data-guide-action="open" data-step="${i + 1}">
                 Bước tiếp →
               </button>
             ` : ''}
             ${workingIndex !== i ? `
-              <button type="button" class="btn btn-primary btn-goto-step" data-step="${workingIndex}">
+              <button type="button" class="btn btn-primary" data-guide-action="open" data-step="${workingIndex}">
                 ← Quay lại bước đang làm
               </button>
             ` : ''}
           </div>
         ` : ''}
-      </div>
-    `;
-  },
-
-  gradeQuiz(container, step, stepIndex) {
-    const questions = step.quiz || [];
-    const feedback = container.querySelector(`.code-guide-quiz[data-step="${stepIndex}"] .code-guide-quiz-feedback`);
-    let wrong = 0;
-    let unanswered = 0;
-
-    questions.forEach((q, qi) => {
-      const qEl = container.querySelector(`.code-guide-quiz[data-step="${stepIndex}"] .code-guide-q[data-q="${qi}"]`);
-      const selected = qEl?.querySelector(`input[name="guide-q-${stepIndex}-${qi}"]:checked`);
-      qEl?.classList.remove('is-correct', 'is-wrong');
-
-      if (!selected) {
-        unanswered += 1;
-        qEl?.classList.add('is-wrong');
-        return;
-      }
-
-      const choice = Number(selected.value);
-      if (choice === q.correct) {
-        qEl?.classList.add('is-correct');
-      } else {
-        wrong += 1;
-        qEl?.classList.add('is-wrong');
-      }
-    });
-
-    if (!feedback) return false;
-
-    feedback.hidden = false;
-    if (unanswered > 0) {
-      feedback.className = 'code-guide-quiz-feedback is-error';
-      feedback.textContent = `Em còn ${unanswered} câu chưa chọn đáp án. Hãy trả lời đủ rồi nộp lại.`;
-      return false;
-    }
-    if (wrong > 0) {
-      feedback.className = 'code-guide-quiz-feedback is-error';
-      feedback.innerHTML = 'Chưa đúng '
-        + `${wrong} câu. Đọc lại giải thích / gợi ý code phía trên rồi thử lại.`
-        + '<br><span class="code-guide-quiz-hint-text">Gợi ý: xem lại checklist và gợi ý code của bước này.</span>';
-      return false;
-    }
-
-    feedback.className = 'code-guide-quiz-feedback is-ok';
-    feedback.textContent = 'Chính xác! Em đã nắm bước này — mở khóa bước tiếp theo.';
-    return true;
+      </div>`;
   },
 
   render(container, guide, lessonId) {
     if (!container || !guide?.steps?.length) return;
 
     const steps = guide.steps;
-    let progress = this.loadProgress(lessonId);
+    const self = this;
 
-    const render = () => {
-      progress = this.loadProgress(lessonId);
+    // Gắn listener 1 lần (delegation) — tránh mất sự kiện sau mỗi lần render
+    if (container.dataset.guideBound !== '1') {
+      container.dataset.guideBound = '1';
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-guide-action]');
+        if (!btn || !container.contains(btn)) return;
+
+        const action = btn.getAttribute('data-guide-action');
+        const stepIndex = Number(btn.getAttribute('data-step'));
+        const progress = self.loadProgress(lessonId);
+
+        if (action === 'open') {
+          if (!Number.isInteger(stepIndex)) return;
+          if (!self.isUnlocked(stepIndex, progress.completed)
+              && !progress.completed.includes(stepIndex)) {
+            return;
+          }
+          progress.expanded = stepIndex;
+          self.saveProgress(lessonId, progress);
+          paint();
+          container.querySelector(`[data-guide-step="${stepIndex}"]`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
+
+        if (action === 'complete') {
+          if (!progress.completed.includes(stepIndex)) {
+            progress.completed.push(stepIndex);
+          }
+          progress.expanded = self.nextWorkingIndex(steps.length, progress.completed);
+          self.saveProgress(lessonId, progress);
+          paint();
+          return;
+        }
+
+        if (action === 'submit-quiz') {
+          const step = steps[stepIndex];
+          if (!self.gradeQuiz(container, step, stepIndex)) return;
+          btn.disabled = true;
+          setTimeout(() => {
+            const p = self.loadProgress(lessonId);
+            if (!p.completed.includes(stepIndex)) p.completed.push(stepIndex);
+            p.expanded = self.nextWorkingIndex(steps.length, p.completed);
+            self.saveProgress(lessonId, p);
+            paint();
+            container.querySelector(`[data-guide-step="${p.expanded}"]`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 600);
+          return;
+        }
+
+        if (action === 'reset') {
+          if (!confirm('Xóa tiến độ hướng dẫn và làm lại từ bước 1?')) return;
+          self.saveProgress(lessonId, { completed: [], expanded: 0 });
+          paint();
+        }
+      });
+    }
+
+    const paint = () => {
+      const progress = self.loadProgress(lessonId);
       const doneCount = progress.completed.length;
       const allDone = doneCount >= steps.length;
-      const workingIndex = this.nextWorkingIndex(steps, progress.completed);
-      let current = typeof progress.current === 'number' ? progress.current : workingIndex;
-      if (current < 0 || current >= steps.length) current = workingIndex;
-      // Không cho nhảy tới bước chưa mở khóa
-      if (current > 0 && !progress.completed.includes(current - 1) && !progress.completed.includes(current)) {
-        current = workingIndex;
+      const workingIndex = self.nextWorkingIndex(steps.length, progress.completed);
+
+      let expanded = progress.expanded;
+      if (!self.isUnlocked(expanded, progress.completed)
+          && !progress.completed.includes(expanded)) {
+        expanded = workingIndex;
       }
 
       container.innerHTML = `
@@ -192,117 +265,67 @@ const CodeGuide = {
         <div class="code-guide-list">
           ${steps.map((step, i) => {
             const isDone = progress.completed.includes(i);
-            const isUnlocked = i === 0 || progress.completed.includes(i - 1);
-            const isOpen = isUnlocked && i === current;
-            const isWorking = isOpen && !isDone;
-            const isReviewing = isOpen && isDone;
-            const isLocked = !isUnlocked;
+            const unlocked = self.isUnlocked(i, progress.completed);
+            const isExpanded = unlocked && i === expanded;
+            const reviewMode = isExpanded && isDone;
+            const working = isExpanded && !isDone;
 
             let stateClass = 'locked';
-            if (isWorking) stateClass = 'current';
-            else if (isReviewing) stateClass = 'review';
+            if (working) stateClass = 'current';
+            else if (reviewMode) stateClass = 'review';
             else if (isDone) stateClass = 'done';
-            else if (isUnlocked) stateClass = 'unlocked';
+            else if (unlocked) stateClass = 'unlocked';
+
+            let actions = '';
+            if (!unlocked) {
+              actions = `<p class="code-guide-locked-msg">Hoàn thành và trả lời đúng trắc nghiệm bước ${i} trước để mở khóa.</p>`;
+            } else if (isExpanded) {
+              actions = self.bodyHtml(step, i, {
+                reviewMode,
+                workingIndex,
+                stepsLen: steps.length
+              });
+              // Ẩn nút "Bước tiếp" nếu bước sau chưa mở
+              if (reviewMode && i + 1 < steps.length && !self.isUnlocked(i + 1, progress.completed)) {
+                actions = actions.replace(
+                  /<button type="button" class="btn btn-outline" data-guide-action="open" data-step="\d+">\s*Bước tiếp →\s*<\/button>/,
+                  ''
+                );
+              }
+            } else {
+              actions = `
+                <button type="button" class="btn btn-outline code-guide-reopen"
+                        data-guide-action="open" data-step="${i}">
+                  ${isDone ? '👁️ Xem lại' : '📂 Mở'} bước ${i + 1}
+                </button>`;
+            }
 
             return `
-              <div class="code-guide-step ${stateClass}" data-step="${i}">
-                <div class="code-guide-step-header">
-                  <span class="code-guide-badge">${isDone ? '✓' : isLocked ? '🔒' : i + 1}</span>
+              <div class="code-guide-step ${stateClass}" data-guide-step="${i}">
+                <div class="code-guide-step-header"
+                     ${unlocked && !isExpanded ? `role="button" tabindex="0" data-guide-action="open" data-step="${i}" style="cursor:pointer"` : ''}>
+                  <span class="code-guide-badge">${isDone ? '✓' : unlocked ? i + 1 : '🔒'}</span>
                   <div class="code-guide-step-meta">
                     <div class="code-guide-step-title">${step.title}</div>
                     ${step.flowLabel ? `<div class="code-guide-flow-ref">📍 Biểu đồ: ${step.flowLabel}</div>` : ''}
-                    ${isReviewing ? '<div class="code-guide-flow-ref">👁️ Đang xem lại</div>' : ''}
+                    ${reviewMode ? '<div class="code-guide-flow-ref">👁️ Đang xem lại</div>' : ''}
+                    ${unlocked && !isExpanded ? '<div class="code-guide-flow-ref">Nhấn để mở</div>' : ''}
                   </div>
                 </div>
-                ${isLocked ? `
-                  <p class="code-guide-locked-msg">Hoàn thành và trả lời đúng trắc nghiệm bước ${i} trước để mở khóa.</p>
-                ` : isOpen ? this.renderStepBody(step, i, {
-                  reviewMode: isReviewing,
-                  workingIndex,
-                  stepsLen: steps.length
-                }) : `
-                  <button type="button" class="btn btn-outline btn-goto-step code-guide-reopen" data-step="${i}">
-                    ${isDone ? '👁️ Xem lại' : 'Mở'} bước ${i + 1}
-                  </button>
-                `}
-              </div>
-            `;
+                ${actions}
+              </div>`;
           }).join('')}
         </div>
         ${allDone ? `
           <div class="code-guide-finish">
-            🏆 Em đã hoàn thành toàn bộ các bước và vượt qua trắc nghiệm! Ghép code lại và chạy file <code>ban-bong.py</code> — bắn hết 5 mục tiêu để thắng.
+            🏆 Em đã hoàn thành toàn bộ các bước và vượt qua trắc nghiệm! Ghép code lại và chạy file <code>ban-bong.py</code>.
             <div style="margin-top:0.75rem">
-              <button type="button" class="btn btn-outline" id="btn-reset-guide">🔄 Làm lại từ đầu</button>
+              <button type="button" class="btn btn-outline" data-guide-action="reset">🔄 Làm lại từ đầu</button>
             </div>
           </div>
-        ` : ''}
-      `;
-
-      container.querySelectorAll('.btn-submit-quiz').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = Number(btn.dataset.step);
-          const step = steps[i];
-          const ok = this.gradeQuiz(container, step, i);
-          if (!ok) return;
-
-          btn.disabled = true;
-          setTimeout(() => {
-            if (!progress.completed.includes(i)) {
-              progress.completed.push(i);
-            }
-            progress.current = this.nextWorkingIndex(steps, progress.completed);
-            this.saveProgress(lessonId, progress);
-            render();
-            const next = container.querySelector(`.code-guide-step[data-step="${progress.current}"]`);
-            next?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }, 700);
-        });
-      });
-
-      container.querySelectorAll('.btn-complete-step').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = Number(btn.dataset.step);
-          if (!progress.completed.includes(i)) {
-            progress.completed.push(i);
-          }
-          progress.current = this.nextWorkingIndex(steps, progress.completed);
-          this.saveProgress(lessonId, progress);
-          render();
-        });
-      });
-
-      container.querySelectorAll('.btn-goto-step').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const target = Number(btn.dataset.step);
-          const canOpen = target === 0
-            || progress.completed.includes(target)
-            || progress.completed.includes(target - 1);
-          if (!canOpen) return;
-          progress.current = target;
-          this.saveProgress(lessonId, progress);
-          render();
-          const el = container.querySelector(`.code-guide-step[data-step="${target}"]`);
-          el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-      });
-
-      container.querySelector('#btn-reset-guide')?.addEventListener('click', () => {
-        if (confirm('Xóa tiến độ hướng dẫn và làm lại từ bước 1?')) {
-          progress = { completed: [], current: 0 };
-          this.saveProgress(lessonId, progress);
-          render();
-        }
-      });
+        ` : ''}`;
     };
 
-    render();
-  },
-
-  escape(text) {
-    return String(text)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+    paint();
   }
 };

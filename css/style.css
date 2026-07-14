@@ -1409,9 +1409,19 @@ body {
   color: #fff;
 }
 
-.code-guide-step.done .code-guide-badge {
-  background: var(--scratch-green);
+.code-guide-step.review .code-guide-badge {
+  background: var(--scratch-blue);
   color: #fff;
+}
+
+.code-guide-step-header[data-guide-action] {
+  border-radius: 8px;
+  padding: 0.15rem;
+  margin: -0.15rem;
+}
+
+.code-guide-step-header[data-guide-action]:hover {
+  background: rgba(75, 140, 220, 0.08);
 }
 
 .code-guide-step-title {
