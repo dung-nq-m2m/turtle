@@ -222,7 +222,7 @@
   "prev": "game-ne-bom",
   "next": null,
   "codeGuide": {
-    "intro": "Code theo đúng thứ tự biểu đồ thuật toán. Mỗi bước chỉ mở khi em đánh dấu hoàn thành bước trước. Đọc giải thích → gõ thử trên máy → nhấn \"Em đã hoàn thành\".",
+    "intro": "Code theo đúng thứ tự biểu đồ thuật toán. Mỗi bước: đọc giải thích → gõ thử trên máy → <strong>trả lời đúng trắc nghiệm</strong> mới mở bước sau.",
     "steps": [
       {
         "title": "Bước 1 — Khởi tạo súng, list và 5 mục tiêu",
@@ -236,7 +236,31 @@
           "Gọi man_hinh.update() rồi turtle.done() để xem thử"
         ],
         "hintCode": "import turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Bắn bóng ⚽\")\nman_hinh.setup(600, 500)\nman_hinh.bgcolor(\"navy\")\nman_hinh.tracer(0)\n\nsung = turtle.Turtle()\nsung.shape(\"triangle\")\nsung.color(\"yellow\")\nsung.penup()\nsung.goto(0, -200)\nsung.setheading(90)\n\ndan = []\nmuc_tieu = []\ndiem = 0\nthang = False\n\nfor i in range(5):\n    mt = turtle.Turtle()\n    mt.shape(\"circle\")\n    mt.color(random.choice([\"red\", \"orange\", \"pink\"]))\n    mt.penup()\n    mt.goto(-200 + i * 100, 150)\n    muc_tieu.append(mt)\n\nman_hinh.update()\nturtle.done()",
-        "goal": "Chạy file — thấy súng dưới và 5 vòng tròn trên cao, chưa di chuyển được."
+        "goal": "Chạy file — thấy súng dưới và 5 vòng tròn trên cao, chưa di chuyển được.",
+        "quiz": [
+          {
+            "question": "Hai list nào được tạo lúc khởi tạo game Bắn bóng?",
+            "options": [
+              "dan = [] và muc_tieu = []",
+              "sung = [] và diem = []",
+              "ban = [] và thang = []",
+              "chỉ cần một list muc_tieu"
+            ],
+            "correct": 0,
+            "explanation": "dan lưu đạn đang bay, muc_tieu lưu các mục tiêu."
+          },
+          {
+            "question": "Vòng for tạo 5 mục tiêu dùng lệnh nào đúng?",
+            "options": [
+              "for i in range(5): tạo mt rồi muc_tieu.append(mt)",
+              "while muc_tieu < 5: append",
+              "muc_tieu = 5",
+              "for mt in sung: append"
+            ],
+            "correct": 0,
+            "explanation": "range(5) tạo đúng 5 Turtle mục tiêu và đưa vào list."
+          }
+        ]
       },
       {
         "title": "Bước 2 — Phím ← → di chuyển súng",
@@ -249,7 +273,31 @@
           "onkey(trai, \"Left\") và onkey(phai, \"Right\")"
         ],
         "hintCode": "def trai():\n    if not thang:\n        sung.setx(max(sung.xcor() - 30, -270))\n        man_hinh.update()\n\ndef phai():\n    if not thang:\n        sung.setx(min(sung.xcor() + 30, 270))\n        man_hinh.update()\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\nman_hinh.update()\nturtle.done()",
-        "goal": "Nhấn ← → — súng chạy trái/phải, không vượt biên."
+        "goal": "Nhấn ← → — súng chạy trái/phải, không vượt biên.",
+        "quiz": [
+          {
+            "question": "Trước khi đăng ký phím ← → phải gọi hàm nào?",
+            "options": [
+              "man_hinh.listen()",
+              "man_hinh.update()",
+              "turtle.done()",
+              "sung.setheading(90)"
+            ],
+            "correct": 0,
+            "explanation": "listen() bật lắng nghe bàn phím — thiếu thì phím không hoạt động."
+          },
+          {
+            "question": "Tại sao dùng max(..., -270) / min(..., 270) khi di chuyển súng?",
+            "options": [
+              "Để súng không chạy ra khỏi biên màn hình",
+              "Để tăng tốc độ súng",
+              "Để tạo đạn nhanh hơn",
+              "Không có tác dụng gì"
+            ],
+            "correct": 0,
+            "explanation": "Giới hạn tọa độ x của súng trong khoảng an toàn."
+          }
+        ]
       },
       {
         "title": "Bước 3 — Space tạo đạn, append vào list dan",
@@ -263,7 +311,31 @@
           "onkey(ban, \"space\")"
         ],
         "hintCode": "def ban():\n    if thang:\n        return\n    vien = turtle.Turtle()\n    vien.shape(\"circle\")\n    vien.color(\"white\")\n    vien.shapesize(0.4, 0.4)\n    vien.penup()\n    vien.goto(sung.xcor(), sung.ycor() + 20)\n    dan.append(vien)\n\nman_hinh.onkey(ban, \"space\")",
-        "goal": "Nhấn Space — thấy viên đạn xuất hiện trên súng (chưa bay)."
+        "goal": "Nhấn Space — thấy viên đạn xuất hiện trên súng (chưa bay).",
+        "quiz": [
+          {
+            "question": "Khi nhấn Space, lệnh quan trọng nhất để quản lý nhiều đạn là gì?",
+            "options": [
+              "dan.append(vien)",
+              "dan = vien",
+              "muc_tieu.append(vien)",
+              "vien = dan"
+            ],
+            "correct": 0,
+            "explanation": "append thêm viên đạn mới vào list dan."
+          },
+          {
+            "question": "Viên đạn mới nên xuất hiện ở đâu?",
+            "options": [
+              "Tại vị trí súng (x súng, y súng + một chút)",
+              "Góc trên trái màn hình",
+              "Vị trí ngẫu nhiên",
+              "Tại mục tiêu đầu tiên"
+            ],
+            "correct": 0,
+            "explanation": "Đạn xuất phát từ nòng súng: sung.xcor(), sung.ycor() + 20."
+          }
+        ]
       },
       {
         "title": "Bước 4 — Vòng lặp: mỗi viên bay lên (y+8)",
@@ -277,7 +349,31 @@
           "Gọi cap_nhat() lần đầu trước turtle.done()"
         ],
         "hintCode": "def cap_nhat():\n    global diem, thang\n    if thang:\n        return\n    for vien in dan[:]:\n        vien.sety(vien.ycor() + 8)\n        if vien.ycor() > 260:\n            vien.hideturtle()\n            dan.remove(vien)\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)\n\ncap_nhat()\nturtle.done()",
-        "goal": "Bắn Space — đạn bay lên và biến mất khi ra khỏi màn hình."
+        "goal": "Bắn Space — đạn bay lên và biến mất khi ra khỏi màn hình.",
+        "quiz": [
+          {
+            "question": "Tại sao viết for vien in dan[:] thay vì for vien in dan?",
+            "options": [
+              "Để xóa phần tử an toàn khi đang lặp",
+              "Để đạn bay nhanh hơn",
+              "Để tiết kiệm bộ nhớ",
+              "Không có lý do"
+            ],
+            "correct": 0,
+            "explanation": "dan[:] là bản copy — tránh lỗi khi remove() trong vòng for."
+          },
+          {
+            "question": "Hàm nào giúp game loop gọi lại chính nó sau 40ms?",
+            "options": [
+              "man_hinh.ontimer(cap_nhat, 40)",
+              "time.sleep(40)",
+              "turtle.done()",
+              "man_hinh.listen()"
+            ],
+            "correct": 0,
+            "explanation": "ontimer lập lịch gọi cap_nhat định kỳ — lõi vòng lặp game."
+          }
+        ]
       },
       {
         "title": "Bước 5 — Va chạm distance() & cộng điểm",
@@ -290,7 +386,31 @@
           "diem += 10, cập nhật bảng điểm, break"
         ],
         "hintCode": "        for mt in muc_tieu[:]:\n            if vien.distance(mt) < 25:\n                mt.hideturtle()\n                muc_tieu.remove(mt)\n                vien.hideturtle()\n                dan.remove(vien)\n                diem += 10\n                ve_bang()\n                break",
-        "goal": "Bắn trúng mục tiêu — mục tiêu biến mất, điểm tăng 10."
+        "goal": "Bắn trúng mục tiêu — mục tiêu biến mất, điểm tăng 10.",
+        "quiz": [
+          {
+            "question": "Lệnh nào kiểm tra đạn trúng mục tiêu?",
+            "options": [
+              "vien.distance(mt) < 25",
+              "vien.xcor() == mt.xcor()",
+              "vien.ycor() > 260",
+              "len(dan) == 0"
+            ],
+            "correct": 0,
+            "explanation": "distance() đo khoảng cách giữa hai Turtle."
+          },
+          {
+            "question": "Khi trúng mục tiêu, em cần làm gì với list?",
+            "options": [
+              "remove viên đạn và mục tiêu, cộng điểm",
+              "Chỉ cộng điểm, không xóa gì",
+              "Xóa toàn bộ list dan",
+              "Tạo thêm 5 mục tiêu mới ngay"
+            ],
+            "correct": 0,
+            "explanation": "Nhánh Có trên biểu đồ: xóa cả hai và diem += 10."
+          }
+        ]
       },
       {
         "title": "Bước 6 — Điều kiện thắng + update/ontimer",
@@ -303,7 +423,31 @@
           "Chạy full game: bắn hết 5 mục tiêu"
         ],
         "hintCode": "    if not muc_tieu:\n        thang = True\n        bang.clear()\n        bang.goto(0, 0)\n        bang.write(f\"🎉 THẮNG!\\nĐiểm: {diem}\",\n                   align=\"center\", font=(\"Arial\", 22, \"bold\"))\n        man_hinh.update()\n        return\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)",
-        "goal": "Bắn hết 5 mục tiêu — màn hình hiện THẮNG và dừng vòng lặp."
+        "goal": "Bắn hết 5 mục tiêu — màn hình hiện THẮNG và dừng vòng lặp.",
+        "quiz": [
+          {
+            "question": "Điều kiện thắng đúng là gì?",
+            "options": [
+              "if not muc_tieu:  (list mục tiêu rỗng)",
+              "if dan == [] and diem > 0",
+              "if thang == False",
+              "if vien.ycor() > 260"
+            ],
+            "correct": 0,
+            "explanation": "Hết mục tiêu trên màn hình nghĩa là thắng."
+          },
+          {
+            "question": "Khi đã thắng, tại sao cần return (không gọi ontimer)?",
+            "options": [
+              "Để dừng vòng lặp game",
+              "Để đạn bay nhanh hơn",
+              "Để reset điểm về 0",
+              "Vì turtle.done() bắt buộc nằm trong cap_nhat"
+            ],
+            "correct": 0,
+            "explanation": "Không gọi lại ontimer thì game loop dừng lại sau màn THẮNG."
+          }
+        ]
       }
     ]
   }
