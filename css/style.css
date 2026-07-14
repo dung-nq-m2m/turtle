@@ -1368,6 +1368,12 @@ body {
   box-shadow: 0 4px 14px rgba(255, 140, 0, 0.15);
 }
 
+.code-guide-step.review {
+  border-color: var(--scratch-blue);
+  box-shadow: 0 4px 14px rgba(75, 140, 220, 0.15);
+  background: #f7fbff;
+}
+
 .code-guide-step.done {
   border-color: var(--scratch-green);
   background: #f6fff8;
@@ -1598,9 +1604,9 @@ body {
   color: #a02828;
 }
 
-.code-guide-quiz-hint-text {
-  font-weight: 500;
-  font-size: 0.85rem;
+.code-guide-quiz-review {
+  background: #eef8ee;
+  border-color: var(--scratch-green);
 }
 
 @media (max-width: 768px) {

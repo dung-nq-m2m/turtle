@@ -24,8 +24,26 @@ const CodeGuide = {
     localStorage.setItem(this.storageKey(lessonId), JSON.stringify(progress));
   },
 
-  renderQuiz(step, stepIndex) {
+  /** Bước đang làm tiếp theo (chưa hoàn thành đầu tiên) */
+  nextWorkingIndex(steps, completed) {
+    for (let i = 0; i < steps.length; i++) {
+      if (!completed.includes(i)) return i;
+    }
+    return Math.max(0, steps.length - 1);
+  },
+
+  renderQuiz(step, stepIndex, { reviewMode = false } = {}) {
     const questions = step.quiz || [];
+
+    if (reviewMode) {
+      return `
+        <div class="code-guide-quiz code-guide-quiz-review">
+          <div class="code-guide-quiz-title">✅ Em đã vượt qua trắc nghiệm bước này</div>
+          <p class="code-guide-quiz-note">Đây là chế độ xem lại — nội dung gợi ý vẫn hiển thị phía trên.</p>
+        </div>
+      `;
+    }
+
     if (!questions.length) {
       return `
         <div class="code-guide-actions">
@@ -59,6 +77,41 @@ const CodeGuide = {
             ✅ Nộp bài & mở bước tiếp
           </button>
         </div>
+      </div>
+    `;
+  },
+
+  renderStepBody(step, i, { reviewMode, workingIndex, stepsLen }) {
+    return `
+      <div class="code-guide-step-body">
+        <div class="code-guide-explain">${step.explain || ''}</div>
+        ${step.checklist?.length ? `
+          <ul class="code-guide-checklist">
+            ${step.checklist.map(item => `<li>${item}</li>`).join('')}
+          </ul>
+        ` : ''}
+        ${step.hintCode ? `
+          <details class="code-guide-hint" ${reviewMode ? 'open' : ''}>
+            <summary>💡 Gợi ý code (xem khi cần)</summary>
+            <pre class="code-guide-hint-code">${this.escape(step.hintCode)}</pre>
+          </details>
+        ` : ''}
+        ${step.goal ? `<p class="code-guide-goal"><strong>Kiểm tra thực hành:</strong> ${step.goal}</p>` : ''}
+        ${this.renderQuiz(step, i, { reviewMode })}
+        ${reviewMode ? `
+          <div class="code-guide-actions" style="margin-top:0.75rem">
+            ${i < stepsLen - 1 && i + 1 <= workingIndex ? `
+              <button type="button" class="btn btn-outline btn-goto-step" data-step="${i + 1}">
+                Bước tiếp →
+              </button>
+            ` : ''}
+            ${workingIndex !== i ? `
+              <button type="button" class="btn btn-primary btn-goto-step" data-step="${workingIndex}">
+                ← Quay lại bước đang làm
+              </button>
+            ` : ''}
+          </div>
+        ` : ''}
       </div>
     `;
   },
@@ -99,10 +152,9 @@ const CodeGuide = {
     }
     if (wrong > 0) {
       feedback.className = 'code-guide-quiz-feedback is-error';
-      feedback.innerHTML = `Chưa đúng ${wrong} câu. Đọc lại giải thích / gợi ý code phía trên rồi thử lại.`
-        + (questions.some(q => q.explanation)
-          ? `<br><span class="code-guide-quiz-hint-text">Gợi ý: xem lại checklist và gợi ý code của bước này.</span>`
-          : '');
+      feedback.innerHTML = 'Chưa đúng '
+        + `${wrong} câu. Đọc lại giải thích / gợi ý code phía trên rồi thử lại.`
+        + '<br><span class="code-guide-quiz-hint-text">Gợi ý: xem lại checklist và gợi ý code của bước này.</span>';
       return false;
     }
 
@@ -121,7 +173,13 @@ const CodeGuide = {
       progress = this.loadProgress(lessonId);
       const doneCount = progress.completed.length;
       const allDone = doneCount >= steps.length;
-      const current = Math.min(progress.current, steps.length - 1);
+      const workingIndex = this.nextWorkingIndex(steps, progress.completed);
+      let current = typeof progress.current === 'number' ? progress.current : workingIndex;
+      if (current < 0 || current >= steps.length) current = workingIndex;
+      // Không cho nhảy tới bước chưa mở khóa
+      if (current > 0 && !progress.completed.includes(current - 1) && !progress.completed.includes(current)) {
+        current = workingIndex;
+      }
 
       container.innerHTML = `
         <p class="code-guide-intro">${guide.intro || 'Làm theo từng bước — trả lời đúng trắc nghiệm mới mở bước sau.'}</p>
@@ -135,11 +193,15 @@ const CodeGuide = {
           ${steps.map((step, i) => {
             const isDone = progress.completed.includes(i);
             const isUnlocked = i === 0 || progress.completed.includes(i - 1);
-            const isCurrent = isUnlocked && !isDone && i === current;
+            const isOpen = isUnlocked && i === current;
+            const isWorking = isOpen && !isDone;
+            const isReviewing = isOpen && isDone;
             const isLocked = !isUnlocked;
+
             let stateClass = 'locked';
-            if (isDone) stateClass = 'done';
-            else if (isCurrent) stateClass = 'current';
+            if (isWorking) stateClass = 'current';
+            else if (isReviewing) stateClass = 'review';
+            else if (isDone) stateClass = 'done';
             else if (isUnlocked) stateClass = 'unlocked';
 
             return `
@@ -149,33 +211,19 @@ const CodeGuide = {
                   <div class="code-guide-step-meta">
                     <div class="code-guide-step-title">${step.title}</div>
                     ${step.flowLabel ? `<div class="code-guide-flow-ref">📍 Biểu đồ: ${step.flowLabel}</div>` : ''}
+                    ${isReviewing ? '<div class="code-guide-flow-ref">👁️ Đang xem lại</div>' : ''}
                   </div>
                 </div>
                 ${isLocked ? `
                   <p class="code-guide-locked-msg">Hoàn thành và trả lời đúng trắc nghiệm bước ${i} trước để mở khóa.</p>
-                ` : `
-                  ${isCurrent ? `
-                  <div class="code-guide-step-body">
-                    <div class="code-guide-explain">${step.explain || ''}</div>
-                    ${step.checklist?.length ? `
-                      <ul class="code-guide-checklist">
-                        ${step.checklist.map(item => `<li>${item}</li>`).join('')}
-                      </ul>
-                    ` : ''}
-                    ${step.hintCode ? `
-                      <details class="code-guide-hint">
-                        <summary>💡 Gợi ý code (xem khi cần)</summary>
-                        <pre class="code-guide-hint-code">${this.escape(step.hintCode)}</pre>
-                      </details>
-                    ` : ''}
-                    ${step.goal ? `<p class="code-guide-goal"><strong>Kiểm tra thực hành:</strong> ${step.goal}</p>` : ''}
-                    ${this.renderQuiz(step, i)}
-                  </div>
-                  ` : `
-                    <button type="button" class="btn btn-outline btn-goto-step code-guide-reopen" data-step="${i}">
-                      ${isDone ? 'Xem lại' : 'Mở'} bước ${i + 1}
-                    </button>
-                  `}
+                ` : isOpen ? this.renderStepBody(step, i, {
+                  reviewMode: isReviewing,
+                  workingIndex,
+                  stepsLen: steps.length
+                }) : `
+                  <button type="button" class="btn btn-outline btn-goto-step code-guide-reopen" data-step="${i}">
+                    ${isDone ? '👁️ Xem lại' : 'Mở'} bước ${i + 1}
+                  </button>
                 `}
               </div>
             `;
@@ -203,7 +251,7 @@ const CodeGuide = {
             if (!progress.completed.includes(i)) {
               progress.completed.push(i);
             }
-            progress.current = Math.min(i + 1, steps.length - 1);
+            progress.current = this.nextWorkingIndex(steps, progress.completed);
             this.saveProgress(lessonId, progress);
             render();
             const next = container.querySelector(`.code-guide-step[data-step="${progress.current}"]`);
@@ -218,7 +266,7 @@ const CodeGuide = {
           if (!progress.completed.includes(i)) {
             progress.completed.push(i);
           }
-          progress.current = Math.min(i + 1, steps.length - 1);
+          progress.current = this.nextWorkingIndex(steps, progress.completed);
           this.saveProgress(lessonId, progress);
           render();
         });
@@ -227,12 +275,15 @@ const CodeGuide = {
       container.querySelectorAll('.btn-goto-step').forEach(btn => {
         btn.addEventListener('click', () => {
           const target = Number(btn.dataset.step);
-          if (target > 0 && !progress.completed.includes(target - 1) && !progress.completed.includes(target)) {
-            return;
-          }
+          const canOpen = target === 0
+            || progress.completed.includes(target)
+            || progress.completed.includes(target - 1);
+          if (!canOpen) return;
           progress.current = target;
           this.saveProgress(lessonId, progress);
           render();
+          const el = container.querySelector(`.code-guide-step[data-step="${target}"]`);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
       });
 
