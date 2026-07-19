@@ -9,9 +9,59 @@ import random
 
 man_hinh = turtle.Screen()
 man_hinh.title("Đua xe 🏎️")
-man_hinh.bgcolor("gray")
+man_hinh.bgcolor("darkgreen")  # lề cỏ hai bên
 man_hinh.setup(width=400, height=600)
 man_hinh.tracer(0)
+
+# Ba làn đường cố định
+LAN_XE = [-100, 0, 100]
+
+
+def ve_duong():
+    """Vẽ mặt đường xám, lề trắng và vạch phân làn."""
+    but = turtle.Turtle()
+    but.hideturtle()
+    but.speed(0)
+    but.penup()
+
+    # Mặt đường xám (giữa hai lề)
+    but.goto(-150, -300)
+    but.color("gray", "gray")
+    but.begin_fill()
+    but.pendown()
+    but.goto(150, -300)
+    but.goto(150, 300)
+    but.goto(-150, 300)
+    but.goto(-150, -300)
+    but.end_fill()
+
+    # Lề đường trái / phải (vạch liền trắng)
+    but.pensize(5)
+    but.color("white")
+    but.penup()
+    but.goto(-150, -300)
+    but.pendown()
+    but.goto(-150, 300)
+
+    but.penup()
+    but.goto(150, -300)
+    but.pendown()
+    but.goto(150, 300)
+
+    # Vạch đứt phân 3 làn (vàng)
+    but.pensize(3)
+    but.color("yellow")
+    for x in [-50, 50]:
+        y = -280
+        while y < 280:
+            but.penup()
+            but.goto(x, y)
+            but.pendown()
+            but.goto(x, y + 30)
+            y = y + 60
+
+
+ve_duong()
 
 # Xe của em
 xe_em = turtle.Turtle()
@@ -24,9 +74,6 @@ xe_em.goto(0, -220)
 xe_doi = []
 diem = 0
 song = True
-
-# Ba làn đường cố định
-LAN_XE = [-100, 0, 100]
 
 bang = turtle.Turtle()
 bang.hideturtle()
@@ -67,9 +114,9 @@ def tao_xe_doi():
 
 
 def cham_xe(xe):
-    """Va chạm hình chữ nhật — phù hợp xe square, không dùng distance()."""
-    if abs(xe.xcor() - xe_em.xcor()) < 50:
-        if abs(xe.ycor() - xe_em.ycor()) < 35:
+    """Va chạm hình chữ nhật — xe shapesize(2,3) ≈ 40×60, không dùng distance()."""
+    if abs(xe.xcor() - xe_em.xcor()) < 60:
+        if abs(xe.ycor() - xe_em.ycor()) < 40:
             return True
     return False
 

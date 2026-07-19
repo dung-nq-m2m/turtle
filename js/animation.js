@@ -521,20 +521,23 @@ const TurtleAnimation = {
   renderGameRace(container, config) {
     container.innerHTML = `
       <p><strong>${config.label || 'Đua xe'}</strong></p>
-      <div style="position:relative;height:120px;background:#6b6b6b;border-radius:12px;overflow:hidden;max-width:220px;margin:0 auto">
-        <div style="position:absolute;left:33%;top:0;bottom:0;width:2px;background:#ccc;opacity:0.5"></div>
-        <div style="position:absolute;left:66%;top:0;bottom:0;width:2px;background:#ccc;opacity:0.5"></div>
-        <div id="race-enemy" style="position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:1.2rem;transition:top 1.2s linear">🚗</div>
-        <div id="race-car" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:1.4rem;transition:left 0.3s">🚙</div>
+      <div style="position:relative;height:120px;width:200px;margin:0 auto;border-radius:12px;overflow:hidden;background:#14532d">
+        <div style="position:absolute;left:25px;right:25px;top:0;bottom:0;background:#6b6b6b"></div>
+        <div style="position:absolute;left:25px;top:0;bottom:0;width:3px;background:#fff"></div>
+        <div style="position:absolute;right:25px;top:0;bottom:0;width:3px;background:#fff"></div>
+        <div style="position:absolute;left:33%;top:0;bottom:0;width:0;border-left:2px dashed gold;opacity:0.9"></div>
+        <div style="position:absolute;left:66%;top:0;bottom:0;width:0;border-left:2px dashed gold;opacity:0.9"></div>
+        <div id="race-enemy" style="position:absolute;top:8px;left:50%;transform:translateX(-50%);font-size:1.2rem;transition:top 1.2s linear;z-index:2">🚗</div>
+        <div id="race-car" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:1.4rem;transition:left 0.3s;z-index:2">🚙</div>
       </div>
-      <p style="color:#666;font-size:0.85rem;margin-top:0.5rem">← → đổi làn · né xe!</p>
+      <p style="color:#666;font-size:0.85rem;margin-top:0.5rem">Lề trắng · vạch vàng · ← → né xe</p>
       <button class="btn btn-orange" id="play-animation">▶ Xem demo</button>
     `;
     document.getElementById('play-animation')?.addEventListener('click', () => {
       const e = document.getElementById('race-enemy');
       const c = document.getElementById('race-car');
       if (e) { e.style.top = '8px'; void e.offsetWidth; e.style.top = '90px'; }
-      if (c) c.style.left = '22%';
+      if (c) c.style.left = '38%';
     });
     setTimeout(() => document.getElementById('play-animation')?.click(), 500);
   },
