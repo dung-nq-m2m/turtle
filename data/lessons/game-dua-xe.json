@@ -8,18 +8,19 @@
   "objectives": [
     "Quản lý nhiều xe đối thủ bằng list",
     "Dùng tracer(0) + ontimer làm game loop",
-    "Né va chạm bằng distance()",
+    "Kiểm tra làn trống trước khi tạo xe (tránh chồng)",
+    "Va chạm bằng abs() theo chiều ngang/dọc",
     "Dùng biến song giống Né bom"
   ],
-  "explanation": "Game <strong>Đua xe</strong> kết hợp Né bom (trạng thái <code>song</code>) và list nhiều đối tượng như Bắn bóng.\n\n• <code>xe_em</code> — xe của em, ← → đổi làn\n• <code>xe_doi = []</code> — xe đối thủ lao xuống\n• Né được → cộng quãng đường; tông → GAME OVER",
+  "explanation": "Game <strong>Đua xe</strong> kết hợp Né bom (trạng thái <code>song</code>) và list nhiều đối tượng như Bắn bóng.\n\n• <code>xe_em</code> — xe của em, ← → đổi 3 làn <code>LAN_XE</code>\n• <code>xe_doi = []</code> — xe đối thủ lao xuống\n• <code>lan_co_xe()</code> — chỉ tạo xe khi làn phía trên còn trống\n• Né được → +10 điểm; tông → GAME OVER",
   "architecture": {
-    "intro": "Đua xe = nhập liệu làn đường + game loop ontimer + list xe đối.",
+    "intro": "Đua xe = 3 làn + kiểm tra trước khi tạo + va chạm chữ nhật + game loop ontimer.",
     "layers": [
       {
         "title": "1. Khởi tạo",
         "items": [
           "xe_em dưới đường",
-          "xe_doi=[]",
+          "xe_doi=[], LAN_XE",
           "diem, song, tracer(0)"
         ]
       },
@@ -27,26 +28,26 @@
         "title": "2. Nhập liệu",
         "items": [
           "← → đổi làn ±100",
-          "Giới hạn ±150"
+          "Giới hạn ±100 (3 làn)"
         ]
       },
       {
         "title": "3. Logic",
         "items": [
-          "cap_nhat(): xe rơi",
-          "distance < 35 → thua",
-          "spawn ngẫu nhiên"
+          "lan_co_xe trước khi spawn",
+          "cham_xe bằng abs()",
+          "cap_nhat 40ms"
         ]
       },
       {
         "title": "4. Hiển thị",
         "items": [
           "update() 40ms",
-          "write quãng đường / TÔNG RỒI"
+          "write Điểm / TÔNG RỒI"
         ]
       }
     ],
-    "note": "Duyệt xe_doi[:] khi xóa — giống dan[:] ở Bắn bóng!"
+    "note": "Kiểm tra trước → rồi mới tạo xe. Duyệt xe_doi[:] khi xóa!"
   },
   "variables": [
     {
@@ -60,8 +61,13 @@
       "initial": "[]"
     },
     {
+      "name": "LAN_XE",
+      "meaning": "3 làn đường",
+      "initial": "[-100, 0, 100]"
+    },
+    {
       "name": "diem",
-      "meaning": "Quãng đường (m)",
+      "meaning": "Điểm (+10 mỗi xe vượt)",
       "initial": "0"
     },
     {
@@ -79,11 +85,11 @@
       },
       {
         "type": "process",
-        "label": "Khởi tạo xe_em, xe_doi=[], song=True, tracer(0)"
+        "label": "Khởi tạo xe_em, xe_doi=[], LAN_XE, song=True, tracer(0)"
       },
       {
         "type": "input",
-        "label": "← → đổi làn xe_em"
+        "label": "← → đổi làn xe_em (±100)"
       },
       {
         "type": "process",
@@ -97,13 +103,19 @@
       },
       {
         "type": "decision",
-        "label": "distance(xe_em) < 35?",
+        "label": "cham_xe(xe)?",
         "yes": "song=False, TÔNG RỒI",
         "no": "Tiếp"
       },
       {
+        "type": "decision",
+        "label": "Spawn + lan_co_xe trống?",
+        "yes": "tao_xe_doi()",
+        "no": "Bỏ qua"
+      },
+      {
         "type": "process",
-        "label": "Đôi khi tao_xe_doi() + update + ontimer 40ms"
+        "label": "update + ontimer 40ms"
       },
       {
         "type": "end",
@@ -112,19 +124,28 @@
     ]
   },
   "pseudocode": {
-    "note": "Chú ý if not song: return ở đầu cap_nhat — giống Né bom:",
+    "note": "Kiểm tra làn trống trước khi tạo — tránh xe chồng nhau:",
     "lines": [
       "BẮT ĐẦU",
-      "  xe_doi ← [], diem ← 0, song ← True, tracer(0)",
+      "  xe_doi ← [], LAN_XE ← [-100,0,100], diem ← 0, song ← True",
       "",
-      "  HÀM tao_xe_doi(): tạo xe ở y=300, x ngẫu nhiên trong 3 làn",
+      "  HÀM lan_co_xe(x):",
+      "    NẾU có xe cùng x và y > 180: True",
+      "",
+      "  HÀM tao_xe_doi():",
+      "    chọn lan trong LAN_XE",
+      "    NẾU lan_co_xe(lan): DỪNG",
+      "    tạo xe tại (lan, 300), append",
+      "",
+      "  HÀM cham_xe(xe):",
+      "    NẾU abs(dx) < 50 VÀ abs(dy) < 35: True",
       "",
       "  HÀM cap_nhat():",
       "    NẾU song = False: DỪNG",
       "    VỚI MỖI xe TRONG xe_doi[:]:",
       "      xe.y ← xe.y - 6",
-      "      NẾU xe quá thấp: xóa, diem+10",
-      "      NẾU distance(xe_em) < 35: song ← False, TÔNG RỒI",
+      "      NẾU xe quá thấp: xóa, diem+10, continue",
+      "      NẾU cham_xe(xe): song ← False, TÔNG RỒI",
       "    Đôi khi gọi tao_xe_doi()",
       "    update(), ontimer(cap_nhat, 40)",
       "",
@@ -132,30 +153,30 @@
       "KẾT THÚC"
     ]
   },
-  "syntax": "for xe in xe_doi[:]:",
-  "syntaxNote": "xe_doi[:] — copy list để remove an toàn khi đang lặp.",
+  "syntax": "if lan_co_xe(lan): return",
+  "syntaxNote": "Kiểm tra làn trống TRƯỚC khi tạo xe — tránh chồng lên nhau.",
   "animation": {
     "type": "game-race",
     "label": "Đua xe 🏎️"
   },
   "assetsGuide": "<p>Đặt ảnh/âm <strong>cùng thư mục</strong> với <code>dua-xe.py</code>.</p><table class=\"assets-table\"><tr><th>Loại</th><th>File</th><th>Ghi chú</th></tr><tr><td>Nền</td><td><code>nen-duong.gif</code></td><td>400×600, đường xám</td></tr><tr><td>Xe em</td><td><code>xe-em.gif</code></td><td>Xe xanh</td></tr><tr><td>Xe đối</td><td><code>xe-doi.gif</code></td><td>Xe đối thủ</td></tr><tr><td>Âm</td><td><code>tong.wav</code></td><td>Khi tông xe</td></tr></table><p>📄 <code>games/dua-xe.py</code> · <code>games/assets/huong-dan-dua-xe.md</code></p>",
-  "code": "\"\"\"\nGame: Đua xe 🏎️\nHọc viện Turtle Python - Lớp 6\nPhím ← → tránh xe đối lưu trên đường\n\"\"\"\nimport turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Đua xe 🏎️\")\nman_hinh.bgcolor(\"gray\")\nman_hinh.setup(width=400, height=600)\nman_hinh.tracer(0)\n\n# Xe của em\nxe_em = turtle.Turtle()\nxe_em.shape(\"square\")\nxe_em.color(\"blue\")\nxe_em.shapesize(stretch_wid=2, stretch_len=3)\nxe_em.penup()\nxe_em.goto(0, -220)\n\nxe_doi = []\ndiem = 0\nsong = True\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"white\")\nbang.goto(0, 270)\n\n\ndef ve_bang():\n    bang.clear()\n    bang.write(f\"Quãng đường: {diem}m  |  ← →\", align=\"center\", font=(\"Arial\", 13, \"bold\"))\n\n\ndef tao_xe_doi():\n    xe = turtle.Turtle()\n    xe.shape(\"square\")\n    xe.color(random.choice([\"red\", \"orange\", \"purple\"]))\n    xe.shapesize(stretch_wid=2, stretch_len=3)\n    xe.penup()\n    xe.goto(random.choice([-100, 0, 100]), 300)\n    xe_doi.append(xe)\n\n\ndef cap_nhat():\n    global diem, song\n    if not song:\n        return\n\n    for xe in xe_doi[:]:\n        xe.sety(xe.ycor() - 6)\n        if xe.ycor() < -300:\n            xe.hideturtle()\n            xe_doi.remove(xe)\n            diem += 10\n            ve_bang()\n        if xe.distance(xe_em) < 35:\n            song = False\n            bang.goto(0, 0)\n            bang.write(f\"TÔNG RỒI!\\nQuãng đường: {diem}m\",\n                       align=\"center\", font=(\"Arial\", 18, \"bold\"))\n            return\n\n    if random.random() < 0.03:\n        tao_xe_doi()\n\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)\n\n\ndef trai():\n    if song:\n        xe_em.setx(max(xe_em.xcor() - 100, -150))\n        man_hinh.update()\n\n\ndef phai():\n    if song:\n        xe_em.setx(min(xe_em.xcor() + 100, 150))\n        man_hinh.update()\n\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\n\nve_bang()\ncap_nhat()\nturtle.done()\n",
-  "resultDescription": "Né xe đối thủ càng lâu càng nhiều mét — tông là thua!",
+  "code": "\"\"\"\nGame: Đua xe 🏎️\nHọc viện Turtle Python - Lớp 6\n\nPhím ← → để tránh xe đối lưu\n\"\"\"\nimport turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Đua xe 🏎️\")\nman_hinh.bgcolor(\"gray\")\nman_hinh.setup(width=400, height=600)\nman_hinh.tracer(0)\n\n# Xe của em\nxe_em = turtle.Turtle()\nxe_em.shape(\"square\")\nxe_em.color(\"blue\")\nxe_em.shapesize(stretch_wid=2, stretch_len=3)\nxe_em.penup()\nxe_em.goto(0, -220)\n\nxe_doi = []\ndiem = 0\nsong = True\n\n# Ba làn đường cố định\nLAN_XE = [-100, 0, 100]\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"white\")\n\n\ndef ve_bang():\n    bang.clear()\n    bang.goto(0, 270)\n    bang.write(\n        \"Điểm: \" + str(diem) + \"  |  ← →\",\n        align=\"center\",\n        font=(\"Arial\", 13, \"bold\")\n    )\n\n\ndef lan_co_xe(x):\n    \"\"\"True nếu đã có xe đối ở phía trên cùng làn — tránh chồng xe.\"\"\"\n    for xe in xe_doi:\n        if xe.xcor() == x and xe.ycor() > 180:\n            return True\n    return False\n\n\ndef tao_xe_doi():\n    lan = random.choice(LAN_XE)\n    if lan_co_xe(lan):\n        return\n\n    xe = turtle.Turtle()\n    xe.shape(\"square\")\n    xe.color(random.choice([\"red\", \"orange\", \"purple\"]))\n    xe.shapesize(stretch_wid=2, stretch_len=3)\n    xe.penup()\n    xe.goto(lan, 300)\n    xe_doi.append(xe)\n\n\ndef cham_xe(xe):\n    \"\"\"Va chạm hình chữ nhật — phù hợp xe square, không dùng distance().\"\"\"\n    if abs(xe.xcor() - xe_em.xcor()) < 50:\n        if abs(xe.ycor() - xe_em.ycor()) < 35:\n            return True\n    return False\n\n\ndef cap_nhat():\n    global diem, song\n    if not song:\n        return\n\n    for xe in xe_doi[:]:\n        xe.sety(xe.ycor() - 6)\n\n        # Xe vượt qua → +10 điểm\n        if xe.ycor() < -300:\n            xe.hideturtle()\n            xe_doi.remove(xe)\n            diem = diem + 10\n            ve_bang()\n            continue\n\n        if cham_xe(xe):\n            song = False\n            bang.clear()\n            bang.goto(0, 0)\n            bang.write(\n                \"TÔNG RỒI!\\nĐiểm: \" + str(diem),\n                align=\"center\",\n                font=(\"Arial\", 18, \"bold\")\n            )\n            man_hinh.update()\n            return\n\n    if random.random() < 0.03:\n        tao_xe_doi()\n\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)\n\n\ndef sang_trai():\n    if song:\n        xe_em.setx(max(xe_em.xcor() - 100, -100))\n\n\ndef sang_phai():\n    if song:\n        xe_em.setx(min(xe_em.xcor() + 100, 100))\n\n\nman_hinh.listen()\nman_hinh.onkey(sang_trai, \"Left\")\nman_hinh.onkey(sang_phai, \"Right\")\n\nve_bang()\ncap_nhat()\nturtle.done()\n",
+  "resultDescription": "Né xe đối thủ: mỗi xe vượt qua +10 điểm. Tông xe = thua!",
   "remember": [
     {
       "command": "song = True/False",
       "meaning": "Còn đua / đã tông"
     },
     {
-      "command": "xe_doi = []",
-      "meaning": "List nhiều xe đối"
+      "command": "lan_co_xe(lan)",
+      "meaning": "Làn phía trên còn trống?"
     },
     {
-      "command": "distance() < 35",
-      "meaning": "Va chạm"
+      "command": "cham_xe(xe)",
+      "meaning": "Va chạm abs() ngang + dọc"
     },
     {
-      "tip": "ontimer + tracer(0) = game loop mượt!"
+      "tip": "Xe hình chữ nhật → dùng abs(), không distance()!"
     }
   ],
   "exercises": [
@@ -198,8 +219,8 @@
     "explanation": "if not song: return — dừng game loop khi đã thua."
   },
   "infographic": {
-    "function": "Game loop + list + né va chạm",
-    "syntax": "ontimer + distance + song",
+    "function": "Game loop + list + kiểm tra làn",
+    "syntax": "ontimer + lan_co_xe + abs",
     "example": "Đổi làn tránh xe đối",
     "result": "TÔNG RỒI khi va chạm",
     "exercise": "Thêm làn thứ 4"
@@ -211,15 +232,15 @@
     "steps": [
       {
         "title": "Bước 1 — Khởi tạo xe và trạng thái",
-        "flowLabel": "Khởi tạo xe_em, xe_doi=[], song=True, tracer(0)",
-        "explain": "Tạo màn hình xám, bật <code>tracer(0)</code>, xe xanh ở dưới, list rỗng <code>xe_doi</code>, <code>diem</code>, <code>song = True</code>.",
+        "flowLabel": "Khởi tạo xe_em, xe_doi=[], LAN_XE, song=True, tracer(0)",
+        "explain": "Tạo màn hình xám, bật <code>tracer(0)</code>, xe xanh ở dưới, list <code>xe_doi</code>, list 3 làn <code>LAN_XE</code>, <code>diem</code>, <code>song = True</code>.",
         "checklist": [
           "setup(400, 600), bgcolor gray, tracer(0)",
           "xe_em: square xanh, goto(0, -220)",
-          "xe_doi = [], diem = 0, song = True",
-          "bang write quãng đường"
+          "xe_doi = [], LAN_XE = [-100, 0, 100]",
+          "diem = 0, song = True, bang write Điểm"
         ],
-        "hintCode": "import turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Đua xe 🏎️\")\nman_hinh.bgcolor(\"gray\")\nman_hinh.setup(400, 600)\nman_hinh.tracer(0)\n\nxe_em = turtle.Turtle()\nxe_em.shape(\"square\")\nxe_em.color(\"blue\")\nxe_em.shapesize(2, 3)\nxe_em.penup()\nxe_em.goto(0, -220)\n\nxe_doi = []\ndiem = 0\nsong = True\n\nman_hinh.update()\nturtle.done()",
+        "hintCode": "import turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Đua xe 🏎️\")\nman_hinh.bgcolor(\"gray\")\nman_hinh.setup(400, 600)\nman_hinh.tracer(0)\n\nxe_em = turtle.Turtle()\nxe_em.shape(\"square\")\nxe_em.color(\"blue\")\nxe_em.shapesize(2, 3)\nxe_em.penup()\nxe_em.goto(0, -220)\n\nxe_doi = []\ndiem = 0\nsong = True\nLAN_XE = [-100, 0, 100]\n\nman_hinh.update()\nturtle.done()",
         "goal": "Thấy xe xanh ở dưới đường xám.",
         "quiz": [
           {
@@ -247,19 +268,19 @@
       {
         "title": "Bước 2 — Phím ← → đổi làn",
         "flowLabel": "← → đổi làn xe_em",
-        "explain": "Mỗi lần nhấn, x đổi ±100, giới hạn trong ±150 (3 làn). Chỉ cho đổi làn khi <code>song</code> còn True.",
+        "explain": "Mỗi lần nhấn, x đổi ±100, giới hạn trong ±100 (đúng 3 làn <code>LAN_XE</code>). Chỉ đổi làn khi <code>song</code> còn True.",
         "checklist": [
-          "def trai/phai với if song",
-          "setx(max(..., -150)) / min(..., 150)",
+          "def sang_trai / sang_phai với if song",
+          "setx(max(..., -100)) / min(..., 100)",
           "listen + onkey Left/Right"
         ],
-        "hintCode": "def trai():\n    if song:\n        xe_em.setx(max(xe_em.xcor() - 100, -150))\n\ndef phai():\n    if song:\n        xe_em.setx(min(xe_em.xcor() + 100, 150))\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")",
-        "goal": "← → đưa xe sang 3 vị trí: -100, 0, 100 (khoảng).",
+        "hintCode": "def sang_trai():\n    if song:\n        xe_em.setx(max(xe_em.xcor() - 100, -100))\n\ndef sang_phai():\n    if song:\n        xe_em.setx(min(xe_em.xcor() + 100, 100))\n\nman_hinh.listen()\nman_hinh.onkey(sang_trai, \"Left\")\nman_hinh.onkey(sang_phai, \"Right\")",
+        "goal": "← → đưa xe đúng 3 vị trí: -100, 0, 100.",
         "quiz": [
           {
             "question": "Giới hạn x của xe_em là bao nhiêu?",
             "options": [
-              "±150",
+              "±100 (3 làn)",
               "±400",
               "0 đến 100",
               "Không giới hạn"
@@ -279,24 +300,25 @@
         ]
       },
       {
-        "title": "Bước 3 — Tạo xe đối thủ (append list)",
-        "flowLabel": "Đôi khi tao_xe_doi()",
-        "explain": "Hàm <code>tao_xe_doi()</code> tạo Turtle mới ở y=300, x thuộc 3 làn <code>[-100, 0, 100]</code>, rồi <code>xe_doi.append(xe)</code>.",
+        "title": "Bước 3 — Tạo xe đối (kiểm tra làn trống)",
+        "flowLabel": "lan_co_xe? → tao_xe_doi()",
+        "explain": "Trước khi tạo: chọn làn trong <code>LAN_XE</code>. Nếu <code>lan_co_xe(lan)</code> (đã có xe y &gt; 180 cùng làn) thì <code>return</code> — tránh chồng xe. Chỉ khi trống mới tạo Turtle và <code>append</code>.",
         "checklist": [
-          "Tạo Turtle square màu ngẫu nhiên",
-          "goto(random.choice([-100,0,100]), 300)",
-          "xe_doi.append(xe)"
+          "def lan_co_xe(x): duyệt xe_doi, cùng x và y > 180",
+          "Chọn lan = random.choice(LAN_XE)",
+          "if lan_co_xe(lan): return",
+          "Tạo Turtle + xe_doi.append(xe)"
         ],
-        "hintCode": "def tao_xe_doi():\n    xe = turtle.Turtle()\n    xe.shape(\"square\")\n    xe.color(random.choice([\"red\", \"orange\", \"purple\"]))\n    xe.shapesize(2, 3)\n    xe.penup()\n    xe.goto(random.choice([-100, 0, 100]), 300)\n    xe_doi.append(xe)",
-        "goal": "Gọi thử tao_xe_doi() — thấy xe màu xuất hiện phía trên.",
+        "hintCode": "def lan_co_xe(x):\n    for xe in xe_doi:\n        if xe.xcor() == x and xe.ycor() > 180:\n            return True\n    return False\n\ndef tao_xe_doi():\n    lan = random.choice(LAN_XE)\n    if lan_co_xe(lan):\n        return\n    xe = turtle.Turtle()\n    xe.shape(\"square\")\n    xe.color(random.choice([\"red\", \"orange\", \"purple\"]))\n    xe.shapesize(2, 3)\n    xe.penup()\n    xe.goto(lan, 300)\n    xe_doi.append(xe)",
+        "goal": "Gọi thử tao_xe_doi() nhiều lần — không thấy 2 xe chồng cùng làn phía trên.",
         "quiz": [
           {
-            "question": "Lệnh nào thêm xe vào danh sách?",
+            "question": "Vì sao gọi lan_co_xe trước khi tạo xe?",
             "options": [
-              "xe_doi.append(xe)",
-              "xe_doi = xe",
-              "xe_doi.remove(xe)",
-              "xe_doi.clear()"
+              "Tránh hai xe chồng cùng làn",
+              "Tăng điểm nhanh hơn",
+              "Đổi màu xe_em",
+              "Bắt buộc cú pháp Python"
             ],
             "correct": 0
           },
@@ -315,14 +337,14 @@
       {
         "title": "Bước 4 — Game loop: xe rơi + điểm",
         "flowLabel": "Mỗi xe: y giảm 6 / Xe ra màn hình?",
-        "explain": "Trong <code>cap_nhat</code>: duyệt <code>xe_doi[:]</code>, giảm y. Ra khỏi màn → remove + cộng điểm. Cuối hàm <code>update()</code> + <code>ontimer(..., 40)</code>.",
+        "explain": "Trong <code>cap_nhat</code>: duyệt <code>xe_doi[:]</code>, giảm y. Ra khỏi màn → remove + <code>diem + 10</code> rồi <code>continue</code>. Cuối hàm <code>update()</code> + <code>ontimer(..., 40)</code>.",
         "checklist": [
           "if not song: return",
           "for xe in xe_doi[:]: sety(y-6)",
-          "y < -300 → remove + diem+10",
+          "y < -300 → remove + diem+10 + continue",
           "update + ontimer(cap_nhat, 40)"
         ],
-        "hintCode": "def cap_nhat():\n    global diem, song\n    if not song:\n        return\n    for xe in xe_doi[:]:\n        xe.sety(xe.ycor() - 6)\n        if xe.ycor() < -300:\n            xe.hideturtle()\n            xe_doi.remove(xe)\n            diem += 10\n            ve_bang()\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)",
+        "hintCode": "def cap_nhat():\n    global diem, song\n    if not song:\n        return\n    for xe in xe_doi[:]:\n        xe.sety(xe.ycor() - 6)\n        if xe.ycor() < -300:\n            xe.hideturtle()\n            xe_doi.remove(xe)\n            diem = diem + 10\n            ve_bang()\n            continue\n    man_hinh.update()\n    man_hinh.ontimer(cap_nhat, 40)",
         "goal": "Xe đối lao xuống và biến mất dưới đáy, điểm tăng.",
         "quiz": [
           {
@@ -348,24 +370,25 @@
         ]
       },
       {
-        "title": "Bước 5 — Va chạm + spawn + kết thúc",
-        "flowLabel": "distance < 35? / tao_xe_doi + ontimer",
-        "explain": "Nếu <code>xe.distance(xe_em) &lt; 35</code> → <code>song = False</code>, hiện TÔNG RỒI, return. Thỉnh thoảng <code>random.random() &lt; 0.03</code> tạo xe mới.",
+        "title": "Bước 5 — Va chạm abs() + spawn + kết thúc",
+        "flowLabel": "cham_xe? / tao_xe_doi + ontimer",
+        "explain": "Xe là hình chữ nhật → dùng <code>cham_xe</code> với <code>abs(dx) &lt; 50</code> và <code>abs(dy) &lt; 35</code> (không dùng <code>distance()</code>). Tông → <code>song = False</code>, hiện TÔNG RỒI. Thỉnh thoảng spawn nếu làn trống.",
         "checklist": [
-          "distance(xe_em) < 35 → song=False, write TÔNG RỒI",
+          "cham_xe: abs ngang < 50 và abs dọc < 35",
+          "Tông → song=False, write Điểm",
           "random.random() < 0.03 → tao_xe_doi()",
           "Gọi cap_nhat() lần đầu sau listen"
         ],
-        "hintCode": "        if xe.distance(xe_em) < 35:\n            song = False\n            bang.goto(0, 0)\n            bang.write(f\"TÔNG RỒI!\\nQuãng đường: {diem}m\",\n                       align=\"center\", font=(\"Arial\", 18, \"bold\"))\n            return\n    if random.random() < 0.03:\n        tao_xe_doi()\n\nve_bang()\ncap_nhat()\nturtle.done()",
+        "hintCode": "def cham_xe(xe):\n    if abs(xe.xcor() - xe_em.xcor()) < 50:\n        if abs(xe.ycor() - xe_em.ycor()) < 35:\n            return True\n    return False\n\n# trong for xe in xe_doi[:]:\n        if cham_xe(xe):\n            song = False\n            bang.clear()\n            bang.goto(0, 0)\n            bang.write(\"TÔNG RỒI!\\nĐiểm: \" + str(diem),\n                       align=\"center\", font=(\"Arial\", 18, \"bold\"))\n            man_hinh.update()\n            return\n    if random.random() < 0.03:\n        tao_xe_doi()\n\nve_bang()\ncap_nhat()\nturtle.done()",
         "goal": "Né xe được điểm; tông xe thì hiện TÔNG RỒI và dừng.",
         "quiz": [
           {
-            "question": "Lệnh nào phát hiện tông xe?",
+            "question": "Vì sao Đua xe dùng abs() thay vì distance()?",
             "options": [
-              "xe.distance(xe_em) < 35",
-              "xe.xcor() == xe_em.xcor()",
-              "len(xe_doi) == 0",
-              "diem > 100"
+              "Xe là hình chữ nhật — kiểm tra ngang + dọc riêng",
+              "abs() nhanh hơn luôn",
+              "distance() không tồn tại",
+              "Bắt buộc của Turtle"
             ],
             "correct": 0
           },
