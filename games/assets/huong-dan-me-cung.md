@@ -4,25 +4,49 @@
 
 Dành cho học sinh lớp 6 · Học viện Turtle Python
 
-## 1. Cấu trúc thư mục
+## 1. Cách vẽ mê cung đúng
+
+**Sai (chỉ một đường gấp khúc):**
+```python
+for dai in [360, 80, 200]:
+    tuong.forward(dai)
+    tuong.right(90)
+```
+
+**Đúng (nhiều bức tường rời):**
+```python
+DANH_SACH_TUONG = [
+    (-180, 180, 180, 180),   # tường ngang
+    (180, 180, 180, -180),   # tường dọc
+    # ...
+]
+
+def ve_tuong(x1, y1, x2, y2):
+    tuong.penup()
+    tuong.goto(x1, y1)
+    tuong.pendown()
+    tuong.goto(x2, y2)
+```
+
+Cùng list `DANH_SACH_TUONG` dùng để **vẽ** và **va chạm** (`cham_tuong`).
+
+## 2. Cấu trúc thư mục
 
 ```
 games/
 ├── me-cung.py
 ├── nen-me-cung.gif   ← nền (tùy chọn)
-├── dich.gif          ← đích / sao vàng (tùy chọn)
-└── thang.wav         ← âm thanh thắng (tùy chọn)
+├── dich.gif          ← đích (tùy chọn)
+└── thang.wav         ← âm thắng (tùy chọn)
 ```
 
-**Lưu ý:** File ảnh/âm đặt **cùng thư mục** với `me-cung.py`.
+File ảnh/âm đặt **cùng thư mục** với `me-cung.py` (không dùng `os.path`).
 
-Chưa có file → nền trắng, tường navy, đích circle vàng, rùa xanh.
-
-## 2. Chạy thử
+## 3. Chạy thử
 
 ```bash
 cd games
 python me-cung.py
 ```
 
-Phím: **↑ ↓ ← →** · Tìm tới ngôi sao vàng!
+Phím: **↑ ↓ ← →** · Không xuyên tường · Tìm tới ngôi sao vàng!

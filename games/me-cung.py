@@ -1,48 +1,92 @@
 """
 Game: Mê cung 🏰
 Học viện Turtle Python - Lớp 6
-Phím ↑ ↓ ← → để rùa tìm lối ra (hình sao vàng)
+
+↑ ↓ ← → tìm ngôi sao vàng
+Mỗi bức tường = một đoạn thẳng (x1, y1) → (x2, y2)
 """
 import turtle
 
 man_hinh = turtle.Screen()
 man_hinh.title("Mê cung 🏰")
 man_hinh.bgcolor("white")
-man_hinh.setup(width=500, height=500)
+man_hinh.setup(500, 500)
 
-# Vẽ tường mê cung
 tuong = turtle.Turtle()
 tuong.speed(0)
-tuong.pensize(3)
+tuong.pensize(5)
 tuong.color("navy")
+tuong.hideturtle()
 
-def ve_tuong(dai):
-    tuong.forward(dai)
+# Danh sách các bức tường: (x1, y1, x2, y2)
+# Dùng chung để VẼ và kiểm tra VA CHẠM
+DANH_SACH_TUONG = [
+    # Tường ngoài
+    (-180, 180, 180, 180),
+    (180, 180, 180, -180),
+    (180, -180, -180, -180),
+    (-180, -180, -180, 180),
+    # Tường trong
+    (-180, 100, 100, 100),
+    (140, 100, 180, 100),
+    (-100, 100, -100, 20),
+    (-100, 20, 100, 20),
+    (100, 20, 100, 100),
+    (-180, -20, -20, -20),
+    (60, -20, 180, -20),
+    (-20, -20, -20, -120),
+    (-100, -120, 100, -120),
+    (100, -120, 100, -180),
+    (-180, 60, -140, 60),
+    (-140, 60, -140, -60),
+    (140, 60, 140, -60),
+    (140, -60, 60, -60),
+]
+
+
+def ve_tuong(x1, y1, x2, y2):
+    """Vẽ một bức tường từ (x1, y1) đến (x2, y2)."""
+    tuong.penup()
+    tuong.goto(x1, y1)
+    tuong.pendown()
+    tuong.goto(x2, y2)
+
 
 def ve_me_cung():
-    tuong.penup()
-    tuong.goto(-180, 180)
-    tuong.pendown()
-    for dai in [360, 80, 200, 80, 200, 80, 120, 80, 240, 80, 200]:
-        ve_tuong(dai)
-        tuong.right(90)
+    for x1, y1, x2, y2 in DANH_SACH_TUONG:
+        ve_tuong(x1, y1, x2, y2)
+
+
+def cham_tuong(x, y):
+    """True nếu điểm (x, y) chạm gần một bức tường."""
+    for x1, y1, x2, y2 in DANH_SACH_TUONG:
+        # Tường ngang (cùng y)
+        if y1 == y2:
+            if min(x1, x2) - 10 <= x <= max(x1, x2) + 10:
+                if abs(y - y1) < 12:
+                    return True
+        # Tường dọc (cùng x)
+        if x1 == x2:
+            if min(y1, y2) - 10 <= y <= max(y1, y2) + 10:
+                if abs(x - x1) < 12:
+                    return True
+    return False
+
 
 ve_me_cung()
 
-# Đích (sao vàng)
 dich = turtle.Turtle()
 dich.shape("circle")
 dich.color("gold")
 dich.penup()
-dich.goto(160, -160)
+dich.goto(150, -150)
 dich.shapesize(1.5, 1.5)
 
-# Rùa người chơi
 rua = turtle.Turtle()
 rua.shape("turtle")
 rua.color("green")
 rua.penup()
-rua.goto(-160, 160)
+rua.goto(-150, 140)
 rua.setheading(270)
 
 buoc = 20
@@ -52,49 +96,61 @@ thong_bao = turtle.Turtle()
 thong_bao.hideturtle()
 thong_bao.penup()
 thong_bao.goto(0, 210)
-thong_bao.write("↑↓←→ di chuyển — tìm sao vàng!", align="center", font=("Arial", 12, "bold"))
+thong_bao.write(
+    "↑↓←→ tìm sao vàng — không xuyên tường!",
+    align="center",
+    font=("Arial", 12, "bold")
+)
 
 
 def kiem_tra_thang():
     global thang
-    if abs(rua.xcor() - dich.xcor()) < 30 and abs(rua.ycor() - dich.ycor()) < 30:
+    if abs(rua.xcor() - dich.xcor()) < 25 and abs(rua.ycor() - dich.ycor()) < 25:
         thang = True
         thong_bao.clear()
-        thong_bao.write("🎉 THẮNG RỒI!", align="center", font=("Arial", 22, "bold"))
+        thong_bao.write(
+            "🎉 THẮNG RỒI!",
+            align="center",
+            font=("Arial", 22, "bold")
+        )
 
 
-def len():
-    if not thang:
-        rua.setheading(90)
-        rua.forward(buoc)
+def di_chuyen(huong):
+    """Di chuyển 1 bước theo hướng — lùi lại nếu chạm tường."""
+    if thang:
+        return
+
+    x_cu = rua.xcor()
+    y_cu = rua.ycor()
+    rua.setheading(huong)
+    rua.forward(buoc)
+
+    if cham_tuong(rua.xcor(), rua.ycor()):
+        rua.goto(x_cu, y_cu)  # chạm tường → quay lại chỗ cũ
+    else:
         kiem_tra_thang()
 
 
-def xuong():
-    if not thang:
-        rua.setheading(270)
-        rua.forward(buoc)
-        kiem_tra_thang()
+def di_len():
+    di_chuyen(90)
 
 
-def trai():
-    if not thang:
-        rua.setheading(180)
-        rua.forward(buoc)
-        kiem_tra_thang()
+def di_xuong():
+    di_chuyen(270)
 
 
-def phai():
-    if not thang:
-        rua.setheading(0)
-        rua.forward(buoc)
-        kiem_tra_thang()
+def di_trai():
+    di_chuyen(180)
+
+
+def di_phai():
+    di_chuyen(0)
 
 
 man_hinh.listen()
-man_hinh.onkey(len, "Up")
-man_hinh.onkey(xuong, "Down")
-man_hinh.onkey(trai, "Left")
-man_hinh.onkey(phai, "Right")
+man_hinh.onkey(di_len, "Up")
+man_hinh.onkey(di_xuong, "Down")
+man_hinh.onkey(di_trai, "Left")
+man_hinh.onkey(di_phai, "Right")
 
 turtle.done()

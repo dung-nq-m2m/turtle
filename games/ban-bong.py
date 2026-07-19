@@ -85,11 +85,17 @@ dan = []
 # =========================
 
 def sang_trai():
-    sung.setx(sung.xcor() - 30)
+    x = sung.xcor() - 30
+    if x < -280:
+        x = -280
+    sung.setx(x)
 
 
 def sang_phai():
-    sung.setx(sung.xcor() + 30)
+    x = sung.xcor() + 30
+    if x > 280:
+        x = 280
+    sung.setx(x)
 
 
 # =========================

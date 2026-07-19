@@ -75,11 +75,13 @@ def cap_nhat():
 def trai():
     if song:
         xe_em.setx(max(xe_em.xcor() - 100, -150))
+        man_hinh.update()
 
 
 def phai():
     if song:
         xe_em.setx(min(xe_em.xcor() + 100, 150))
+        man_hinh.update()
 
 
 man_hinh.listen()

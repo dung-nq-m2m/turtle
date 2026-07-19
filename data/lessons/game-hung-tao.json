@@ -15,31 +15,106 @@
   "architecture": {
     "intro": "Game Hứng táo gồm 4 tầng. Em phải hiểu từng tầng trước khi giáo viên mở code.",
     "layers": [
-      { "title": "1. Khởi tạo", "items": ["Tạo màn hình (Screen)", "Tạo rùa + táo (Turtle)", "diem = 0"] },
-      { "title": "2. Nhập liệu", "items": ["onkey(← →) di chuyển", "onkey(Space) hứng", "listen() bật phím"] },
-      { "title": "3. Logic", "items": ["roi_tao() — táo x ngẫu nhiên", "Táo rơi (sety)", "Va chạm: |x_rùa - x_táo| < 40"] },
-      { "title": "4. Hiển thị", "items": ["show/hide táo", "write() điểm", "ontimer — lặp game"] }
+      {
+        "title": "1. Khởi tạo",
+        "items": [
+          "Tạo màn hình (Screen)",
+          "Tạo rùa + táo (Turtle)",
+          "diem = 0"
+        ]
+      },
+      {
+        "title": "2. Nhập liệu",
+        "items": [
+          "onkey(← →) di chuyển",
+          "onkey(Space) hứng",
+          "listen() bật phím"
+        ]
+      },
+      {
+        "title": "3. Logic",
+        "items": [
+          "roi_tao() — táo x ngẫu nhiên",
+          "Táo rơi (sety)",
+          "Va chạm: |x_rùa - x_táo| < 40"
+        ]
+      },
+      {
+        "title": "4. Hiển thị",
+        "items": [
+          "show/hide táo",
+          "write() điểm",
+          "ontimer — lặp game"
+        ]
+      }
     ],
     "note": "Logic nằm ở tầng 3 — đây là phần em cần vẽ sơ đồ trước!"
   },
   "variables": [
-    { "name": "rua", "meaning": "Nhân vật hứng táo", "initial": "Turtle(), y = -200" },
-    { "name": "tao", "meaning": "Quả táo rơi", "initial": "Turtle(), ẩn ban đầu" },
-    { "name": "diem", "meaning": "Số táo đã hứng", "initial": "0" },
-    { "name": "x", "meaning": "Vị trí ngang táo", "initial": "random -250..250" }
+    {
+      "name": "rua",
+      "meaning": "Nhân vật hứng táo",
+      "initial": "Turtle(), y = -200"
+    },
+    {
+      "name": "tao",
+      "meaning": "Quả táo rơi",
+      "initial": "Turtle(), ẩn ban đầu"
+    },
+    {
+      "name": "diem",
+      "meaning": "Số táo đã hứng",
+      "initial": "0"
+    },
+    {
+      "name": "x",
+      "meaning": "Vị trí ngang táo",
+      "initial": "random -250..250"
+    }
   ],
   "algorithm": {
     "title": "Thuật toán Game Hứng táo",
     "steps": [
-      { "type": "start", "label": "BẮT ĐẦU" },
-      { "type": "process", "label": "Khởi tạo: rùa, táo, diem = 0" },
-      { "type": "process", "label": "Gọi roi_tao() — táo xuất hiện trên cao" },
-      { "type": "process", "label": "Táo rơi xuống (giảm y)" },
-      { "type": "input", "label": "Chờ phím ← → (di chuyển) hoặc Space (hứng)" },
-      { "type": "decision", "label": "Rùa và táo gần nhau (< 40px)?", "yes": "diem + 1, táo mới", "no": "Tiếp tục rơi" },
-      { "type": "decision", "label": "Táo chạm đáy?", "yes": "Tạo táo mới (ontimer)", "no": "Rơi tiếp" },
-      { "type": "process", "label": "Lặp lại (vòng game)" },
-      { "type": "end", "label": "KẾT THÚC (turtle.done)" }
+      {
+        "type": "start",
+        "label": "BẮT ĐẦU"
+      },
+      {
+        "type": "process",
+        "label": "Khởi tạo: rùa, táo, diem = 0"
+      },
+      {
+        "type": "process",
+        "label": "Gọi roi_tao() — táo xuất hiện trên cao"
+      },
+      {
+        "type": "process",
+        "label": "Táo rơi xuống (giảm y)"
+      },
+      {
+        "type": "input",
+        "label": "Chờ phím ← → (di chuyển) hoặc Space (hứng)"
+      },
+      {
+        "type": "decision",
+        "label": "Rùa và táo gần nhau (< 40px)?",
+        "yes": "diem + 1, táo mới",
+        "no": "Tiếp tục rơi"
+      },
+      {
+        "type": "decision",
+        "label": "Táo chạm đáy?",
+        "yes": "Tạo táo mới (ontimer)",
+        "no": "Rơi tiếp"
+      },
+      {
+        "type": "process",
+        "label": "Lặp lại (vòng game)"
+      },
+      {
+        "type": "end",
+        "label": "KẾT THÚC (turtle.done)"
+      }
     ]
   },
   "pseudocode": {
@@ -68,28 +143,66 @@
   },
   "syntax": "if abs(rua.xcor() - tao.xcor()) < 40:",
   "syntaxNote": "Điều kiện va chạm — lõi logic game.",
-  "animation": { "type": "game-apple", "label": "Hứng táo 🍎" },
+  "animation": {
+    "type": "game-apple",
+    "label": "Hứng táo 🍎"
+  },
   "assetsGuide": "<p>Sau khi nắm thuật toán, em có thể làm game đẹp hơn bằng <strong>hình GIF</strong> và <strong>âm thanh WAV</strong> trên máy tính.</p><table class=\"assets-table\"><tr><th>Loại</th><th>File (trong <code>games/assets/</code>)</th><th>Ghi chú</th></tr><tr><td>Nền</td><td><code>images/nen-vuon.gif</code></td><td>600×500 px, GIF</td></tr><tr><td>Táo</td><td><code>images/tao.gif</code></td><td>Hoặc <code>register_shape()</code> trong code</td></tr><tr><td>Âm thanh</td><td><code>sounds/hung.wav</code>, <code>roi.wav</code></td><td>WAV, Windows <code>winsound</code></td></tr></table><p>📄 File game: <code>games/hung-tao.py</code> · Hướng dẫn: <code>games/assets/huong-dan-hung-tao.md</code></p>",
-  "code": "import turtle\nimport random\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Hứng táo 🍎\")\nman_hinh.bgcolor(\"lightblue\")\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(0, -200)\n\ntao = turtle.Turtle()\ntao.shape(\"circle\")\ntao.color(\"red\")\ntao.penup()\ntao.hideturtle()\n\ndiem = 0\n\ndef roi_tao():\n    x = random.randint(-250, 250)\n    tao.showturtle()\n    tao.goto(x, 250)\n    tao.sety(-250)\n\ndef hung_tao():\n    global diem\n    if abs(rua.xcor() - tao.xcor()) < 40:\n        diem += 1\n        tao.hideturtle()\n        man_hinh.ontimer(roi_tao, 500)\n\ndef trai(): rua.setx(rua.xcor() - 30)\ndef phai(): rua.setx(rua.xcor() + 30)\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\nman_hinh.onkey(hung_tao, \"space\")\n\nroi_tao()\nturtle.done()",
+  "code": "\"\"\"\nGame: Hứng táo 🍎\nHọc viện Turtle Python - Lớp 6\n\n← → di chuyển · Space hứng táo\n\nẢnh/âm (tùy chọn) — đặt cạnh file hung-tao.py:\n  nen-vuon.gif, tao.gif, hung.wav, roi.wav\n\"\"\"\nimport random\nimport turtle\n\n# --- Âm thanh (Windows, tùy chọn) ---\ntry:\n    import winsound\n\n    def phat_am(ten_file):\n        try:\n            winsound.PlaySound(ten_file, winsound.SND_ASYNC)\n        except Exception:\n            pass\nexcept ImportError:\n    def phat_am(ten_file):\n        pass\n\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Hứng táo 🍎\")\nman_hinh.setup(width=600, height=500)\nman_hinh.bgcolor(\"lightblue\")\n\n# Nếu có file nền cạnh hung-tao.py thì bỏ dấu # dòng dưới:\n# man_hinh.bgpic(\"nen-vuon.gif\")\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(0, -200)\n\ntao = turtle.Turtle()\ntao.shape(\"circle\")\ntao.color(\"red\")\ntao.penup()\ntao.hideturtle()\n\n# Nếu có tao.gif cạnh file .py:\n# try:\n#     man_hinh.addshape(\"tao.gif\")\n#     tao.shape(\"tao.gif\")\n# except Exception:\n#     pass\n\ndiem = 0\npen = turtle.Turtle()\npen.hideturtle()\npen.penup()\npen.goto(0, 220)\npen.color(\"black\")\n\n\ndef ve_diem():\n    pen.clear()\n    pen.write(f\"Điểm: {diem}\", align=\"center\", font=(\"Arial\", 16, \"bold\"))\n\n\ndef roi_tao():\n    x = random.randint(-250, 250)\n    tao.showturtle()\n    tao.goto(x, 250)\n    phat_am(\"roi.wav\")\n    tao.sety(-250)\n\n\ndef hung_tao():\n    global diem\n    if abs(rua.xcor() - tao.xcor()) < 40:\n        diem += 1\n        ve_diem()\n        phat_am(\"hung.wav\")\n        tao.hideturtle()\n        man_hinh.ontimer(roi_tao, 500)\n\n\ndef trai():\n    rua.setx(rua.xcor() - 30)\n\n\ndef phai():\n    rua.setx(rua.xcor() + 30)\n\n\nman_hinh.listen()\nman_hinh.onkey(trai, \"Left\")\nman_hinh.onkey(phai, \"Right\")\nman_hinh.onkey(hung_tao, \"space\")\n\nve_diem()\nroi_tao()\nturtle.done()\n",
   "resultDescription": "Táo rơi — rùa hứng trúng thì cộng điểm, táo mới xuất hiện.",
   "remember": [
-    { "command": "4 tầng game", "meaning": "Khởi tạo → Nhập → Logic → Hiển thị" },
-    { "command": "Va chạm", "meaning": "abs(x1 - x2) < ngưỡng" },
-    { "command": "ontimer()", "meaning": "Vòng lặp game không dùng while" },
-    { "tip": "Vẽ sơ đồ trước — code sau!" }
+    {
+      "command": "4 tầng game",
+      "meaning": "Khởi tạo → Nhập → Logic → Hiển thị"
+    },
+    {
+      "command": "Va chạm",
+      "meaning": "abs(x1 - x2) < ngưỡng"
+    },
+    {
+      "command": "ontimer()",
+      "meaning": "Vòng lặp game không dùng while"
+    },
+    {
+      "tip": "Vẽ sơ đồ trước — code sau!"
+    }
   ],
   "exercises": [
-    { "number": 1, "title": "Vẽ sơ đồ", "description": "Vẽ biểu đồ thuật toán trên giấy, nộp giáo viên." },
-    { "number": 2, "title": "Tự gõ code", "description": "Viết Python từ giả mã, không xem code mẫu." },
-    { "number": 3, "title": "Mở rộng", "description": "Thêm GAME OVER khi táo chạm đất mà chưa hứng." }
+    {
+      "number": 1,
+      "title": "Vẽ sơ đồ",
+      "description": "Vẽ biểu đồ thuật toán trên giấy, nộp giáo viên."
+    },
+    {
+      "number": 2,
+      "title": "Tự gõ code",
+      "description": "Viết Python từ giả mã, không xem code mẫu."
+    },
+    {
+      "number": 3,
+      "title": "Mở rộng",
+      "description": "Thêm GAME OVER khi táo chạm đất mà chưa hứng."
+    }
   ],
   "quiz": {
     "question": "Tầng nào chứa logic kiểm tra va chạm?",
     "options": [
-      { "text": "Khởi tạo", "correct": false },
-      { "text": "Nhập liệu", "correct": false },
-      { "text": "Logic game", "correct": true },
-      { "text": "Hiển thị", "correct": false }
+      {
+        "text": "Khởi tạo",
+        "correct": false
+      },
+      {
+        "text": "Nhập liệu",
+        "correct": false
+      },
+      {
+        "text": "Logic game",
+        "correct": true
+      },
+      {
+        "text": "Hiển thị",
+        "correct": false
+      }
     ],
     "explanation": "Kiểm tra va chạm và cộng điểm thuộc tầng Logic (tầng 3)."
   },
