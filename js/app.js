@@ -89,7 +89,8 @@ const TurtleAcademy = {
   },
 
   async loadJSON(path) {
-    const res = await fetch(`${this.basePath}${path}`);
+    const sep = path.includes('?') ? '&' : '?';
+    const res = await fetch(`${this.basePath}${path}${sep}v=20260719`);
     if (!res.ok) throw new Error(`Không tải được: ${path}`);
     return res.json();
   },
