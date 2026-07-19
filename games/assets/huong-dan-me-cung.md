@@ -4,6 +4,12 @@
 
 Dành cho học sinh lớp 6 · Học viện Turtle Python
 
+## Màn hình game thật
+
+![Mê cung — HUD thời gian / điểm / bước, tường chữ S, rùa xanh → sao vàng](../../images/lessons/game-me-cung.png)
+
+↑↓←→ tìm sao vàng · Mỗi bước +5 điểm · Thắng nhanh = thưởng cao
+
 ## 1. Cách vẽ mê cung đúng
 
 **Sai (chỉ một đường gấp khúc):**

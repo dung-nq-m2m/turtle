@@ -6,6 +6,9 @@ Học viện Turtle Python - Lớp 6
 
 Mỗi bức tường là một đoạn thẳng (x1, y1) → (x2, y2)
 Logic: tính vị trí mới → kiểm tra tường → mới được đi
+
+Điểm: +5 mỗi bước đi được
+Thưởng khi thắng: càng nhanh càng nhiều điểm
 """
 import turtle
 
@@ -24,25 +27,15 @@ tuong.hideturtle()
 KHOANG_CACH_TUONG = 10
 BUOC = 20
 
-# Mê cung hình chữ S — đường đi đã BFS kiểm chứng
-# Start (-140, 140) → đích (140, -140)
+# Mê cung hình chữ S — Start (-140, 140) → đích (140, -140)
 DANH_SACH_TUONG = [
-    # Ngoài
     (-180, 180, 180, 180),
     (180, 180, 180, -180),
     (180, -180, -180, -180),
     (-180, -180, -180, 180),
-
-    # Hàng 1 — khe PHẢI (x > 100)
     (-180, 50, 100, 50),
-
-    # Hàng 2 — khe TRÁI (x < -100)
     (-100, -50, 180, -50),
-
-    # Hàng 3 — khe PHẢI tới đích (x > 100)
     (-180, -130, 100, -130),
-
-    # Cột trang trí (không chặn đường chữ S)
     (40, 50, 40, 120),
     (-40, -50, -40, 20),
 ]
@@ -77,16 +70,45 @@ rua.goto(-140, 140)
 rua.setheading(270)
 
 thang = False
+thoi_gian = 0
+diem = 0
+so_buoc = 0
+
+bang = turtle.Turtle()
+bang.hideturtle()
+bang.penup()
+bang.color("black")
 
 thong_bao = turtle.Turtle()
 thong_bao.hideturtle()
 thong_bao.penup()
-thong_bao.goto(0, 210)
+thong_bao.goto(0, -210)
 thong_bao.write(
     "↑ ↓ ← → tìm sao vàng — không xuyên tường!",
     align="center",
-    font=("Arial", 12, "bold")
+    font=("Arial", 11, "bold")
 )
+
+
+def ve_bang():
+    bang.clear()
+    bang.goto(0, 215)
+    bang.write(
+        f"⏱ {thoi_gian}s   |   Điểm: {diem}   |   Bước: {so_buoc}",
+        align="center",
+        font=("Arial", 14, "bold")
+    )
+
+
+def dem_gio():
+    """Đếm thời gian mỗi giây — dừng khi thắng."""
+    global thoi_gian
+    if thang:
+        return
+    thoi_gian = thoi_gian + 1
+    ve_bang()
+    man_hinh.update()
+    man_hinh.ontimer(dem_gio, 1000)
 
 
 def cham_tuong(x, y):
@@ -103,20 +125,25 @@ def cham_tuong(x, y):
 
 
 def kiem_tra_thang():
-    global thang
+    global thang, diem
     if rua.distance(dich) < 25:
         thang = True
+        # Thưởng nhanh: tối đa 200, mỗi giây trừ 5
+        thuong = max(0, 200 - thoi_gian * 5)
+        diem = diem + thuong
+        ve_bang()
         thong_bao.clear()
         thong_bao.goto(0, 0)
         thong_bao.write(
-            "🎉 THẮNG RỒI!",
+            f"🎉 THẮNG RỒI!\n⏱ {thoi_gian}s  |  Điểm: {diem}\n(+{thuong} thưởng nhanh)",
             align="center",
-            font=("Arial", 22, "bold")
+            font=("Arial", 18, "bold")
         )
 
 
 def di_chuyen(huong):
     """Tính vị trí mới → kiểm tra tường → mới được đi."""
+    global diem, so_buoc
     if thang:
         return
 
@@ -138,6 +165,9 @@ def di_chuyen(huong):
         return
 
     rua.goto(x_moi, y_moi)
+    so_buoc = so_buoc + 1
+    diem = diem + 5
+    ve_bang()
     kiem_tra_thang()
     man_hinh.update()
 
@@ -164,5 +194,8 @@ man_hinh.onkey(di_xuong, "Down")
 man_hinh.onkey(di_trai, "Left")
 man_hinh.onkey(di_phai, "Right")
 
+ve_bang()
 man_hinh.update()
+man_hinh.ontimer(dem_gio, 1000)
+
 turtle.done()

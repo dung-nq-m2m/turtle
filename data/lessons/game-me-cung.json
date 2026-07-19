@@ -9,7 +9,8 @@
     "Vẽ mê cung bằng nhiều bức tường ve_tuong(x1, y1, x2, y2)",
     "Lưu tường trong list DANH_SACH_TUONG để vừa vẽ vừa kiểm tra va chạm",
     "Điều khiển rùa 4 hướng, không xuyên tường",
-    "Thiết kế điều kiện thắng khi gần đích vàng"
+    "Thiết kế điều kiện thắng khi gần đích vàng",
+    "Theo dõi thời gian, số bước và điểm thưởng khi thắng"
   ],
   "explanation": "Game <strong>Mê cung</strong> luyện <strong>vẽ tường + va chạm + đích đến</strong>.\n\n• Mỗi bức tường là một đoạn thẳng <code>(x1, y1) → (x2, y2)</code>\n• List <code>DANH_SACH_TUONG</code> dùng chung để <strong>vẽ</strong> và <strong>chạm tường</strong>\n• Rùa đi từng bước <code>buoc = 20</code> — chạm tường thì quay lại chỗ cũ\n• Gần đích vàng → <code>thang = True</code>",
   "architecture": {
@@ -51,18 +52,23 @@
   "variables": [
     {
       "name": "DANH_SACH_TUONG",
-      "meaning": "List đoạn tường (x1,y1,x2,y2)",
+      "meaning": "List đoạn tường",
       "initial": "list"
     },
     {
-      "name": "KHOANG_CACH_TUONG",
-      "meaning": "Ngưỡng an toàn với tường",
-      "initial": "10"
+      "name": "thoi_gian",
+      "meaning": "Số giây đã chơi",
+      "initial": "0"
     },
     {
-      "name": "BUOC",
-      "meaning": "Độ dài mỗi bước",
-      "initial": "20"
+      "name": "diem",
+      "meaning": "Điểm (+5/bước, +thưởng nhanh)",
+      "initial": "0"
+    },
+    {
+      "name": "so_buoc",
+      "meaning": "Số bước đi được",
+      "initial": "0"
     },
     {
       "name": "rua",
@@ -142,26 +148,27 @@
   "syntaxNote": "Kiểm tra vị trí mới TRƯỚC khi đi — không forward rồi kéo ngược.",
   "animation": {
     "type": "game-maze",
-    "label": "Mê cung 🏰"
+    "label": "Mê cung 🏰",
+    "previewImage": "images/lessons/game-me-cung.png"
   },
-  "assetsGuide": "<p>Game Mê cung chạy tốt với hình vẽ mặc định. Muốn đẹp hơn, đặt file <strong>cùng thư mục</strong> với <code>me-cung.py</code>.</p><table class=\"assets-table\"><tr><th>Loại</th><th>File</th><th>Ghi chú</th></tr><tr><td>Nền</td><td><code>nen-me-cung.gif</code></td><td>500×500, tùy chọn</td></tr><tr><td>Đích</td><td><code>dich.gif</code></td><td>Sao / cờ vàng</td></tr><tr><td>Âm</td><td><code>thang.wav</code></td><td>Khi tới đích</td></tr></table><p>📄 <code>games/me-cung.py</code> · <code>games/assets/huong-dan-me-cung.md</code></p>",
-  "code": "\"\"\"\nGame: Mê cung 🏰\nHọc viện Turtle Python - Lớp 6\n\n↑ ↓ ← → tìm ngôi sao vàng\n\nMỗi bức tường là một đoạn thẳng (x1, y1) → (x2, y2)\nLogic: tính vị trí mới → kiểm tra tường → mới được đi\n\"\"\"\nimport turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mê cung 🏰\")\nman_hinh.bgcolor(\"white\")\nman_hinh.setup(500, 500)\nman_hinh.tracer(0)\n\ntuong = turtle.Turtle()\ntuong.speed(0)\ntuong.pensize(4)\ntuong.color(\"navy\")\ntuong.hideturtle()\n\nKHOANG_CACH_TUONG = 10\nBUOC = 20\n\n# Mê cung hình chữ S — đường đi đã BFS kiểm chứng\n# Start (-140, 140) → đích (140, -140)\nDANH_SACH_TUONG = [\n    # Ngoài\n    (-180, 180, 180, 180),\n    (180, 180, 180, -180),\n    (180, -180, -180, -180),\n    (-180, -180, -180, 180),\n\n    # Hàng 1 — khe PHẢI (x > 100)\n    (-180, 50, 100, 50),\n\n    # Hàng 2 — khe TRÁI (x < -100)\n    (-100, -50, 180, -50),\n\n    # Hàng 3 — khe PHẢI tới đích (x > 100)\n    (-180, -130, 100, -130),\n\n    # Cột trang trí (không chặn đường chữ S)\n    (40, 50, 40, 120),\n    (-40, -50, -40, 20),\n]\n\n\ndef ve_tuong(x1, y1, x2, y2):\n    tuong.penup()\n    tuong.goto(x1, y1)\n    tuong.pendown()\n    tuong.goto(x2, y2)\n\n\ndef ve_me_cung():\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        ve_tuong(x1, y1, x2, y2)\n\n\nve_me_cung()\n\ndich = turtle.Turtle()\ndich.shape(\"circle\")\ndich.color(\"gold\")\ndich.penup()\ndich.goto(140, -140)\ndich.shapesize(1.5, 1.5)\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(-140, 140)\nrua.setheading(270)\n\nthang = False\n\nthong_bao = turtle.Turtle()\nthong_bao.hideturtle()\nthong_bao.penup()\nthong_bao.goto(0, 210)\nthong_bao.write(\n    \"↑ ↓ ← → tìm sao vàng — không xuyên tường!\",\n    align=\"center\",\n    font=(\"Arial\", 12, \"bold\")\n)\n\n\ndef cham_tuong(x, y):\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        if y1 == y2:\n            if min(x1, x2) - KHOANG_CACH_TUONG <= x <= max(x1, x2) + KHOANG_CACH_TUONG:\n                if abs(y - y1) < KHOANG_CACH_TUONG:\n                    return True\n        elif x1 == x2:\n            if min(y1, y2) - KHOANG_CACH_TUONG <= y <= max(y1, y2) + KHOANG_CACH_TUONG:\n                if abs(x - x1) < KHOANG_CACH_TUONG:\n                    return True\n    return False\n\n\ndef kiem_tra_thang():\n    global thang\n    if rua.distance(dich) < 25:\n        thang = True\n        thong_bao.clear()\n        thong_bao.goto(0, 0)\n        thong_bao.write(\n            \"🎉 THẮNG RỒI!\",\n            align=\"center\",\n            font=(\"Arial\", 22, \"bold\")\n        )\n\n\ndef di_chuyen(huong):\n    \"\"\"Tính vị trí mới → kiểm tra tường → mới được đi.\"\"\"\n    if thang:\n        return\n\n    x_moi = rua.xcor()\n    y_moi = rua.ycor()\n\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n\n    rua.setheading(huong)\n\n    if cham_tuong(x_moi, y_moi):\n        return\n\n    rua.goto(x_moi, y_moi)\n    kiem_tra_thang()\n    man_hinh.update()\n\n\ndef di_len():\n    di_chuyen(90)\n\n\ndef di_xuong():\n    di_chuyen(270)\n\n\ndef di_trai():\n    di_chuyen(180)\n\n\ndef di_phai():\n    di_chuyen(0)\n\n\nman_hinh.listen()\nman_hinh.onkey(di_len, \"Up\")\nman_hinh.onkey(di_xuong, \"Down\")\nman_hinh.onkey(di_trai, \"Left\")\nman_hinh.onkey(di_phai, \"Right\")\n\nman_hinh.update()\nturtle.done()\n",
-  "resultDescription": "Tìm đường trong mê cung thật (nhiều tường) tới sao vàng — không xuyên tường.",
+  "assetsGuide": "<p><img src=\"images/lessons/game-me-cung.png\" alt=\"Màn hình game Mê cung\" style=\"max-width:320px;width:100%;border:2px solid #1a3a6b;border-radius:12px;display:block;margin:0.5rem auto\"></p><p>Game chạy tốt với hình vẽ mặc định. Muốn đẹp hơn, đặt file <strong>cùng thư mục</strong> với <code>me-cung.py</code>.</p><table class=\"assets-table\"><tr><th>Loại</th><th>File</th><th>Ghi chú</th></tr><tr><td>Nền</td><td><code>nen-me-cung.gif</code></td><td>500×500, tùy chọn</td></tr><tr><td>Đích</td><td><code>dich.gif</code></td><td>Sao / cờ vàng</td></tr><tr><td>Âm</td><td><code>thang.wav</code></td><td>Khi tới đích</td></tr></table><p>📄 <code>games/me-cung.py</code> · <code>games/assets/huong-dan-me-cung.md</code></p>",
+  "code": "\"\"\"\nGame: Mê cung 🏰\nHọc viện Turtle Python - Lớp 6\n\n↑ ↓ ← → tìm ngôi sao vàng\n\nMỗi bức tường là một đoạn thẳng (x1, y1) → (x2, y2)\nLogic: tính vị trí mới → kiểm tra tường → mới được đi\n\nĐiểm: +5 mỗi bước đi được\nThưởng khi thắng: càng nhanh càng nhiều điểm\n\"\"\"\nimport turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mê cung 🏰\")\nman_hinh.bgcolor(\"white\")\nman_hinh.setup(500, 500)\nman_hinh.tracer(0)\n\ntuong = turtle.Turtle()\ntuong.speed(0)\ntuong.pensize(4)\ntuong.color(\"navy\")\ntuong.hideturtle()\n\nKHOANG_CACH_TUONG = 10\nBUOC = 20\n\n# Mê cung hình chữ S — Start (-140, 140) → đích (140, -140)\nDANH_SACH_TUONG = [\n    (-180, 180, 180, 180),\n    (180, 180, 180, -180),\n    (180, -180, -180, -180),\n    (-180, -180, -180, 180),\n    (-180, 50, 100, 50),\n    (-100, -50, 180, -50),\n    (-180, -130, 100, -130),\n    (40, 50, 40, 120),\n    (-40, -50, -40, 20),\n]\n\n\ndef ve_tuong(x1, y1, x2, y2):\n    tuong.penup()\n    tuong.goto(x1, y1)\n    tuong.pendown()\n    tuong.goto(x2, y2)\n\n\ndef ve_me_cung():\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        ve_tuong(x1, y1, x2, y2)\n\n\nve_me_cung()\n\ndich = turtle.Turtle()\ndich.shape(\"circle\")\ndich.color(\"gold\")\ndich.penup()\ndich.goto(140, -140)\ndich.shapesize(1.5, 1.5)\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(-140, 140)\nrua.setheading(270)\n\nthang = False\nthoi_gian = 0\ndiem = 0\nso_buoc = 0\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"black\")\n\nthong_bao = turtle.Turtle()\nthong_bao.hideturtle()\nthong_bao.penup()\nthong_bao.goto(0, -210)\nthong_bao.write(\n    \"↑ ↓ ← → tìm sao vàng — không xuyên tường!\",\n    align=\"center\",\n    font=(\"Arial\", 11, \"bold\")\n)\n\n\ndef ve_bang():\n    bang.clear()\n    bang.goto(0, 215)\n    bang.write(\n        f\"⏱ {thoi_gian}s   |   Điểm: {diem}   |   Bước: {so_buoc}\",\n        align=\"center\",\n        font=(\"Arial\", 14, \"bold\")\n    )\n\n\ndef dem_gio():\n    \"\"\"Đếm thời gian mỗi giây — dừng khi thắng.\"\"\"\n    global thoi_gian\n    if thang:\n        return\n    thoi_gian = thoi_gian + 1\n    ve_bang()\n    man_hinh.update()\n    man_hinh.ontimer(dem_gio, 1000)\n\n\ndef cham_tuong(x, y):\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        if y1 == y2:\n            if min(x1, x2) - KHOANG_CACH_TUONG <= x <= max(x1, x2) + KHOANG_CACH_TUONG:\n                if abs(y - y1) < KHOANG_CACH_TUONG:\n                    return True\n        elif x1 == x2:\n            if min(y1, y2) - KHOANG_CACH_TUONG <= y <= max(y1, y2) + KHOANG_CACH_TUONG:\n                if abs(x - x1) < KHOANG_CACH_TUONG:\n                    return True\n    return False\n\n\ndef kiem_tra_thang():\n    global thang, diem\n    if rua.distance(dich) < 25:\n        thang = True\n        # Thưởng nhanh: tối đa 200, mỗi giây trừ 5\n        thuong = max(0, 200 - thoi_gian * 5)\n        diem = diem + thuong\n        ve_bang()\n        thong_bao.clear()\n        thong_bao.goto(0, 0)\n        thong_bao.write(\n            f\"🎉 THẮNG RỒI!\\n⏱ {thoi_gian}s  |  Điểm: {diem}\\n(+{thuong} thưởng nhanh)\",\n            align=\"center\",\n            font=(\"Arial\", 18, \"bold\")\n        )\n\n\ndef di_chuyen(huong):\n    \"\"\"Tính vị trí mới → kiểm tra tường → mới được đi.\"\"\"\n    global diem, so_buoc\n    if thang:\n        return\n\n    x_moi = rua.xcor()\n    y_moi = rua.ycor()\n\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n\n    rua.setheading(huong)\n\n    if cham_tuong(x_moi, y_moi):\n        return\n\n    rua.goto(x_moi, y_moi)\n    so_buoc = so_buoc + 1\n    diem = diem + 5\n    ve_bang()\n    kiem_tra_thang()\n    man_hinh.update()\n\n\ndef di_len():\n    di_chuyen(90)\n\n\ndef di_xuong():\n    di_chuyen(270)\n\n\ndef di_trai():\n    di_chuyen(180)\n\n\ndef di_phai():\n    di_chuyen(0)\n\n\nman_hinh.listen()\nman_hinh.onkey(di_len, \"Up\")\nman_hinh.onkey(di_xuong, \"Down\")\nman_hinh.onkey(di_trai, \"Left\")\nman_hinh.onkey(di_phai, \"Right\")\n\nve_bang()\nman_hinh.update()\nman_hinh.ontimer(dem_gio, 1000)\n\nturtle.done()\n",
+  "resultDescription": "Tìm sao vàng càng nhanh càng nhiều điểm. Mỗi bước +5; thắng thêm thưởng theo thời gian.",
   "remember": [
     {
-      "command": "ve_tuong(x1,y1,x2,y2)",
-      "meaning": "Vẽ một bức tường"
+      "command": "ontimer(dem_gio, 1000)",
+      "meaning": "Đếm thời gian mỗi giây"
     },
     {
-      "command": "KHOANG_CACH_TUONG",
-      "meaning": "Ngưỡng an toàn với tường"
+      "command": "diem += 5",
+      "meaning": "Cộng điểm mỗi bước đi được"
     },
     {
-      "command": "Kiểm tra trước khi đi",
-      "meaning": "Tính vị trí mới → cham_tuong → goto"
+      "command": "thuong = max(0, 200 - thoi_gian*5)",
+      "meaning": "Thưởng thắng nhanh"
     },
     {
-      "tip": "Một list tường = vừa vẽ vừa va chạm!"
+      "tip": "Kiểm tra tường TRƯỚC khi goto!"
     }
   ],
   "exercises": [

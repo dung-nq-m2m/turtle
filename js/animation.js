@@ -472,29 +472,50 @@ const TurtleAnimation = {
   },
 
   renderGameMaze(container, config) {
+    const preview = config.previewImage
+      || 'images/lessons/game-me-cung.png';
     container.innerHTML = `
       <p><strong>${config.label || 'Mê cung'}</strong></p>
-      <div style="position:relative;height:110px;background:#fafafa;border:2px solid #1a3a6b;border-radius:12px;overflow:hidden;max-width:280px;margin:0 auto">
-        <div style="position:absolute;top:12px;left:18px;width:70%;height:8px;background:#1a3a6b"></div>
-        <div style="position:absolute;top:12px;right:18px;width:8px;height:55%;background:#1a3a6b"></div>
-        <div style="position:absolute;bottom:20px;left:30%;width:50%;height:8px;background:#1a3a6b"></div>
-        <div id="maze-turtle" style="position:absolute;top:28px;left:22px;font-size:1.4rem;transition:top 0.8s,left 0.8s">🐢</div>
-        <div style="position:absolute;bottom:12px;right:24px;font-size:1.2rem">⭐</div>
+      <div class="game-preview-real" style="max-width:320px;margin:0 auto;text-align:center">
+        <img src="${preview}" alt="Màn hình game Mê cung"
+             style="width:100%;border:2px solid #1a3a6b;border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.08)">
       </div>
-      <p style="color:#666;font-size:0.85rem;margin-top:0.5rem">↑↓←→ tìm đích vàng</p>
-      <button class="btn btn-orange" id="play-animation">▶ Xem đường đi</button>
+      <p style="color:#666;font-size:0.85rem;margin-top:0.5rem">
+        ↑↓←→ tìm sao vàng · Mỗi bước +5 điểm · Thắng nhanh = thưởng cao
+      </p>
+      <div style="position:relative;height:90px;background:#fafafa;border:2px solid #1a3a6b;border-radius:12px;overflow:hidden;max-width:280px;margin:0.75rem auto 0">
+        <!-- Sơ đồ chữ S thu nhỏ khớp game -->
+        <svg viewBox="0 0 200 160" width="100%" height="90" aria-hidden="true">
+          <rect x="10" y="10" width="180" height="140" fill="none" stroke="#000080" stroke-width="4"/>
+          <line x1="10" y1="55" x2="130" y2="55" stroke="#000080" stroke-width="3"/>
+          <line x1="55" y1="95" x2="190" y2="95" stroke="#000080" stroke-width="3"/>
+          <line x1="10" y1="125" x2="130" y2="125" stroke="#000080" stroke-width="3"/>
+          <line x1="120" y1="30" x2="120" y2="55" stroke="#000080" stroke-width="3"/>
+          <line x1="80" y1="70" x2="80" y2="95" stroke="#000080" stroke-width="3"/>
+          <circle id="maze-star" cx="165" cy="135" r="7" fill="gold" stroke="#c9a000"/>
+          <text id="maze-turtle" x="28" y="38" font-size="16">🐢</text>
+        </svg>
+      </div>
+      <button class="btn btn-orange" id="play-animation" style="margin-top:0.5rem">▶ Xem đường chữ S</button>
     `;
     document.getElementById('play-animation')?.addEventListener('click', () => {
       const t = document.getElementById('maze-turtle');
-      if (t) {
-        t.style.top = '28px';
-        t.style.left = '22px';
-        void t.offsetWidth;
-        t.style.top = '68px';
-        t.style.left = '200px';
-      }
+      if (!t) return;
+      t.style.transition = 'none';
+      t.setAttribute('x', '28');
+      t.setAttribute('y', '38');
+      void t.getBoundingClientRect();
+      t.style.transition = 'all 1.6s ease-in-out';
+      // path roughly: right → down → left → down → right → down
+      requestAnimationFrame(() => {
+        t.setAttribute('x', '150');
+        t.setAttribute('y', '48');
+        setTimeout(() => { t.setAttribute('x', '150'); t.setAttribute('y', '85'); }, 400);
+        setTimeout(() => { t.setAttribute('x', '40'); t.setAttribute('y', '108'); }, 800);
+        setTimeout(() => { t.setAttribute('x', '155'); t.setAttribute('y', '138'); }, 1200);
+      });
     });
-    setTimeout(() => document.getElementById('play-animation')?.click(), 500);
+    setTimeout(() => document.getElementById('play-animation')?.click(), 600);
   },
 
   renderGameRace(container, config) {
@@ -541,9 +562,12 @@ const TurtleAnimation = {
       'game-hung-tao': `<svg viewBox="0 0 120 80" width="120"><rect width="120" height="80" fill="lightblue"/><text x="50" y="25" font-size="16">🍎</text><text x="45" y="70" font-size="20">🐢</text></svg>`,
       'game-ne-bom': `<svg viewBox="0 0 120 80" width="120"><rect width="120" height="80" fill="#222"/><text x="48" y="25" font-size="16">💣</text><text x="45" y="70" font-size="20">🐢</text></svg>`,
       'game-ban-bong': `<svg viewBox="0 0 120 80" width="120"><rect width="120" height="80" fill="navy"/><circle cx="40" cy="20" r="8" fill="orange"/><circle cx="80" cy="20" r="8" fill="orange"/><text x="52" y="75" font-size="14">🔺</text></svg>`,
-      'game-me-cung': `<svg viewBox="0 0 120 80" width="120"><rect width="120" height="80" fill="#fafafa" stroke="#1a3a6b"/><path d="M15 15 h90 v20 h-40 v30 h40" fill="none" stroke="#1a3a6b" stroke-width="4"/><text x="18" y="40" font-size="14">🐢</text><text x="88" y="68" font-size="14">⭐</text></svg>`,
       'game-dua-xe': `<svg viewBox="0 0 120 80" width="120"><rect width="120" height="80" fill="#6b6b6b"/><line x1="40" y1="0" x2="40" y2="80" stroke="#ccc" stroke-dasharray="4"/><line x1="80" y1="0" x2="80" y2="80" stroke="#ccc" stroke-dasharray="4"/><text x="50" y="25" font-size="14">🚗</text><text x="50" y="70" font-size="14">🚙</text></svg>`
     };
+    if (lessonId === 'game-me-cung') {
+      return `<img src="images/lessons/game-me-cung.png" alt="Kết quả game Mê cung"
+        style="max-width:280px;width:100%;border-radius:12px;border:2px solid #1a3a6b">`;
+    }
     return previews[lessonId] || previews.forward;
   }
 };
