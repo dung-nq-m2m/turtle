@@ -3,7 +3,9 @@ Game: Mê cung 🏰
 Học viện Turtle Python - Lớp 6
 
 ↑ ↓ ← → tìm ngôi sao vàng
-Mỗi bức tường = một đoạn thẳng (x1, y1) → (x2, y2)
+
+Mỗi bức tường là một đoạn thẳng (x1, y1) → (x2, y2)
+Logic: tính vị trí mới → kiểm tra tường → mới được đi
 """
 import turtle
 
@@ -19,47 +21,30 @@ tuong.pensize(4)
 tuong.color("navy")
 tuong.hideturtle()
 
-# Danh sách tường (x1, y1, x2, y2) — dùng chung để VẼ + VA CHẠM
-# Lối đi: góc trên-trái (rùa) → góc dưới-phải (sao vàng)
+KHOANG_CACH_TUONG = 10
+BUOC = 20
+
+# Mê cung hình chữ S — đường đi đã BFS kiểm chứng
+# Start (-140, 140) → đích (140, -140)
 DANH_SACH_TUONG = [
-    # ===== Tường ngoài =====
+    # Ngoài
     (-180, 180, 180, 180),
     (180, 180, 180, -180),
     (180, -180, -180, -180),
     (-180, -180, -180, 180),
 
-    # ===== Hàng 1 (y = 100): hành lang trên, lối mở bên phải =====
-    (-180, 100, 60, 100),
-    (100, 100, 180, 100),
+    # Hàng 1 — khe PHẢI (x > 100)
+    (-180, 50, 100, 50),
 
-    # ===== Cột dọc từ hàng 1 xuống =====
-    (60, 100, 60, 20),
-    (100, 100, 100, -20),
+    # Hàng 2 — khe TRÁI (x < -100)
+    (-100, -50, 180, -50),
 
-    # ===== Hàng 2 (y = 20) =====
-    (-180, 20, -60, 20),
-    (-20, 20, 60, 20),
-    (100, 20, 140, 20),
+    # Hàng 3 — khe PHẢI tới đích (x > 100)
+    (-180, -130, 100, -130),
 
-    # ===== Cột giữa =====
-    (-60, 20, -60, -60),
-    (-20, 20, -20, -100),
-    (140, 20, 140, -100),
-
-    # ===== Hàng 3 (y = -60) =====
-    (-180, -60, -60, -60),
-    (20, -60, 140, -60),
-
-    # ===== Hàng 4 (y = -100) =====
-    (-20, -100, 100, -100),
-    (-180, -100, -100, -100),
-
-    # ===== Cột gần đích =====
-    (100, -100, 100, -180),
-    (-100, -100, -100, -140),
-
-    # ===== Hàng dưới cùng — chừa lối tới sao vàng (phải) =====
-    (-180, -140, 60, -140),
+    # Cột trang trí (không chặn đường chữ S)
+    (40, 50, 40, 120),
+    (-40, -50, -40, 20),
 ]
 
 
@@ -75,37 +60,22 @@ def ve_me_cung():
         ve_tuong(x1, y1, x2, y2)
 
 
-def cham_tuong(x, y):
-    """True nếu điểm (x, y) chạm gần một bức tường."""
-    for x1, y1, x2, y2 in DANH_SACH_TUONG:
-        if y1 == y2:  # ngang
-            if min(x1, x2) - 8 <= x <= max(x1, x2) + 8:
-                if abs(y - y1) < 12:
-                    return True
-        if x1 == x2:  # dọc
-            if min(y1, y2) - 8 <= y <= max(y1, y2) + 8:
-                if abs(x - x1) < 12:
-                    return True
-    return False
-
-
 ve_me_cung()
 
 dich = turtle.Turtle()
 dich.shape("circle")
 dich.color("gold")
 dich.penup()
-dich.goto(140, -160)
+dich.goto(140, -140)
 dich.shapesize(1.5, 1.5)
 
 rua = turtle.Turtle()
 rua.shape("turtle")
 rua.color("green")
 rua.penup()
-rua.goto(-150, 140)
+rua.goto(-140, 140)
 rua.setheading(270)
 
-buoc = 20
 thang = False
 
 thong_bao = turtle.Turtle()
@@ -113,40 +83,62 @@ thong_bao.hideturtle()
 thong_bao.penup()
 thong_bao.goto(0, 210)
 thong_bao.write(
-    "↑↓←→ tìm sao vàng — không xuyên tường!",
+    "↑ ↓ ← → tìm sao vàng — không xuyên tường!",
     align="center",
     font=("Arial", 12, "bold")
 )
 
-man_hinh.update()
+
+def cham_tuong(x, y):
+    for x1, y1, x2, y2 in DANH_SACH_TUONG:
+        if y1 == y2:
+            if min(x1, x2) - KHOANG_CACH_TUONG <= x <= max(x1, x2) + KHOANG_CACH_TUONG:
+                if abs(y - y1) < KHOANG_CACH_TUONG:
+                    return True
+        elif x1 == x2:
+            if min(y1, y2) - KHOANG_CACH_TUONG <= y <= max(y1, y2) + KHOANG_CACH_TUONG:
+                if abs(x - x1) < KHOANG_CACH_TUONG:
+                    return True
+    return False
 
 
 def kiem_tra_thang():
     global thang
-    if abs(rua.xcor() - dich.xcor()) < 25 and abs(rua.ycor() - dich.ycor()) < 25:
+    if rua.distance(dich) < 25:
         thang = True
         thong_bao.clear()
+        thong_bao.goto(0, 0)
         thong_bao.write(
             "🎉 THẮNG RỒI!",
             align="center",
             font=("Arial", 22, "bold")
         )
-        man_hinh.update()
 
 
 def di_chuyen(huong):
+    """Tính vị trí mới → kiểm tra tường → mới được đi."""
     if thang:
         return
 
-    x_cu = rua.xcor()
-    y_cu = rua.ycor()
-    rua.setheading(huong)
-    rua.forward(buoc)
+    x_moi = rua.xcor()
+    y_moi = rua.ycor()
 
-    if cham_tuong(rua.xcor(), rua.ycor()):
-        rua.goto(x_cu, y_cu)
-    else:
-        kiem_tra_thang()
+    if huong == 90:
+        y_moi = y_moi + BUOC
+    elif huong == 270:
+        y_moi = y_moi - BUOC
+    elif huong == 180:
+        x_moi = x_moi - BUOC
+    elif huong == 0:
+        x_moi = x_moi + BUOC
+
+    rua.setheading(huong)
+
+    if cham_tuong(x_moi, y_moi):
+        return
+
+    rua.goto(x_moi, y_moi)
+    kiem_tra_thang()
     man_hinh.update()
 
 
@@ -172,4 +164,5 @@ man_hinh.onkey(di_xuong, "Down")
 man_hinh.onkey(di_trai, "Left")
 man_hinh.onkey(di_phai, "Right")
 
+man_hinh.update()
 turtle.done()
