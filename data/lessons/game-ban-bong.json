@@ -222,7 +222,7 @@
   "prev": "game-dua-xe",
   "next": null,
   "codeGuide": {
-    "intro": "Code theo đúng thứ tự biểu đồ thuật toán. Mỗi bước: đọc giải thích → gõ thử trên máy → <strong>trả lời đúng trắc nghiệm</strong> mới mở bước sau.",
+    "intro": "Mỗi bước: <strong>đọc giải thích</strong> → <strong>tự gõ / chạy thử</strong> trên máy → tick xác nhận → <strong>trắc nghiệm</strong>. <em>Không chép nguyên file từ trên xuống dưới.</em> Gợi ý code chỉ để đối chiếu khi bí.",
     "steps": [
       {
         "title": "Bước 1 — Khởi tạo súng, list và 5 mục tiêu",

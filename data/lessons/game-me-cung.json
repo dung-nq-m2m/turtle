@@ -8,11 +8,11 @@
   "objectives": [
     "Vẽ mê cung bằng nhiều bức tường ve_tuong(x1, y1, x2, y2)",
     "Lưu tường trong list DANH_SACH_TUONG để vừa vẽ vừa kiểm tra va chạm",
+    "Kiểm tra tường trên cả đoạn đi (x_cu,y_cu) → (x_moi,y_moi)",
     "Điều khiển rùa 4 hướng, không xuyên tường",
-    "Thiết kế điều kiện thắng khi gần đích vàng",
     "Theo dõi thời gian, số bước và điểm thưởng khi thắng"
   ],
-  "explanation": "Game <strong>Mê cung</strong> luyện <strong>vẽ tường + va chạm + đích đến</strong>.\n\n• Mỗi bức tường là một đoạn thẳng <code>(x1, y1) → (x2, y2)</code>\n• List <code>DANH_SACH_TUONG</code> dùng chung để <strong>vẽ</strong> và <strong>chạm tường</strong>\n• Rùa đi từng bước <code>buoc = 20</code> — chạm tường thì quay lại chỗ cũ\n• Gần đích vàng → <code>thang = True</code>",
+  "explanation": "Game <strong>Mê cung</strong> luyện <strong>vẽ tường + va chạm + đích đến</strong>.\n\n• Mỗi bức tường là đoạn thẳng <code>(x1, y1) → (x2, y2)</code>\n• List <code>DANH_SACH_TUONG</code> dùng chung để <strong>vẽ</strong> và <strong>chạm tường</strong>\n• <code>cham_tuong(x_cu, y_cu, x_moi, y_moi)</code> — chặn cả khi bước <strong>cắt ngang</strong> tường\n• Mỗi bước đi được +5 điểm; thắng nhanh = thưởng cao",
   "architecture": {
     "intro": "Một list tường phục vụ cả vẽ và va chạm — mô hình dữ liệu game đơn giản cho lớp 6.",
     "layers": [
@@ -35,7 +35,7 @@
         "title": "3. Logic",
         "items": [
           "di_chuyen(huong)",
-          "cham_tuong(x, y)",
+          "cham_tuong(x_cu, y_cu, x_moi, y_moi)",
           "kiem_tra_thang()"
         ]
       },
@@ -47,7 +47,7 @@
         ]
       }
     ],
-    "note": "Không dùng forward+right liên tục — mỗi tường là một đoạn riêng!"
+    "note": "Kiểm tra cả đoạn đi cũ→mới, không chỉ điểm đến — tránh xuyên tường!"
   },
   "variables": [
     {
@@ -107,18 +107,18 @@
       },
       {
         "type": "process",
-        "label": "Tính x_moi, y_moi"
+        "label": "Lưu x_cu,y_cu → tính x_moi,y_moi"
       },
       {
         "type": "decision",
-        "label": "cham_tuong(x_moi, y_moi)?",
+        "label": "cham_tuong(x_cu,y_cu,x_moi,y_moi)?",
         "yes": "return — không đi",
-        "no": "goto vị trí mới"
+        "no": "goto + điểm +5"
       },
       {
         "type": "decision",
         "label": "distance(dich) < 25?",
-        "yes": "THẮNG",
+        "yes": "THẮNG + thưởng",
         "no": "Chờ phím"
       },
       {
@@ -128,39 +128,49 @@
     ]
   },
   "pseudocode": {
-    "note": "Một list tường — vừa vẽ vừa kiểm tra va chạm:",
+    "note": "Kiểm tra tường trên đoạn đi cũ → mới (tránh xuyên tường):",
     "lines": [
       "BẮT ĐẦU",
       "  DANH_SACH_TUONG ← list tường",
       "  ve_me_cung()",
       "",
+      "  HÀM cham_tuong(x_cu, y_cu, x_moi, y_moi):",
+      "    VỚI MỖI tường:",
+      "      NẾU đoạn đi cắt tường ngang/dọc: True",
+      "      NẾU điểm mới sát tường: True",
+      "",
       "  HÀM di_chuyen(huong):",
+      "    x_cu, y_cu ← vị trí hiện tại",
       "    tính x_moi, y_moi",
-      "    NẾU cham_tuong(x_moi, y_moi): DỪNG",
-      "    rua.goto(x_moi, y_moi)",
+      "    NẾU cham_tuong(x_cu, y_cu, x_moi, y_moi): DỪNG",
+      "    rua.goto(x_moi, y_moi), diem+5",
       "    kiem_tra_thang()",
       "",
-      "  listen() + ↑↓←→",
+      "  listen() + ↑↓←→ + dem_gio()",
       "KẾT THÚC"
     ]
   },
-  "syntax": "if cham_tuong(x_moi, y_moi): return",
-  "syntaxNote": "Kiểm tra vị trí mới TRƯỚC khi đi — không forward rồi kéo ngược.",
+  "syntax": "if cham_tuong(x_cu, y_cu, x_moi, y_moi): return",
+  "syntaxNote": "Truyền cả vị trí cũ và mới — phát hiện bước cắt ngang tường, không chỉ điểm đến.",
   "animation": {
     "type": "game-maze",
     "label": "Mê cung 🏰",
     "previewImage": "images/lessons/game-me-cung.png"
   },
   "assetsGuide": "<p><img src=\"images/lessons/game-me-cung.png\" alt=\"Màn hình game Mê cung\" style=\"max-width:320px;width:100%;border:2px solid #1a3a6b;border-radius:12px;display:block;margin:0.5rem auto\"></p><p>Game chạy tốt với hình vẽ mặc định. Muốn đẹp hơn, đặt file <strong>cùng thư mục</strong> với <code>me-cung.py</code>.</p><table class=\"assets-table\"><tr><th>Loại</th><th>File</th><th>Ghi chú</th></tr><tr><td>Nền</td><td><code>nen-me-cung.gif</code></td><td>500×500, tùy chọn</td></tr><tr><td>Đích</td><td><code>dich.gif</code></td><td>Sao / cờ vàng</td></tr><tr><td>Âm</td><td><code>thang.wav</code></td><td>Khi tới đích</td></tr></table><p>📄 <code>games/me-cung.py</code> · <code>games/assets/huong-dan-me-cung.md</code></p>",
-  "code": "\"\"\"\nGame: Mê cung 🏰\nHọc viện Turtle Python - Lớp 6\n\n↑ ↓ ← → tìm ngôi sao vàng\n\nMỗi bức tường là một đoạn thẳng (x1, y1) → (x2, y2)\nLogic: tính vị trí mới → kiểm tra tường → mới được đi\n\nĐiểm: +5 mỗi bước đi được\nThưởng khi thắng: càng nhanh càng nhiều điểm\n\"\"\"\nimport turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mê cung 🏰\")\nman_hinh.bgcolor(\"white\")\nman_hinh.setup(500, 500)\nman_hinh.tracer(0)\n\ntuong = turtle.Turtle()\ntuong.speed(0)\ntuong.pensize(4)\ntuong.color(\"navy\")\ntuong.hideturtle()\n\nKHOANG_CACH_TUONG = 10\nBUOC = 20\n\n# Mê cung hình chữ S — Start (-140, 140) → đích (140, -140)\nDANH_SACH_TUONG = [\n    (-180, 180, 180, 180),\n    (180, 180, 180, -180),\n    (180, -180, -180, -180),\n    (-180, -180, -180, 180),\n    (-180, 50, 100, 50),\n    (-100, -50, 180, -50),\n    (-180, -130, 100, -130),\n    (40, 50, 40, 120),\n    (-40, -50, -40, 20),\n]\n\n\ndef ve_tuong(x1, y1, x2, y2):\n    tuong.penup()\n    tuong.goto(x1, y1)\n    tuong.pendown()\n    tuong.goto(x2, y2)\n\n\ndef ve_me_cung():\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        ve_tuong(x1, y1, x2, y2)\n\n\nve_me_cung()\n\ndich = turtle.Turtle()\ndich.shape(\"circle\")\ndich.color(\"gold\")\ndich.penup()\ndich.goto(140, -140)\ndich.shapesize(1.5, 1.5)\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(-140, 140)\nrua.setheading(270)\n\nthang = False\nthoi_gian = 0\ndiem = 0\nso_buoc = 0\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"black\")\n\nthong_bao = turtle.Turtle()\nthong_bao.hideturtle()\nthong_bao.penup()\nthong_bao.goto(0, -210)\nthong_bao.write(\n    \"↑ ↓ ← → tìm sao vàng — không xuyên tường!\",\n    align=\"center\",\n    font=(\"Arial\", 11, \"bold\")\n)\n\n\ndef ve_bang():\n    bang.clear()\n    bang.goto(0, 215)\n    bang.write(\n        f\"⏱ {thoi_gian}s   |   Điểm: {diem}   |   Bước: {so_buoc}\",\n        align=\"center\",\n        font=(\"Arial\", 14, \"bold\")\n    )\n\n\ndef dem_gio():\n    \"\"\"Đếm thời gian mỗi giây — dừng khi thắng.\"\"\"\n    global thoi_gian\n    if thang:\n        return\n    thoi_gian = thoi_gian + 1\n    ve_bang()\n    man_hinh.update()\n    man_hinh.ontimer(dem_gio, 1000)\n\n\ndef cham_tuong(x, y):\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        if y1 == y2:\n            if min(x1, x2) - KHOANG_CACH_TUONG <= x <= max(x1, x2) + KHOANG_CACH_TUONG:\n                if abs(y - y1) < KHOANG_CACH_TUONG:\n                    return True\n        elif x1 == x2:\n            if min(y1, y2) - KHOANG_CACH_TUONG <= y <= max(y1, y2) + KHOANG_CACH_TUONG:\n                if abs(x - x1) < KHOANG_CACH_TUONG:\n                    return True\n    return False\n\n\ndef kiem_tra_thang():\n    global thang, diem\n    if rua.distance(dich) < 25:\n        thang = True\n        # Thưởng nhanh: tối đa 200, mỗi giây trừ 5\n        thuong = max(0, 200 - thoi_gian * 5)\n        diem = diem + thuong\n        ve_bang()\n        thong_bao.clear()\n        thong_bao.goto(0, 0)\n        thong_bao.write(\n            f\"🎉 THẮNG RỒI!\\n⏱ {thoi_gian}s  |  Điểm: {diem}\\n(+{thuong} thưởng nhanh)\",\n            align=\"center\",\n            font=(\"Arial\", 18, \"bold\")\n        )\n\n\ndef di_chuyen(huong):\n    \"\"\"Tính vị trí mới → kiểm tra tường → mới được đi.\"\"\"\n    global diem, so_buoc\n    if thang:\n        return\n\n    x_moi = rua.xcor()\n    y_moi = rua.ycor()\n\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n\n    rua.setheading(huong)\n\n    if cham_tuong(x_moi, y_moi):\n        return\n\n    rua.goto(x_moi, y_moi)\n    so_buoc = so_buoc + 1\n    diem = diem + 5\n    ve_bang()\n    kiem_tra_thang()\n    man_hinh.update()\n\n\ndef di_len():\n    di_chuyen(90)\n\n\ndef di_xuong():\n    di_chuyen(270)\n\n\ndef di_trai():\n    di_chuyen(180)\n\n\ndef di_phai():\n    di_chuyen(0)\n\n\nman_hinh.listen()\nman_hinh.onkey(di_len, \"Up\")\nman_hinh.onkey(di_xuong, \"Down\")\nman_hinh.onkey(di_trai, \"Left\")\nman_hinh.onkey(di_phai, \"Right\")\n\nve_bang()\nman_hinh.update()\nman_hinh.ontimer(dem_gio, 1000)\n\nturtle.done()\n",
+  "code": "\"\"\"\nGame: Mê cung 🏰\nHọc viện Turtle Python - Lớp 6\n\n↑ ↓ ← → tìm ngôi sao vàng\n\nMỗi bức tường là một đoạn thẳng (x1, y1) → (x2, y2)\nLogic: tính vị trí mới → kiểm tra tường → mới được đi\n\nĐiểm: +5 mỗi bước đi được\nThưởng khi thắng: càng nhanh càng nhiều điểm\n\"\"\"\nimport turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mê cung 🏰\")\nman_hinh.bgcolor(\"white\")\nman_hinh.setup(500, 500)\nman_hinh.tracer(0)\n\ntuong = turtle.Turtle()\ntuong.speed(0)\ntuong.pensize(4)\ntuong.color(\"navy\")\ntuong.hideturtle()\n\nKHOANG_CACH_TUONG = 10\nBUOC = 20\n\n# Mê cung hình chữ S — Start (-140, 140) → đích (140, -140)\nDANH_SACH_TUONG = [\n    (-180, 180, 180, 180),\n    (180, 180, 180, -180),\n    (180, -180, -180, -180),\n    (-180, -180, -180, 180),\n    (-180, 50, 100, 50),\n    (-100, -50, 180, -50),\n    (-180, -130, 100, -130),\n    (40, 50, 40, 120),\n    (-40, -50, -40, 20),\n]\n\n\ndef ve_tuong(x1, y1, x2, y2):\n    tuong.penup()\n    tuong.goto(x1, y1)\n    tuong.pendown()\n    tuong.goto(x2, y2)\n\n\ndef ve_me_cung():\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        ve_tuong(x1, y1, x2, y2)\n\n\nve_me_cung()\n\ndich = turtle.Turtle()\ndich.shape(\"circle\")\ndich.color(\"gold\")\ndich.penup()\ndich.goto(140, -140)\ndich.shapesize(1.5, 1.5)\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(-140, 140)\nrua.setheading(270)\n\nthang = False\nthoi_gian = 0\ndiem = 0\nso_buoc = 0\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"black\")\n\nthong_bao = turtle.Turtle()\nthong_bao.hideturtle()\nthong_bao.penup()\nthong_bao.goto(0, -210)\nthong_bao.write(\n    \"↑ ↓ ← → tìm sao vàng — không xuyên tường!\",\n    align=\"center\",\n    font=(\"Arial\", 11, \"bold\")\n)\n\n\ndef ve_bang():\n    bang.clear()\n    bang.goto(0, 215)\n    bang.write(\n        f\"⏱ {thoi_gian}s   |   Điểm: {diem}   |   Bước: {so_buoc}\",\n        align=\"center\",\n        font=(\"Arial\", 14, \"bold\")\n    )\n\n\ndef dem_gio():\n    \"\"\"Đếm thời gian mỗi giây — dừng khi thắng.\"\"\"\n    global thoi_gian\n    if thang:\n        return\n    thoi_gian = thoi_gian + 1\n    ve_bang()\n    man_hinh.update()\n    man_hinh.ontimer(dem_gio, 1000)\n\n\ndef cham_tuong(x_cu, y_cu, x_moi, y_moi):\n\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        # ----- Tường ngang -----\n        if y1 == y2:\n            if min(x1, x2) - KHOANG_CACH_TUONG <= x_moi <= max(x1, x2) + KHOANG_CACH_TUONG:\n                if min(y_cu, y_moi) <= y1 <= max(y_cu, y_moi):\n                    return True\n\n                if abs(y_moi - y1) < KHOANG_CACH_TUONG:\n                    return True\n        # ----- Tường dọc -----\n        else:\n            if min(y1, y2) - KHOANG_CACH_TUONG <= y_moi <= max(y1, y2) + KHOANG_CACH_TUONG:\n                if min(x_cu, x_moi) <= x1 <= max(x_cu, x_moi):\n                    return True\n                if abs(x_moi - x1) < KHOANG_CACH_TUONG:\n                    return True\n    return False\n\n\ndef kiem_tra_thang():\n    global thang, diem\n    if rua.distance(dich) < 25:\n        thang = True\n        # Thưởng nhanh: tối đa 200, mỗi giây trừ 5\n        thuong = max(0, 200 - thoi_gian * 5)\n        diem = diem + thuong\n        ve_bang()\n        thong_bao.clear()\n        thong_bao.goto(0, 0)\n        thong_bao.write(\n            f\"🎉 THẮNG RỒI!\\n⏱ {thoi_gian}s  |  Điểm: {diem}\\n(+{thuong} thưởng nhanh)\",\n            align=\"center\",\n            font=(\"Arial\", 18, \"bold\")\n        )\n\n\ndef di_chuyen(huong):\n    \"\"\"Tính vị trí mới → kiểm tra tường → mới được đi.\"\"\"\n    global diem, so_buoc\n    if thang:\n        return\n\n    x_cu = rua.xcor()\n    y_cu = rua.ycor()\n\n    x_moi = x_cu\n    y_moi = y_cu\n\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n\n    rua.setheading(huong)\n\n    if cham_tuong(x_cu, y_cu, x_moi, y_moi):\n        return\n\n    rua.goto(x_moi, y_moi)\n    so_buoc = so_buoc + 1\n    diem = diem + 5\n    ve_bang()\n    kiem_tra_thang()\n    man_hinh.update()\n\n\ndef di_len():\n    di_chuyen(90)\n\n\ndef di_xuong():\n    di_chuyen(270)\n\n\ndef di_trai():\n    di_chuyen(180)\n\n\ndef di_phai():\n    di_chuyen(0)\n\n\nman_hinh.listen()\nman_hinh.onkey(di_len, \"Up\")\nman_hinh.onkey(di_xuong, \"Down\")\nman_hinh.onkey(di_trai, \"Left\")\nman_hinh.onkey(di_phai, \"Right\")\n\nve_bang()\nman_hinh.update()\nman_hinh.ontimer(dem_gio, 1000)\n\nturtle.done()\n",
   "resultDescription": "Tìm sao vàng càng nhanh càng nhiều điểm. Mỗi bước +5; thắng thêm thưởng theo thời gian.",
   "remember": [
+    {
+      "command": "cham_tuong(x_cu, y_cu, x_moi, y_moi)",
+      "meaning": "Chặn cắt tường + sát tường"
+    },
     {
       "command": "ontimer(dem_gio, 1000)",
       "meaning": "Đếm thời gian mỗi giây"
     },
     {
-      "command": "diem += 5",
+      "command": "diem = diem + 5",
       "meaning": "Cộng điểm mỗi bước đi được"
     },
     {
@@ -168,7 +178,7 @@
       "meaning": "Thưởng thắng nhanh"
     },
     {
-      "tip": "Kiểm tra tường TRƯỚC khi goto!"
+      "tip": "Kiểm tra đoạn đi cũ→mới TRƯỚC khi goto!"
     }
   ],
   "exercises": [
@@ -211,8 +221,8 @@
     "explanation": "Mỗi bức tường là một đoạn riêng — forward+right chỉ tạo một đường gấp khúc."
   },
   "infographic": {
-    "function": "Di chuyển + điều kiện thắng",
-    "syntax": "onkey 4 hướng + abs()",
+    "function": "Di chuyển + va chạm đoạn + thắng",
+    "syntax": "cham_tuong(cũ, mới) + onkey",
     "example": "Tìm đích vàng trong mê cung",
     "result": "THẮNG khi gần đích",
     "exercise": "Tự thiết kế tường mới"
@@ -220,21 +230,21 @@
   "prev": "game-ne-bom",
   "next": "game-dua-xe",
   "codeGuide": {
-    "intro": "Code theo biểu đồ. Mỗi bước: đọc → gõ thử → <strong>trả lời đúng trắc nghiệm</strong> mới mở bước sau.",
+    "intro": "Mỗi bước: <strong>đọc giải thích</strong> → <strong>tự gõ / chạy thử</strong> trên máy → tick xác nhận → <strong>trắc nghiệm</strong>. <em>Không chép nguyên file từ trên xuống dưới.</em> Gợi ý code chỉ để đối chiếu khi bí.",
     "steps": [
       {
         "title": "Bước 1 — Vẽ tường bằng ve_tuong(x1, y1, x2, y2)",
         "flowLabel": "Tạo DANH_SACH_TUONG + ve_me_cung()",
-        "explain": "Mỗi bức tường là <strong>một đoạn thẳng</strong> <code>(x1, y1) → (x2, y2)</code>.\n\n<strong>Sai:</strong> <code>forward + right(90)</code> liên tục → chỉ một đường gấp khúc.\n<strong>Đúng:</strong> list <code>DANH_SACH_TUONG</code> + <code>ve_tuong</code> từng đoạn → nhiều tường rời tạo hành lang.\n\nBước này chỉ vẽ tường. Bản đủ game còn thêm rùa, đích và va chạm.",
+        "explain": "Mỗi bức tường là <strong>một đoạn thẳng</strong> <code>(x1, y1) → (x2, y2)</code>.\n\n<strong>Sai:</strong> <code>forward + right(90)</code> liên tục → chỉ một đường gấp khúc.\n<strong>Đúng:</strong> list <code>DANH_SACH_TUONG</code> + <code>ve_tuong</code> từng đoạn.\n\nBước này chỉ vẽ tường.",
         "checklist": [
-          "Screen title, bgcolor white, setup(500, 500)",
-          "tuong: speed(0), pensize(5), color navy, hideturtle()",
+          "Screen title, bgcolor white, setup(500, 500), tracer(0)",
+          "tuong: speed(0), pensize(4), color navy, hideturtle()",
           "def ve_tuong(x1, y1, x2, y2): penup → goto → pendown → goto",
           "DANH_SACH_TUONG = [(x1,y1,x2,y2), ...]",
-          "for ... in DANH_SACH_TUONG: ve_tuong(...)"
+          "ve_me_cung() / for ... ve_tuong(...)"
         ],
-        "hintCode": "import turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mê cung\")\nman_hinh.bgcolor(\"white\")\nman_hinh.setup(500, 500)\nman_hinh.tracer(0)\n\ntuong = turtle.Turtle()\ntuong.speed(0)\ntuong.pensize(4)\ntuong.color(\"navy\")\ntuong.hideturtle()\n\nDANH_SACH_TUONG = [\n    (-180, 180, 180, 180),\n    (180, 180, 180, -180),\n    (180, -180, -180, -180),\n    (-180, -180, -180, 180),\n    (-180, 50, 100, 50),\n    (-100, -50, 180, -50),\n    (-180, -130, 100, -130),\n    (40, 50, 40, 120),\n    (-40, -50, -40, 20),\n]\n\ndef ve_tuong(x1, y1, x2, y2):\n    tuong.penup()\n    tuong.goto(x1, y1)\n    tuong.pendown()\n    tuong.goto(x2, y2)\n\nfor x1, y1, x2, y2 in DANH_SACH_TUONG:\n    ve_tuong(x1, y1, x2, y2)\n\nman_hinh.update()\nturtle.done()",
-        "goal": "Thấy khung ngoài + 3 tường ngang (lối chữ S) và vài cột.",
+        "hintCode": "import turtle\n\nman_hinh = turtle.Screen()\nman_hinh.title(\"Mê cung\")\nman_hinh.bgcolor(\"white\")\nman_hinh.setup(500, 500)\nman_hinh.tracer(0)\n\ntuong = turtle.Turtle()\ntuong.speed(0)\ntuong.pensize(4)\ntuong.color(\"navy\")\ntuong.hideturtle()\n\nDANH_SACH_TUONG = [\n    (-180, 180, 180, 180),\n    (180, 180, 180, -180),\n    (180, -180, -180, -180),\n    (-180, -180, -180, 180),\n    (-180, 50, 100, 50),\n    (-100, -50, 180, -50),\n    (-180, -130, 100, -130),\n    (40, 50, 40, 120),\n    (-40, -50, -40, 20),\n]\n\ndef ve_tuong(x1, y1, x2, y2):\n    tuong.penup()\n    tuong.goto(x1, y1)\n    tuong.pendown()\n    tuong.goto(x2, y2)\n\ndef ve_me_cung():\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        ve_tuong(x1, y1, x2, y2)\n\nve_me_cung()\nman_hinh.update()\nturtle.done()",
+        "goal": "Thấy khung ngoài + tường ngang/dọc tạo lối chữ S.",
         "quiz": [
           {
             "question": "Tại sao không dùng for dai in [...]: forward; right(90) để vẽ mê cung?",
@@ -259,19 +269,21 @@
         ]
       },
       {
-        "title": "Bước 2 — Đặt đích và rùa",
-        "flowLabel": "Đặt rùa và đích vàng",
-        "explain": "Đặt <code>dich</code> (vàng) gần góc dưới phải và <code>rua</code> gần góc trên trái — <strong>bên trong</strong> tường ngoài, không đè lên tường.",
+        "title": "Bước 2 — Đặt đích, rùa và bảng điểm",
+        "flowLabel": "Đặt rùa (-140,140) và đích (140,-140)",
+        "explain": "Đặt <code>dich</code> vàng ở <code>(140, -140)</code>, <code>rua</code> ở <code>(-140, 140)</code> — bên trong tường ngoài. Khởi tạo <code>thang, thoi_gian, diem, so_buoc</code> và hàm <code>ve_bang()</code>.",
         "checklist": [
-          "dich: goto(140, -140)",
-          "rua: goto(-140, 140)",
-          "BUOC = 20, KHOANG_CACH_TUONG = 10"
+          "dich: goto(140, -140), shapesize(1.5, 1.5)",
+          "rua: goto(-140, 140), setheading(270)",
+          "BUOC = 20, KHOANG_CACH_TUONG = 10",
+          "thang=False, thoi_gian=0, diem=0, so_buoc=0",
+          "ve_bang() hiện ⏱ | Điểm | Bước"
         ],
-        "hintCode": "dich = turtle.Turtle()\ndich.shape(\"circle\")\ndich.color(\"gold\")\ndich.penup()\ndich.goto(140, -140)\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(-140, 140)\nrua.setheading(270)\n\nBUOC = 20\nKHOANG_CACH_TUONG = 10\nthang = False",
-        "goal": "Thấy rùa góc trên trái và chấm vàng góc dưới phải, nằm trong khung tường.",
+        "hintCode": "dich = turtle.Turtle()\ndich.shape(\"circle\")\ndich.color(\"gold\")\ndich.penup()\ndich.goto(140, -140)\ndich.shapesize(1.5, 1.5)\n\nrua = turtle.Turtle()\nrua.shape(\"turtle\")\nrua.color(\"green\")\nrua.penup()\nrua.goto(-140, 140)\nrua.setheading(270)\n\nBUOC = 20\nKHOANG_CACH_TUONG = 10\nthang = False\nthoi_gian = 0\ndiem = 0\nso_buoc = 0\n\nbang = turtle.Turtle()\nbang.hideturtle()\nbang.penup()\nbang.color(\"black\")\n\ndef ve_bang():\n    bang.clear()\n    bang.goto(0, 215)\n    bang.write(\n        f\"⏱ {thoi_gian}s   |   Điểm: {diem}   |   Bước: {so_buoc}\",\n        align=\"center\",\n        font=(\"Arial\", 14, \"bold\")\n    )\n\nve_bang()\nman_hinh.update()",
+        "goal": "Thấy rùa góc trên trái, sao vàng góc dưới phải, và bảng điểm trên cùng.",
         "quiz": [
           {
-            "question": "Vì sao đặt rùa ở (-150, 140) thay vì đúng lên tường y=180?",
+            "question": "Vì sao đặt rùa ở (-140, 140) thay vì đúng lên tường y=180?",
             "options": [
               "Để rùa đứng trong khoảng trống, không bị kẹt tường ngay từ đầu",
               "Vì Turtle chỉ nhận số âm",
@@ -293,52 +305,54 @@
         ]
       },
       {
-        "title": "Bước 3 — Va chạm tường cham_tuong(x, y)",
-        "flowLabel": "cham_tuong(x, y)?",
-        "explain": "<strong>Đúng:</strong> tính <code>x_moi, y_moi</code> → <code>if cham_tuong(...): return</code> → mới <code>goto</code>.\n\n<strong>Sai:</strong> <code>forward</code> trước rồi kéo ngược.\n\nDùng <code>KHOANG_CACH_TUONG = 10</code>.",
+        "title": "Bước 3 — Va chạm cham_tuong(cũ → mới)",
+        "flowLabel": "cham_tuong(x_cu,y_cu,x_moi,y_moi)?",
+        "explain": "<strong>Đúng:</strong> lưu <code>x_cu, y_cu</code> → tính <code>x_moi, y_moi</code> → <code>if cham_tuong(x_cu, y_cu, x_moi, y_moi): return</code> → mới <code>goto</code>.\n\nHàm nhận <strong>4 tham số</strong> để phát hiện:\n• Bước đi <strong>cắt ngang</strong> tường (min/max giữa cũ và mới)\n• Điểm mới <strong>sát</strong> tường (<code>KHOANG_CACH_TUONG = 10</code>)\n\n<strong>Sai:</strong> chỉ kiểm tra điểm đến → có thể xuyên tường khi bước dài.",
         "checklist": [
-          "KHOANG_CACH_TUONG = 10 ; BUOC = 20",
-          "Tính x_moi, y_moi theo hướng",
-          "if cham_tuong(x_moi, y_moi): return",
-          "rua.goto(x_moi, y_moi) + kiem_tra_thang()"
+          "def cham_tuong(x_cu, y_cu, x_moi, y_moi)",
+          "Tường ngang: kiểm tra cắt y1 + sát tường",
+          "Tường dọc: kiểm tra cắt x1 + sát tường",
+          "di_chuyen: x_cu/y_cu → x_moi/y_moi → cham_tuong → goto",
+          "Đi được: so_buoc+1, diem+5"
         ],
-        "hintCode": "def di_chuyen(huong):\n    if thang:\n        return\n    x_moi = rua.xcor()\n    y_moi = rua.ycor()\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n    rua.setheading(huong)\n    if cham_tuong(x_moi, y_moi):\n        return\n    rua.goto(x_moi, y_moi)\n    kiem_tra_thang()\n    man_hinh.update()",
-        "goal": "Đụng tường → rùa đứng yên (không xuyên rồi kéo lại).",
+        "hintCode": "def cham_tuong(x_cu, y_cu, x_moi, y_moi):\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        # Tường ngang\n        if y1 == y2:\n            if min(x1, x2) - KHOANG_CACH_TUONG <= x_moi <= max(x1, x2) + KHOANG_CACH_TUONG:\n                if min(y_cu, y_moi) <= y1 <= max(y_cu, y_moi):\n                    return True\n                if abs(y_moi - y1) < KHOANG_CACH_TUONG:\n                    return True\n        # Tường dọc\n        else:\n            if min(y1, y2) - KHOANG_CACH_TUONG <= y_moi <= max(y1, y2) + KHOANG_CACH_TUONG:\n                if min(x_cu, x_moi) <= x1 <= max(x_cu, x_moi):\n                    return True\n                if abs(x_moi - x1) < KHOANG_CACH_TUONG:\n                    return True\n    return False\n\n\ndef di_chuyen(huong):\n    global diem, so_buoc\n    if thang:\n        return\n\n    x_cu = rua.xcor()\n    y_cu = rua.ycor()\n    x_moi = x_cu\n    y_moi = y_cu\n\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n\n    rua.setheading(huong)\n\n    if cham_tuong(x_cu, y_cu, x_moi, y_moi):\n        return\n\n    rua.goto(x_moi, y_moi)\n    so_buoc = so_buoc + 1\n    diem = diem + 5\n    ve_bang()\n    kiem_tra_thang()\n    man_hinh.update()",
+        "goal": "Đụng tường hoặc cắt ngang tường → rùa đứng yên, không xuyên.",
         "quiz": [
           {
-            "question": "Thứ tự đúng khi di chuyển?",
+            "question": "cham_tuong cần mấy tham số vị trí?",
             "options": [
-              "Tính vị trí mới → kiểm tra tường → mới goto",
-              "forward trước → nếu chạm thì kéo ngược",
-              "Chỉ setheading",
-              "Xóa tường rồi đi"
+              "4: x_cu, y_cu, x_moi, y_moi",
+              "2: chỉ x_moi, y_moi",
+              "1: chỉ hướng",
+              "Không cần tham số"
             ],
             "correct": 0
           },
           {
-            "question": "KHOANG_CACH_TUONG là gì?",
+            "question": "Vì sao kiểm tra min(y_cu, y_moi) <= y1 <= max(...)?",
             "options": [
-              "Ngưỡng khoảng cách an toàn với tường",
-              "Tốc độ rùa",
-              "Số tường",
-              "Điểm thắng"
+              "Phát hiện bước đi cắt ngang tường ngang",
+              "Tăng điểm nhanh hơn",
+              "Đổi màu tường",
+              "Bắt buộc cú pháp Python"
             ],
             "correct": 0
           }
         ]
       },
       {
-        "title": "Bước 4 — Phím ↑↓←→ + điều kiện thắng",
-        "flowLabel": "Nhấn ↑↓←→ / Gần đích?",
-        "explain": "Bốn hàm gọi <code>di_chuyen(90/270/180/0)</code>. Gần đích (|dx| và |dy| &lt; 25) → <code>thang = True</code>, hiện THẮNG.",
+        "title": "Bước 4 — Phím ↑↓←→ + thắng + đếm giờ",
+        "flowLabel": "Nhấn ↑↓←→ / distance(dich) < 25?",
+        "explain": "Bốn hàm gọi <code>di_chuyen(90/270/180/0)</code>. Gần đích <code>rua.distance(dich) &lt; 25</code> → thắng + thưởng nhanh. <code>dem_gio</code> cộng giây mỗi 1000ms cho đến khi thắng.",
         "checklist": [
           "di_len/xuong/trai/phai gọi di_chuyen(...)",
           "listen + onkey 4 phím",
-          "kiem_tra_thang với abs < 25",
+          "kiem_tra_thang: distance < 25 + thưởng",
+          "dem_gio + ontimer(..., 1000)",
           "Chạy full: tìm đường tới sao vàng"
         ],
-        "hintCode": "def kiem_tra_thang():\n    global thang\n    if (abs(rua.xcor() - dich.xcor()) < 25\n            and abs(rua.ycor() - dich.ycor()) < 25):\n        thang = True\n        thong_bao.clear()\n        thong_bao.write(\"🎉 THẮNG RỒI!\",\n                        align=\"center\", font=(\"Arial\", 22, \"bold\"))\n\ndef di_len():\n    di_chuyen(90)\n\nman_hinh.listen()\nman_hinh.onkey(di_len, \"Up\")\nman_hinh.onkey(di_xuong, \"Down\")\nman_hinh.onkey(di_trai, \"Left\")\nman_hinh.onkey(di_phai, \"Right\")",
-        "goal": "Né tường, tìm tới sao vàng — hiện THẮNG RỒI.",
+        "hintCode": "def dem_gio():\n    global thoi_gian\n    if thang:\n        return\n    thoi_gian = thoi_gian + 1\n    ve_bang()\n    man_hinh.update()\n    man_hinh.ontimer(dem_gio, 1000)\n\n\ndef kiem_tra_thang():\n    global thang, diem\n    if rua.distance(dich) < 25:\n        thang = True\n        thuong = max(0, 200 - thoi_gian * 5)\n        diem = diem + thuong\n        ve_bang()\n        thong_bao.clear()\n        thong_bao.goto(0, 0)\n        thong_bao.write(\n            f\"🎉 THẮNG RỒI!\\n⏱ {thoi_gian}s  |  Điểm: {diem}\\n(+{thuong} thưởng nhanh)\",\n            align=\"center\",\n            font=(\"Arial\", 18, \"bold\")\n        )\n\n\ndef di_len():\n    di_chuyen(90)\n\n\ndef di_xuong():\n    di_chuyen(270)\n\n\ndef di_trai():\n    di_chuyen(180)\n\n\ndef di_phai():\n    di_chuyen(0)\n\n\nman_hinh.listen()\nman_hinh.onkey(di_len, \"Up\")\nman_hinh.onkey(di_xuong, \"Down\")\nman_hinh.onkey(di_trai, \"Left\")\nman_hinh.onkey(di_phai, \"Right\")\n\nve_bang()\nman_hinh.update()\nman_hinh.ontimer(dem_gio, 1000)\nturtle.done()",
+        "goal": "Né tường, tìm tới sao vàng — hiện THẮNG + điểm thưởng.",
         "quiz": [
           {
             "question": "DANH_SACH_TUONG dùng để làm gì?",
@@ -351,11 +365,11 @@
             "correct": 0
           },
           {
-            "question": "Điều kiện thắng đúng là gì?",
+            "question": "Điều kiện thắng trong code là gì?",
             "options": [
-              "|dx|<25 và |dy|<25 so với đích",
+              "rua.distance(dich) < 25",
               "Chạm tường ngoài",
-              "buoc > 50",
+              "so_buoc > 50",
               "len(DANH_SACH_TUONG) == 0"
             ],
             "correct": 0

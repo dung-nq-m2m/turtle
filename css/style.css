@@ -1315,9 +1315,40 @@ body {
 }
 
 .code-guide-intro {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #555;
   font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.code-guide-workflow {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 2px solid #c45c00;
+  background: linear-gradient(180deg, #fff8ee 0%, #fff3e0 100%);
+}
+
+.code-guide-workflow-title {
+  font-weight: 800;
+  color: #9a3d00;
+  margin-bottom: 0.4rem;
+}
+
+.code-guide-workflow-list {
+  margin: 0.35rem 0 0.5rem 1.1rem;
+  padding: 0;
+  color: #4a3a20;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.code-guide-workflow-warn {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #7a2e00;
+  line-height: 1.45;
+  font-weight: 600;
 }
 
 .code-guide-progress {
@@ -1454,22 +1485,108 @@ body {
   margin-bottom: 0.65rem;
 }
 
+.code-guide-checklist-wrap {
+  margin: 0.75rem 0;
+}
+
+.code-guide-checklist-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #355;
+  margin-bottom: 0.35rem;
+}
+
 .code-guide-checklist {
-  margin: 0 0 0.75rem 1.1rem;
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
   font-size: 0.88rem;
   color: #555;
 }
 
 .code-guide-checklist li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
+}
+
+.code-guide-check-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  cursor: pointer;
+  line-height: 1.4;
+  color: #333;
+}
+
+.code-guide-check-item input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.code-guide-confirm {
+  margin: 0.85rem 0;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 2px solid #4c97ff;
+  background: #eef6ff;
+}
+
+.code-guide-confirm-title {
+  font-weight: 800;
+  color: #1a4a8a;
+  margin-bottom: 0.5rem;
+}
+
+.code-guide-confirm-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin: 0.4rem 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #243;
+}
+
+.code-guide-confirm-item input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.code-guide-confirm-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: #a02828;
+  font-weight: 600;
 }
 
 .code-guide-hint {
-  margin-bottom: 0.75rem;
+  margin: 0.75rem 0;
   border: 1px dashed #c5d4e8;
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   background: #f5f9ff;
+}
+
+.code-guide-hint-warn {
+  margin: 0.5rem 0;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  background: #fff3cd;
+  border: 1px solid #e8a317;
+  font-size: 0.85rem;
+  color: #6b4e00;
+  line-height: 1.4;
+}
+
+.code-guide-quiz.is-locked {
+  opacity: 0.55;
+  pointer-events: none;
+  filter: grayscale(0.15);
+}
+
+.code-guide-quiz.is-locked .code-guide-quiz-note {
+  color: #a02828;
+  font-weight: 600;
 }
 
 .code-guide-hint summary {

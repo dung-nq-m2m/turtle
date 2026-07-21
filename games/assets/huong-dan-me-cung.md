@@ -34,7 +34,20 @@ def ve_tuong(x1, y1, x2, y2):
     tuong.goto(x2, y2)
 ```
 
-Cùng list `DANH_SACH_TUONG` dùng để **vẽ** và **va chạm** (`cham_tuong`).
+Cùng list `DANH_SACH_TUONG` dùng để **vẽ** và **va chạm**.
+
+### Va chạm đoạn đi (không xuyên tường)
+
+```python
+def cham_tuong(x_cu, y_cu, x_moi, y_moi):
+    # Kiểm tra bước cắt ngang tường + điểm mới sát tường
+    ...
+
+if cham_tuong(x_cu, y_cu, x_moi, y_moi):
+    return  # không goto
+```
+
+Truyền cả vị trí **cũ** và **mới** — tránh bước `BUOC` cắt xuyên tường.
 
 ## 2. Cấu trúc thư mục
 

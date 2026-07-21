@@ -237,7 +237,7 @@
   "prev": "game-me-cung",
   "next": "game-ban-bong",
   "codeGuide": {
-    "intro": "Code theo biểu đồ và file <code>dua-xe.py</code>. Mỗi bước hoàn thành và <strong>đúng trắc nghiệm</strong> mới mở bước sau.",
+    "intro": "Mỗi bước: <strong>đọc giải thích</strong> → <strong>tự gõ / chạy thử</strong> trên máy → tick xác nhận → <strong>trắc nghiệm</strong>. <em>Không chép nguyên file từ trên xuống dưới.</em> Gợi ý code chỉ để đối chiếu khi bí.",
     "steps": [
       {
         "title": "Bước 1 — Vẽ đường + khởi tạo xe",

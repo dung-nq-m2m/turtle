@@ -1,6 +1,7 @@
 /**
- * Hướng dẫn code từng bước (khóa tuần tự + trắc nghiệm xác nhận)
- * Sai trắc nghiệm → chờ 1 phút mới nộp lại (countdown)
+ * Hướng dẫn code từng bước (khóa tuần tự + trắc nghiệm)
+ * - Sai quiz → chờ 1 phút (countdown)
+ * - Phải xác nhận đã đọc + tự gõ thử rồi mới mở trắc nghiệm (chống chép máy móc)
  */
 
 const CodeGuide = {
@@ -32,9 +33,17 @@ const CodeGuide = {
           }
         });
       }
-      return { completed, expanded, cooldowns };
+
+      const confirmed = {};
+      if (data.confirmed && typeof data.confirmed === 'object') {
+        Object.keys(data.confirmed).forEach((k) => {
+          if (data.confirmed[k]) confirmed[String(k)] = true;
+        });
+      }
+
+      return { completed, expanded, cooldowns, confirmed };
     } catch {
-      return { completed: [], expanded: 0, cooldowns: {} };
+      return { completed: [], expanded: 0, cooldowns: {}, confirmed: {} };
     }
   },
 
@@ -43,8 +52,22 @@ const CodeGuide = {
       completed: progress.completed,
       expanded: progress.expanded,
       current: progress.expanded,
-      cooldowns: progress.cooldowns || {}
+      cooldowns: progress.cooldowns || {},
+      confirmed: progress.confirmed || {}
     }));
+  },
+
+  isStepConfirmed(progress, stepIndex) {
+    return !!(progress?.confirmed?.[String(stepIndex)]);
+  },
+
+  setStepConfirmed(lessonId, stepIndex, value) {
+    const progress = this.loadProgress(lessonId);
+    if (!progress.confirmed) progress.confirmed = {};
+    if (value) progress.confirmed[String(stepIndex)] = true;
+    else delete progress.confirmed[String(stepIndex)];
+    this.saveProgress(lessonId, progress);
+    return progress;
   },
 
   cooldownUntil(progress, stepIndex) {
@@ -94,6 +117,40 @@ const CodeGuide = {
       .replace(/>/g, '&gt;');
   },
 
+  workflowBannerHtml() {
+    return `
+      <div class="code-guide-workflow" role="note">
+        <div class="code-guide-workflow-title">📌 Cách làm đúng — đừng chép máy móc</div>
+        <ol class="code-guide-workflow-list">
+          <li><strong>Đọc</strong> giải thích + checklist của <em>bước đang mở</em>.</li>
+          <li><strong>Tự gõ</strong> phần code của bước đó trên máy (Thonny / IDLE) và <strong>chạy thử</strong>.</li>
+          <li>Tick xác nhận → làm <strong>trắc nghiệm</strong> mới mở bước sau.</li>
+        </ol>
+        <p class="code-guide-workflow-warn">
+          ❌ Không chép nguyên file từ trên xuống dưới.<br>
+          💡 Gợi ý code chỉ để đối chiếu khi bí — không thay cho việc đọc hiểu.
+        </p>
+      </div>`;
+  },
+
+  confirmHtml(stepIndex, confirmed) {
+    return `
+      <div class="code-guide-confirm" data-guide-confirm="${stepIndex}">
+        <div class="code-guide-confirm-title">Trước khi làm trắc nghiệm</div>
+        <label class="code-guide-confirm-item">
+          <input type="checkbox" data-guide-confirm-read="${stepIndex}"${confirmed ? ' checked' : ''}>
+          <span>Em đã <strong>đọc</strong> giải thích và checklist bước này.</span>
+        </label>
+        <label class="code-guide-confirm-item">
+          <input type="checkbox" data-guide-confirm-typed="${stepIndex}"${confirmed ? ' checked' : ''}>
+          <span>Em đã <strong>tự gõ / chạy thử</strong> trên máy (không chép nguyên file).</span>
+        </label>
+        <p class="code-guide-confirm-hint" data-guide-confirm-hint ${confirmed ? 'hidden' : ''}>
+          Tick đủ 2 ô trên để mở trắc nghiệm.
+        </p>
+      </div>`;
+  },
+
   gradeQuiz(root, step, stepIndex) {
     const questions = step.quiz || [];
     const quizEl = root.querySelector(`[data-guide-quiz="${stepIndex}"]`);
@@ -141,6 +198,7 @@ const CodeGuide = {
     return { ok: true };
   },
 
+  /** Quiz chỉ mở khi đã xác nhận và không đang cooldown */
   setQuizInteractive(quizEl, enabled) {
     if (!quizEl) return;
     quizEl.querySelectorAll('input[type="radio"]').forEach((el) => {
@@ -148,17 +206,36 @@ const CodeGuide = {
     });
     const btn = quizEl.querySelector('[data-guide-action="submit-quiz"]');
     if (btn) btn.disabled = !enabled;
+    quizEl.classList.toggle('is-locked', !enabled && !quizEl.classList.contains('is-cooling'));
   },
 
-  updateCooldownBanner(quizEl, remainingMs) {
+  applyQuizLockState(container, lessonId, stepIndex) {
+    const progress = this.loadProgress(lessonId);
+    const quizEl = container.querySelector(`[data-guide-quiz="${stepIndex}"]`);
+    if (!quizEl) return;
+    const cooling = this.cooldownRemainingMs(progress, stepIndex) > 0;
+    const confirmed = this.isStepConfirmed(progress, stepIndex);
+    const canUse = confirmed && !cooling;
+    this.setQuizInteractive(quizEl, canUse);
+    quizEl.classList.toggle('is-locked', !confirmed && !cooling);
+    const hint = container.querySelector(`[data-guide-confirm="${stepIndex}"] [data-guide-confirm-hint]`);
+    if (hint) hint.hidden = confirmed;
+  },
+
+  updateCooldownBanner(quizEl, remainingMs, lessonId, stepIndex) {
     if (!quizEl) return;
     let banner = quizEl.querySelector('[data-guide-cooldown]');
     if (remainingMs <= 0) {
       banner?.remove();
       quizEl.classList.remove('is-cooling');
-      this.setQuizInteractive(quizEl, true);
+      const progress = lessonId != null
+        ? this.loadProgress(lessonId)
+        : { confirmed: { [String(stepIndex)]: true } };
+      const confirmed = this.isStepConfirmed(progress, stepIndex);
+      this.setQuizInteractive(quizEl, confirmed);
+      quizEl.classList.toggle('is-locked', !confirmed);
       const feedback = quizEl.querySelector('[data-guide-feedback]');
-      if (feedback && feedback.classList.contains('is-error')) {
+      if (feedback && feedback.classList.contains('is-error') && confirmed) {
         feedback.hidden = false;
         feedback.className = 'code-guide-quiz-feedback is-ok';
         feedback.textContent = 'Đã hết thời gian chờ — em có thể nộp bài lại.';
@@ -170,6 +247,7 @@ const CodeGuide = {
     }
 
     quizEl.classList.add('is-cooling');
+    quizEl.classList.remove('is-locked');
     if (!banner) {
       banner = document.createElement('div');
       banner.className = 'code-guide-quiz-cooldown';
@@ -211,7 +289,7 @@ const CodeGuide = {
       const progress = this.loadProgress(lessonId);
       const left = this.cooldownRemainingMs(progress, stepIndex);
       const quizEl = container.querySelector(`[data-guide-quiz="${stepIndex}"]`);
-      this.updateCooldownBanner(quizEl, left);
+      this.updateCooldownBanner(quizEl, left, lessonId, stepIndex);
       if (left <= 0) {
         this.stopCooldownTicker();
         if (progress.cooldowns?.[String(stepIndex)]) {
@@ -224,7 +302,7 @@ const CodeGuide = {
     this._cooldownTimer = setInterval(tick, 250);
   },
 
-  quizHtml(step, stepIndex, reviewMode, cooldownMs = 0) {
+  quizHtml(step, stepIndex, reviewMode, { cooldownMs = 0, confirmed = false } = {}) {
     if (reviewMode) {
       return `
         <div class="code-guide-quiz code-guide-quiz-review">
@@ -236,15 +314,17 @@ const CodeGuide = {
     const questions = step.quiz || [];
     if (!questions.length) {
       return `
+        ${this.confirmHtml(stepIndex, confirmed)}
         <div class="code-guide-actions">
-          <button type="button" class="btn btn-primary" data-guide-action="complete" data-step="${stepIndex}">
+          <button type="button" class="btn btn-primary" data-guide-action="complete" data-step="${stepIndex}"${!confirmed ? ' disabled' : ''}>
             ✅ Em đã hoàn thành bước này
           </button>
         </div>`;
     }
 
-    const locked = cooldownMs > 0;
-    const cooldownBlock = locked ? `
+    const cooling = cooldownMs > 0;
+    const quizLocked = !confirmed || cooling;
+    const cooldownBlock = cooling ? `
       <div class="code-guide-quiz-cooldown" data-guide-cooldown>
         <div class="code-guide-cooldown-title">⏳ Chờ 1 phút rồi thử lại</div>
         <p class="code-guide-cooldown-msg">
@@ -257,16 +337,21 @@ const CodeGuide = {
       </div>` : '';
 
     return `
-      <div class="code-guide-quiz ${locked ? 'is-cooling' : ''}" data-guide-quiz="${stepIndex}">
+      ${this.confirmHtml(stepIndex, confirmed)}
+      <div class="code-guide-quiz ${cooling ? 'is-cooling' : ''} ${!confirmed ? 'is-locked' : ''}" data-guide-quiz="${stepIndex}">
         <div class="code-guide-quiz-title">❓ Kiểm tra nhanh — trả lời đúng mới sang bước tiếp</div>
-        <p class="code-guide-quiz-note">Em cần nắm chắc nội dung bước này trước khi mở khóa bước sau.</p>
+        <p class="code-guide-quiz-note">
+          ${confirmed
+            ? 'Em cần nắm chắc nội dung bước này trước khi mở khóa bước sau.'
+            : 'Trắc nghiệm đang khóa — tick đủ 2 ô xác nhận phía trên trước.'}
+        </p>
         ${questions.map((q, qi) => `
           <div class="code-guide-q" data-guide-q="${qi}">
             <div class="code-guide-q-text"><strong>Câu ${qi + 1}.</strong> ${q.question}</div>
             <div class="code-guide-q-options">
               ${(q.options || []).map((opt, oi) => `
                 <label class="code-guide-q-option">
-                  <input type="radio" name="guide-q-${stepIndex}-${qi}" value="${oi}"${locked ? ' disabled' : ''}>
+                  <input type="radio" name="guide-q-${stepIndex}-${qi}" value="${oi}"${quizLocked ? ' disabled' : ''}>
                   <span>${opt}</span>
                 </label>
               `).join('')}
@@ -276,31 +361,59 @@ const CodeGuide = {
         <div class="code-guide-quiz-feedback" data-guide-feedback hidden></div>
         ${cooldownBlock}
         <div class="code-guide-actions">
-          <button type="button" class="btn btn-primary" data-guide-action="submit-quiz" data-step="${stepIndex}"${locked ? ' disabled' : ''}>
+          <button type="button" class="btn btn-primary" data-guide-action="submit-quiz" data-step="${stepIndex}"${quizLocked ? ' disabled' : ''}>
             ✅ Nộp bài & mở bước tiếp
           </button>
         </div>
       </div>`;
   },
 
-  bodyHtml(step, i, { reviewMode, workingIndex, stepsLen, cooldownMs }) {
+  bodyHtml(step, i, { reviewMode, workingIndex, stepsLen, cooldownMs, confirmed }) {
+    const checklist = step.checklist?.length ? `
+      <div class="code-guide-checklist-wrap">
+        <div class="code-guide-checklist-label">Checklist — em tự đánh dấu khi đã làm:</div>
+        <ul class="code-guide-checklist">
+          ${step.checklist.map((item, ci) => `
+            <li>
+              <label class="code-guide-check-item">
+                <input type="checkbox" data-guide-check="${i}-${ci}">
+                <span>${item}</span>
+              </label>
+            </li>
+          `).join('')}
+        </ul>
+      </div>` : '';
+
+    // Gợi ý ở cuối; khi cooldown vẫn mở để đọc lại — còn lại đóng mặc định
+    const hintOpen = reviewMode || (cooldownMs > 0 && !reviewMode);
+    const hint = step.hintCode ? `
+      <details class="code-guide-hint" ${hintOpen ? 'open' : ''}>
+        <summary>💡 Gợi ý code — chỉ đoạn bước này (xem khi đã tự thử)</summary>
+        <p class="code-guide-hint-warn">
+          Đây không phải file hoàn chỉnh để chép từ đầu đến cuối.
+          Em chỉ đối chiếu phần liên quan bước ${i + 1}.
+        </p>
+        <pre class="code-guide-hint-code">${this.escape(step.hintCode)}</pre>
+      </details>` : '';
+
     return `
       <div class="code-guide-step-body">
         <div class="code-guide-explain">${step.explain || ''}</div>
-        ${step.checklist?.length ? `
-          <ul class="code-guide-checklist">
-            ${step.checklist.map(item => `<li>${item}</li>`).join('')}
-          </ul>
-        ` : ''}
-        ${step.hintCode ? `
-          <details class="code-guide-hint" ${reviewMode || cooldownMs > 0 ? 'open' : ''}>
-            <summary>💡 Gợi ý code (xem khi cần)</summary>
-            <pre class="code-guide-hint-code">${this.escape(step.hintCode)}</pre>
-          </details>
-        ` : ''}
-        ${step.goal ? `<p class="code-guide-goal"><strong>Kiểm tra thực hành:</strong> ${step.goal}</p>` : ''}
-        ${this.quizHtml(step, i, reviewMode, cooldownMs || 0)}
+        ${checklist}
+        ${step.goal ? `
+          <p class="code-guide-goal">
+            <strong>🎯 Kiểm tra thực hành (chạy trên máy trước):</strong> ${step.goal}
+          </p>` : ''}
+        ${reviewMode ? '' : this.quizHtml(step, i, false, {
+          cooldownMs: cooldownMs || 0,
+          confirmed: !!confirmed
+        })}
+        ${hint}
         ${reviewMode ? `
+          <div class="code-guide-quiz code-guide-quiz-review">
+            <div class="code-guide-quiz-title">✅ Em đã vượt qua trắc nghiệm bước này</div>
+            <p class="code-guide-quiz-note">Chế độ xem lại — đọc lại giải thích và gợi ý bên trên.</p>
+          </div>
           <div class="code-guide-actions" style="margin-top:0.75rem">
             ${i + 1 < stepsLen ? `
               <button type="button" class="btn btn-outline" data-guide-action="open" data-step="${i + 1}">
@@ -317,15 +430,40 @@ const CodeGuide = {
       </div>`;
   },
 
+  syncConfirmFromDom(container, lessonId, stepIndex) {
+    const read = container.querySelector(`[data-guide-confirm-read="${stepIndex}"]`);
+    const typed = container.querySelector(`[data-guide-confirm-typed="${stepIndex}"]`);
+    const both = !!(read?.checked && typed?.checked);
+    this.setStepConfirmed(lessonId, stepIndex, both);
+    this.applyQuizLockState(container, lessonId, stepIndex);
+    const completeBtn = container.querySelector(
+      `[data-guide-action="complete"][data-step="${stepIndex}"]`
+    );
+    if (completeBtn) completeBtn.disabled = !both;
+  },
+
   render(container, guide, lessonId) {
     if (!container || !guide?.steps?.length) return;
 
     const steps = guide.steps;
     const self = this;
 
-    // Gắn listener 1 lần (delegation) — tránh mất sự kiện sau mỗi lần render
     if (container.dataset.guideBound !== '1') {
       container.dataset.guideBound = '1';
+
+      container.addEventListener('change', (e) => {
+        const t = e.target;
+        if (!(t instanceof HTMLInputElement)) return;
+        if (t.matches('[data-guide-confirm-read], [data-guide-confirm-typed]')) {
+          const stepIndex = Number(
+            t.getAttribute('data-guide-confirm-read')
+            || t.getAttribute('data-guide-confirm-typed')
+          );
+          if (!Number.isInteger(stepIndex)) return;
+          self.syncConfirmFromDom(container, lessonId, stepIndex);
+        }
+      });
+
       container.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-guide-action]');
         if (!btn || !container.contains(btn)) return;
@@ -349,6 +487,10 @@ const CodeGuide = {
         }
 
         if (action === 'complete') {
+          if (!self.isStepConfirmed(progress, stepIndex)) {
+            self.syncConfirmFromDom(container, lessonId, stepIndex);
+            return;
+          }
           if (!progress.completed.includes(stepIndex)) {
             progress.completed.push(stepIndex);
           }
@@ -359,9 +501,27 @@ const CodeGuide = {
         }
 
         if (action === 'submit-quiz') {
+          if (!self.isStepConfirmed(progress, stepIndex)) {
+            const quizEl = container.querySelector(`[data-guide-quiz="${stepIndex}"]`);
+            const feedback = quizEl?.querySelector('[data-guide-feedback]');
+            if (feedback) {
+              feedback.hidden = false;
+              feedback.className = 'code-guide-quiz-feedback is-error';
+              feedback.textContent =
+                'Em chưa xác nhận đã đọc và tự gõ thử. Tick đủ 2 ô phía trên trước khi nộp.';
+            }
+            self.applyQuizLockState(container, lessonId, stepIndex);
+            return;
+          }
+
           if (self.cooldownRemainingMs(progress, stepIndex) > 0) {
             const quizEl = container.querySelector(`[data-guide-quiz="${stepIndex}"]`);
-            self.updateCooldownBanner(quizEl, self.cooldownRemainingMs(progress, stepIndex));
+            self.updateCooldownBanner(
+              quizEl,
+              self.cooldownRemainingMs(progress, stepIndex),
+              lessonId,
+              stepIndex
+            );
             return;
           }
 
@@ -395,7 +555,12 @@ const CodeGuide = {
         if (action === 'reset') {
           if (!confirm('Xóa tiến độ hướng dẫn và làm lại từ bước 1?')) return;
           self.stopCooldownTicker();
-          self.saveProgress(lessonId, { completed: [], expanded: 0, cooldowns: {} });
+          self.saveProgress(lessonId, {
+            completed: [],
+            expanded: 0,
+            cooldowns: {},
+            confirmed: {}
+          });
           paint();
         }
       });
@@ -414,8 +579,13 @@ const CodeGuide = {
         expanded = workingIndex;
       }
 
+      const defaultIntro =
+        'Mỗi bước: đọc giải thích → tự gõ thử trên máy → xác nhận → trắc nghiệm. '
+        + 'Không chép nguyên file từ trên xuống dưới.';
+
       container.innerHTML = `
-        <p class="code-guide-intro">${guide.intro || 'Làm theo từng bước — trả lời đúng trắc nghiệm mới mở bước sau.'}</p>
+        <p class="code-guide-intro">${guide.intro || defaultIntro}</p>
+        ${self.workflowBannerHtml()}
         <div class="code-guide-progress">
           <div class="code-guide-progress-bar">
             <div class="code-guide-progress-fill" style="width:${(doneCount / steps.length) * 100}%"></div>
@@ -430,6 +600,7 @@ const CodeGuide = {
             const reviewMode = isExpanded && isDone;
             const working = isExpanded && !isDone;
             const cooldownMs = working ? self.cooldownRemainingMs(progress, i) : 0;
+            const confirmed = self.isStepConfirmed(progress, i);
 
             let stateClass = 'locked';
             if (working) stateClass = cooldownMs > 0 ? 'current cooling' : 'current';
@@ -445,7 +616,8 @@ const CodeGuide = {
                 reviewMode,
                 workingIndex,
                 stepsLen: steps.length,
-                cooldownMs
+                cooldownMs,
+                confirmed
               });
               if (reviewMode && i + 1 < steps.length && !self.isUnlocked(i + 1, progress.completed)) {
                 actions = actions.replace(

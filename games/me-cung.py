@@ -111,15 +111,23 @@ def dem_gio():
     man_hinh.ontimer(dem_gio, 1000)
 
 
-def cham_tuong(x, y):
+def cham_tuong(x_cu, y_cu, x_moi, y_moi):
+
     for x1, y1, x2, y2 in DANH_SACH_TUONG:
+        # ----- Tường ngang -----
         if y1 == y2:
-            if min(x1, x2) - KHOANG_CACH_TUONG <= x <= max(x1, x2) + KHOANG_CACH_TUONG:
-                if abs(y - y1) < KHOANG_CACH_TUONG:
+            if min(x1, x2) - KHOANG_CACH_TUONG <= x_moi <= max(x1, x2) + KHOANG_CACH_TUONG:
+                if min(y_cu, y_moi) <= y1 <= max(y_cu, y_moi):
                     return True
-        elif x1 == x2:
-            if min(y1, y2) - KHOANG_CACH_TUONG <= y <= max(y1, y2) + KHOANG_CACH_TUONG:
-                if abs(x - x1) < KHOANG_CACH_TUONG:
+
+                if abs(y_moi - y1) < KHOANG_CACH_TUONG:
+                    return True
+        # ----- Tường dọc -----
+        else:
+            if min(y1, y2) - KHOANG_CACH_TUONG <= y_moi <= max(y1, y2) + KHOANG_CACH_TUONG:
+                if min(x_cu, x_moi) <= x1 <= max(x_cu, x_moi):
+                    return True
+                if abs(x_moi - x1) < KHOANG_CACH_TUONG:
                     return True
     return False
 
@@ -147,8 +155,11 @@ def di_chuyen(huong):
     if thang:
         return
 
-    x_moi = rua.xcor()
-    y_moi = rua.ycor()
+    x_cu = rua.xcor()
+    y_cu = rua.ycor()
+
+    x_moi = x_cu
+    y_moi = y_cu
 
     if huong == 90:
         y_moi = y_moi + BUOC
@@ -161,7 +172,7 @@ def di_chuyen(huong):
 
     rua.setheading(huong)
 
-    if cham_tuong(x_moi, y_moi):
+    if cham_tuong(x_cu, y_cu, x_moi, y_moi):
         return
 
     rua.goto(x_moi, y_moi)
