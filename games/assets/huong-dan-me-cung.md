@@ -49,6 +49,19 @@ if cham_tuong(x_cu, y_cu, x_moi, y_moi):
 
 Truyền cả vị trí **cũ** và **mới** — tránh bước `BUOC` cắt xuyên tường.
 
+#### Cách tính (dễ nhớ)
+
+1. **Tường ngang** (`y1 == y2`): rùa đi lên/xuống  
+   - Chỗ mới có ngang hàng với đoạn tường không? (cộng đệm 10)  
+   - Đoạn đi có cắt qua `y` tường không? → `min(y_cu,y_moi) ≤ y1 ≤ max(...)`  
+   - Hoặc chỗ mới sát tường? → `abs(y_moi - y1) < 10`
+
+2. **Tường dọc** (`x1 == x2`): rùa đi trái/phải — làm tương tự theo trục x.
+
+3. **Vì sao 4 tham số?** Chỉ nhìn chỗ mới thì rùa có thể “nhảy” qua tường trong một bước.
+
+4. **`KHOANG_CACH_TUONG = 10`**: khoảng đệm vì rùa không phải một chấm.
+
 ## 2. Cấu trúc thư mục
 
 ```

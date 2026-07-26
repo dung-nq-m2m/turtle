@@ -151,7 +151,7 @@
     ]
   },
   "syntax": "if cham_tuong(x_cu, y_cu, x_moi, y_moi): return",
-  "syntaxNote": "Truyền cả vị trí cũ và mới — phát hiện bước cắt ngang tường, không chỉ điểm đến.",
+  "syntaxNote": "Truyền cả chỗ cũ và chỗ mới. Tường ngang: xem đoạn đi có cắt qua y tường không. Tường dọc: xem đoạn đi có cắt qua x tường không. Thêm khoảng đệm 10 để rùa không dính tường.",
   "animation": {
     "type": "game-maze",
     "label": "Mê cung 🏰",
@@ -163,22 +163,22 @@
   "remember": [
     {
       "command": "cham_tuong(x_cu, y_cu, x_moi, y_moi)",
-      "meaning": "Chặn cắt tường + sát tường"
+      "meaning": "Hỏi: đoạn đi cũ→mới có cắt/sát tường?"
     },
     {
-      "command": "ontimer(dem_gio, 1000)",
-      "meaning": "Đếm thời gian mỗi giây"
+      "command": "min(y_cu,y_moi) ≤ y1 ≤ max(...)",
+      "meaning": "Đoạn đi cắt tường ngang"
     },
     {
-      "command": "diem = diem + 5",
-      "meaning": "Cộng điểm mỗi bước đi được"
+      "command": "min(x_cu,x_moi) ≤ x1 ≤ max(...)",
+      "meaning": "Đoạn đi cắt tường dọc"
     },
     {
-      "command": "thuong = max(0, 200 - thoi_gian*5)",
-      "meaning": "Thưởng thắng nhanh"
+      "command": "KHOANG_CACH_TUONG = 10",
+      "meaning": "Khoảng đệm an toàn quanh tường"
     },
     {
-      "tip": "Kiểm tra đoạn đi cũ→mới TRƯỚC khi goto!"
+      "tip": "Chỉ nhìn chỗ mới → có thể xuyên tường khi bước dài!"
     }
   ],
   "exercises": [
@@ -305,18 +305,18 @@
         ]
       },
       {
-        "title": "Bước 3 — Không cho rùa xuyên tường",
+        "title": "Bước 3 — Không cho rùa xuyên tường (tính toán cham_tuong)",
         "flowLabel": "cham_tuong(x_cu,y_cu,x_moi,y_moi)?",
-        "explain": "<p><strong>Hình dung:</strong> Trước khi bước chân, em hỏi: “Đoạn đường từ chỗ cũ đến chỗ mới có đụng tường không?”</p><p>Thứ tự đúng:</p><ol><li>Nhớ chỗ cũ (<code>x_cu, y_cu</code>)</li><li>Tính chỗ mới (<code>x_moi, y_moi</code>)</li><li>Hỏi <code>cham_tuong(...)</code> — nếu có tường thì <strong>dừng</strong>, không đi</li><li>Không tường thì mới <code>goto</code> và cộng điểm</li></ol><p>Hàm nhận <strong>4 số</strong> (cũ + mới) để bắt cả trường hợp bước dài <em>cắt ngang</em> tường — không chỉ nhìn điểm đến.</p>",
+        "explain": "\n<p><strong>Hình dung:</strong> Trước khi bước chân, em hỏi:\n“Đoạn đường từ chỗ cũ đến chỗ mới có đụng tường không?”</p>\n\n<p><strong>Thứ tự trong <code>di_chuyen</code>:</strong></p>\n<ol>\n  <li>Nhớ chỗ cũ (<code>x_cu, y_cu</code>)</li>\n  <li>Tính chỗ mới (<code>x_moi, y_moi</code>) — mỗi bước đi <code>BUOC = 20</code></li>\n  <li>Hỏi <code>cham_tuong(...)</code> — nếu True thì <strong>dừng</strong>, không <code>goto</code></li>\n  <li>Nếu False thì mới đi và cộng điểm</li>\n</ol>\n\n<div class=\"code-guide-calc\">\n  <div class=\"code-guide-calc-title\">Cách hàm cham_tuong tính toán (từng bước)</div>\n  <p>Hàm nhận <strong>4 số</strong>: chỗ cũ + chỗ mới. Em duyệt từng bức tường trong list.</p>\n\n  <div class=\"code-guide-calc-box\">\n    <strong>Bước A — Phân biệt loại tường</strong>\n    <ul>\n      <li><strong>Tường ngang</strong> (nằm ngang): <code>y1 == y2</code> — cùng một độ cao y.</li>\n      <li><strong>Tường dọc</strong> (đứng thẳng): còn lại — cùng một cột x (<code>x1 == x2</code>).</li>\n    </ul>\n  </div>\n\n  <div class=\"code-guide-calc-box\">\n    <strong>Bước B — Tường ngang (rùa đi lên / xuống)</strong>\n    <p>Ví dụ tường nằm ở <code>y = 50</code>, kéo từ x = −180 đến x = 100.</p>\n    <ol>\n      <li><em>Rùa có ngang hàng với tường không?</em><br>\n        Chỗ mới x nằm trong đoạn tường (thêm đệm 10):<br>\n        <code>min(x1,x2) − 10 ≤ x_moi ≤ max(x1,x2) + 10</code></li>\n      <li><em>Đoạn đi có cắt qua độ cao tường không?</em><br>\n        y tường nằm giữa chỗ cũ và chỗ mới:<br>\n        <code>min(y_cu, y_moi) ≤ y1 ≤ max(y_cu, y_moi)</code><br>\n        → Bước chân từ dưới tường sang trên tường = <strong>cắt ngang</strong> → chạm!</li>\n      <li><em>Hoặc chỗ mới có sát tường không?</em><br>\n        <code>abs(y_moi − y1) &lt; 10</code> → đứng quá gần → cũng chạm.</li>\n    </ol>\n    <p class=\"code-guide-calc-eg\">Ví dụ: cũ y=30, mới y=50, tường y=50 → đoạn đi cắt đúng tường → trả về True.</p>\n  </div>\n\n  <div class=\"code-guide-calc-box\">\n    <strong>Bước C — Tường dọc (rùa đi trái / phải)</strong>\n    <p>Ví dụ tường đứng tại <code>x = 40</code>, từ y = 50 đến y = 120.</p>\n    <ol>\n      <li><em>Rùa có thẳng hàng với tường không?</em><br>\n        Chỗ mới y nằm trong đoạn tường (cộng đệm 10).</li>\n      <li><em>Đoạn đi có cắt qua cột tường không?</em><br>\n        <code>min(x_cu, x_moi) ≤ x1 ≤ max(x_cu, x_moi)</code></li>\n      <li><em>Hoặc chỗ mới sát tường?</em><br>\n        <code>abs(x_moi − x1) &lt; 10</code></li>\n    </ol>\n  </div>\n\n  <div class=\"code-guide-calc-box code-guide-calc-why\">\n    <strong>Bước D — Vì sao cần cả chỗ cũ lẫn chỗ mới?</strong>\n    <p>Nếu chỉ nhìn chỗ mới, rùa có thể “nhảy” từ bên này tường sang bên kia trong một bước\n    (<code>BUOC = 20</code>) mà điểm đến không nằm sát tường → <strong>xuyên tường</strong>.</p>\n    <p>Nhìn cả đoạn cũ → mới giống soi đường đi của bước chân: có cắt tường thì chặn.</p>\n  </div>\n\n  <div class=\"code-guide-calc-box\">\n    <strong>Bước E — KHOANG_CACH_TUONG = 10</strong>\n    <p>Khoảng đệm an toàn quanh tường (rùa có kích thước, không phải một chấm).\n    Giống giữ khoảng cách với tường thật để không “dính” vào tường.</p>\n  </div>\n\n  <pre class=\"code-guide-calc-flow\" aria-hidden=\"true\">Chỗ cũ ●────────→● Chỗ mới\n            │\n         ═══╪═══  ← tường ngang\n            │\n     Đoạn đi cắt tường? → CHẠM → dừng</pre>\n</div>\n",
         "checklist": [
-          "Viết hàm cham_tuong với 4 tham số: cũ → mới",
-          "Kiểm tra tường ngang và tường dọc",
-          "Trong di_chuyen: tính chỗ mới rồi mới hỏi cham_tuong",
-          "Chạm tường → return (rùa đứng yên)",
-          "Đi được → số bước +1, điểm +5"
+          "Hiểu: nhớ chỗ cũ → tính chỗ mới → hỏi cham_tuong → mới được đi",
+          "cham_tuong nhận 4 số: x_cu, y_cu, x_moi, y_moi",
+          "Tường ngang (y1==y2): kiểm tra cắt theo y + sát tường",
+          "Tường dọc: kiểm tra cắt theo x + sát tường",
+          "Chạm → return (đứng yên); không chạm → goto + điểm +5"
         ],
         "hintCode": "def cham_tuong(x_cu, y_cu, x_moi, y_moi):\n    for x1, y1, x2, y2 in DANH_SACH_TUONG:\n        # Tường ngang\n        if y1 == y2:\n            if min(x1, x2) - KHOANG_CACH_TUONG <= x_moi <= max(x1, x2) + KHOANG_CACH_TUONG:\n                if min(y_cu, y_moi) <= y1 <= max(y_cu, y_moi):\n                    return True\n                if abs(y_moi - y1) < KHOANG_CACH_TUONG:\n                    return True\n        # Tường dọc\n        else:\n            if min(y1, y2) - KHOANG_CACH_TUONG <= y_moi <= max(y1, y2) + KHOANG_CACH_TUONG:\n                if min(x_cu, x_moi) <= x1 <= max(x_cu, x_moi):\n                    return True\n                if abs(x_moi - x1) < KHOANG_CACH_TUONG:\n                    return True\n    return False\n\n\ndef di_chuyen(huong):\n    global diem, so_buoc\n    if thang:\n        return\n\n    x_cu = rua.xcor()\n    y_cu = rua.ycor()\n    x_moi = x_cu\n    y_moi = y_cu\n\n    if huong == 90:\n        y_moi = y_moi + BUOC\n    elif huong == 270:\n        y_moi = y_moi - BUOC\n    elif huong == 180:\n        x_moi = x_moi - BUOC\n    elif huong == 0:\n        x_moi = x_moi + BUOC\n\n    rua.setheading(huong)\n\n    if cham_tuong(x_cu, y_cu, x_moi, y_moi):\n        return\n\n    rua.goto(x_moi, y_moi)\n    so_buoc = so_buoc + 1\n    diem = diem + 5\n    ve_bang()\n    kiem_tra_thang()\n    man_hinh.update()",
-        "goal": "Nhấn phím đụng tường: rùa đứng yên (không xuyên tường).",
+        "goal": "Nhấn phím đụng tường: rùa đứng yên. Giải thích được vì sao cần cả chỗ cũ và chỗ mới.",
         "quiz": [
           {
             "question": "Hàm cham_tuong cần biết những vị trí nào?",
@@ -329,9 +329,9 @@
             "correct": 0
           },
           {
-            "question": "Vì sao cần kiểm tra đoạn đi từ chỗ cũ đến chỗ mới?",
+            "question": "Vì sao cần kiểm tra min(y_cu, y_moi) ≤ y_tường ≤ max(y_cu, y_moi)?",
             "options": [
-              "Để phát hiện khi bước đi cắt ngang tường",
+              "Để biết đoạn đi có cắt ngang tường ngang hay không",
               "Để tăng điểm nhanh hơn",
               "Để đổi màu tường",
               "Vì Python bắt buộc vậy"

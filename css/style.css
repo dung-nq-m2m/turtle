@@ -1485,6 +1485,67 @@ body {
   margin-bottom: 0.65rem;
 }
 
+.code-guide-explain p { margin: 0.45rem 0; }
+.code-guide-explain ol,
+.code-guide-explain ul { margin: 0.35rem 0 0.5rem 1.15rem; }
+.code-guide-explain li { margin-bottom: 0.25rem; }
+
+.code-guide-calc {
+  margin: 0.85rem 0 0.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 2px solid #1a3a6b;
+  background: #f4f8ff;
+}
+
+.code-guide-calc-title {
+  font-weight: 800;
+  color: #1a3a6b;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.code-guide-calc-box {
+  margin: 0.65rem 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #c5d4e8;
+}
+
+.code-guide-calc-box strong {
+  display: block;
+  color: #1a4a8a;
+  margin-bottom: 0.35rem;
+}
+
+.code-guide-calc-why {
+  border-color: #e8a317;
+  background: #fffbeb;
+}
+
+.code-guide-calc-eg {
+  margin: 0.5rem 0 0 !important;
+  padding: 0.4rem 0.55rem;
+  background: #eef8ee;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #2d5a2d;
+}
+
+.code-guide-calc-flow {
+  margin: 0.75rem 0 0;
+  padding: 0.65rem 0.75rem;
+  background: #2d3748;
+  color: #e2e8f0;
+  border-radius: 8px;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  overflow-x: auto;
+  white-space: pre;
+}
+
 .code-guide-checklist-wrap {
   margin: 0.75rem 0;
 }
