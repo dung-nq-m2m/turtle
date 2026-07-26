@@ -252,4 +252,95 @@ window.addEventListener('code-lock-all', () => {
   if (currentLesson) renderLessonCode(currentLesson);
 });
 
-document.addEventListener('DOMContentLoaded', loadLesson);
+/** Toàn màn hình bài học (Fullscreen API + fallback CSS) */
+function getFullscreenElement() {
+  return document.fullscreenElement
+    || document.webkitFullscreenElement
+    || document.msFullscreenElement
+    || null;
+}
+
+function requestPageFullscreen(el) {
+  if (el.requestFullscreen) return el.requestFullscreen();
+  if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen();
+  if (el.msRequestFullscreen) return el.msRequestFullscreen();
+  return Promise.reject(new Error('no-fs'));
+}
+
+function exitPageFullscreen() {
+  if (document.exitFullscreen) return document.exitFullscreen();
+  if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+  if (document.msExitFullscreen) return document.msExitFullscreen();
+  return Promise.resolve();
+}
+
+function syncFullscreenButton() {
+  const btn = document.getElementById('fullscreen-toggle');
+  if (!btn) return;
+  const active = !!(getFullscreenElement() || document.body.classList.contains('is-lesson-fullscreen'));
+  btn.classList.toggle('is-active', active);
+  btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  const label = btn.querySelector('.fullscreen-label');
+  const icon = btn.querySelector('.fullscreen-icon');
+  if (label) label.textContent = active ? 'Thu nhỏ' : 'Toàn màn hình';
+  if (icon) icon.textContent = active ? '⛶' : '⛶';
+  btn.title = active ? 'Thoát toàn màn hình (Esc)' : 'Toàn màn hình';
+  btn.setAttribute('aria-label', active ? 'Thoát toàn màn hình' : 'Toàn màn hình');
+}
+
+async function toggleLessonFullscreen() {
+  const root = document.documentElement;
+  try {
+    if (getFullscreenElement()) {
+      await exitPageFullscreen();
+      document.body.classList.remove('is-lesson-fullscreen');
+    } else if (document.body.classList.contains('is-lesson-fullscreen')) {
+      document.body.classList.remove('is-lesson-fullscreen');
+    } else {
+      try {
+        await requestPageFullscreen(root);
+        document.body.classList.add('is-lesson-fullscreen');
+      } catch {
+        // Trình duyệt chặn Fullscreen API → chỉ ẩn sidebar / phóng nội dung
+        document.body.classList.add('is-lesson-fullscreen');
+      }
+    }
+  } catch (e) {
+    document.body.classList.toggle('is-lesson-fullscreen');
+  }
+  syncFullscreenButton();
+}
+
+function initLessonFullscreen() {
+  const btn = document.getElementById('fullscreen-toggle');
+  if (!btn || btn.dataset.bound === '1') return;
+  btn.dataset.bound = '1';
+  btn.addEventListener('click', () => {
+    toggleLessonFullscreen();
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'MSFullscreenChange'].forEach((ev) => {
+    document.addEventListener(ev, () => {
+      if (!getFullscreenElement()) {
+        // Esc thoát native FS — giữ hoặc bỏ class tùy ý: bỏ để đồng bộ
+        document.body.classList.remove('is-lesson-fullscreen');
+      }
+      syncFullscreenButton();
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('is-lesson-fullscreen')
+        && !getFullscreenElement()) {
+      document.body.classList.remove('is-lesson-fullscreen');
+      syncFullscreenButton();
+    }
+  });
+
+  syncFullscreenButton();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initLessonFullscreen();
+  loadLesson();
+});

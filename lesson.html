@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bài học - Học viện Turtle Python</title>
-  <link rel="stylesheet" href="css/style.css?v=20260726b">
+  <link rel="stylesheet" href="css/style.css?v=20260726c">
 </head>
 <body>
   <div class="app-layout">
@@ -29,7 +29,14 @@
           <p>Bài học</p>
           <p class="site-teacher" id="site-teacher">Ths. Nguyễn Quốc Dũng</p>
         </div>
-        <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
+        <div class="header-actions">
+          <button type="button" class="fullscreen-toggle" id="fullscreen-toggle"
+                  aria-label="Toàn màn hình" title="Toàn màn hình (F11)">
+            <span class="fullscreen-icon" aria-hidden="true">⛶</span>
+            <span class="fullscreen-label">Toàn màn hình</span>
+          </button>
+          <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu">☰</button>
+        </div>
       </header>
 
       <main class="content-area" id="lesson-content">
@@ -50,6 +57,6 @@
   <script src="js/animation.js?v=20260719"></script>
   <script src="js/code-editor.js"></script>
   <script src="js/quiz.js"></script>
-  <script src="js/lesson.js"></script>
+  <script src="js/lesson.js?v=20260726c"></script>
 </body>
 </html>
