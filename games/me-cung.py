@@ -112,23 +112,65 @@ def dem_gio():
 
 
 def cham_tuong(x_cu, y_cu, x_moi, y_moi):
+    """
+    Kiểm tra đoạn đi từ chỗ CŨ → chỗ MỚI có đụng tường không.
 
+    Tham số:
+      x_cu, y_cu  — vị trí rùa đang đứng
+      x_moi, y_moi — vị trí rùa muốn tới (sau 1 bước)
+
+    Trả về:
+      True  → CHẠM tường → không cho đi
+      False → an toàn → được goto
+
+    Ý tưởng: không chỉ nhìn chỗ mới, mà soi cả ĐOẠN ĐƯỜNG đi
+    (tránh nhảy xuyên tường khi BUOC khá lớn).
+    """
     for x1, y1, x2, y2 in DANH_SACH_TUONG:
-        # ----- Tường ngang -----
+
+        # ========== TƯỜNG NGANG (nằm ngang: cùng y) ==========
+        # Ví dụ: tường y = 50, từ x = -180 đến x = 100
         if y1 == y2:
-            if min(x1, x2) - KHOANG_CACH_TUONG <= x_moi <= max(x1, x2) + KHOANG_CACH_TUONG:
-                if min(y_cu, y_moi) <= y1 <= max(y_cu, y_moi):
+            # 1) Chỗ mới có "ngang hàng" với đoạn tường không?
+            #    (thêm đệm KHOANG_CACH_TUONG vì rùa không phải 1 chấm)
+            ngang_hang = (
+                min(x1, x2) - KHOANG_CACH_TUONG
+                <= x_moi
+                <= max(x1, x2) + KHOANG_CACH_TUONG
+            )
+            if ngang_hang:
+                # 2) Đoạn đi có CẮT QUA độ cao tường không?
+                #    y tường nằm giữa y cũ và y mới → bước chân cắt tường
+                cat_tuong = min(y_cu, y_moi) <= y1 <= max(y_cu, y_moi)
+                if cat_tuong:
                     return True
 
-                if abs(y_moi - y1) < KHOANG_CACH_TUONG:
+                # 3) Hoặc chỗ mới SÁT tường (cách < 10)?
+                sat_tuong = abs(y_moi - y1) < KHOANG_CACH_TUONG
+                if sat_tuong:
                     return True
-        # ----- Tường dọc -----
+
+        # ========== TƯỜNG DỌC (đứng thẳng: cùng x) ==========
+        # Ví dụ: tường x = 40, từ y = 50 đến y = 120
         else:
-            if min(y1, y2) - KHOANG_CACH_TUONG <= y_moi <= max(y1, y2) + KHOANG_CACH_TUONG:
-                if min(x_cu, x_moi) <= x1 <= max(x_cu, x_moi):
+            # 1) Chỗ mới có "thẳng hàng" với đoạn tường không?
+            thang_hang = (
+                min(y1, y2) - KHOANG_CACH_TUONG
+                <= y_moi
+                <= max(y1, y2) + KHOANG_CACH_TUONG
+            )
+            if thang_hang:
+                # 2) Đoạn đi có CẮT QUA cột tường không?
+                cat_tuong = min(x_cu, x_moi) <= x1 <= max(x_cu, x_moi)
+                if cat_tuong:
                     return True
-                if abs(x_moi - x1) < KHOANG_CACH_TUONG:
+
+                # 3) Hoặc chỗ mới SÁT tường?
+                sat_tuong = abs(x_moi - x1) < KHOANG_CACH_TUONG
+                if sat_tuong:
                     return True
+
+    # Duyệt hết tường mà không chạm → được đi
     return False
 
 
@@ -172,8 +214,9 @@ def di_chuyen(huong):
 
     rua.setheading(huong)
 
+    # Hỏi trước khi đi: đoạn cũ → mới có đụng tường không?
     if cham_tuong(x_cu, y_cu, x_moi, y_moi):
-        return
+        return  # Chạm tường → đứng yên, không goto
 
     rua.goto(x_moi, y_moi)
     so_buoc = so_buoc + 1
