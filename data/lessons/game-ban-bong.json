@@ -241,23 +241,23 @@
           {
             "question": "Lúc bắt đầu, hai list nào cần tạo?",
             "options": [
-              "dan = [] và muc_tieu = []",
               "sung = [] và diem = []",
+              "dan = [] và muc_tieu = []",
               "ban = [] và thang = []",
               "Chỉ cần một list muc_tieu"
             ],
-            "correct": 0,
+            "correct": 1,
             "explanation": "dan lưu đạn đang bay, muc_tieu lưu các mục tiêu."
           },
           {
             "question": "Cách nào tạo đúng 5 mục tiêu?",
             "options": [
-              "for i in range(5): tạo mục tiêu rồi append vào list",
               "while muc_tieu < 5: append",
               "muc_tieu = 5",
+              "for i in range(5): tạo mục tiêu rồi append vào list",
               "for mt in sung: append"
             ],
-            "correct": 0,
+            "correct": 2,
             "explanation": "range(5) tạo đúng 5 Turtle mục tiêu và đưa vào list."
           }
         ]
@@ -278,23 +278,23 @@
           {
             "question": "Trước khi gắn phím ← →, phải gọi hàm nào?",
             "options": [
-              "man_hinh.listen()",
               "man_hinh.update()",
               "turtle.done()",
-              "sung.setheading(90)"
+              "sung.setheading(90)",
+              "man_hinh.listen()"
             ],
-            "correct": 0,
+            "correct": 3,
             "explanation": "listen() bật lắng nghe bàn phím — thiếu thì phím không hoạt động."
           },
           {
             "question": "Vì sao cần giới hạn biên khi di chuyển súng?",
             "options": [
-              "Để súng không chạy ra khỏi màn hình",
               "Để súng chạy nhanh hơn",
+              "Để súng không chạy ra khỏi màn hình",
               "Để tạo đạn nhanh hơn",
               "Không có tác dụng"
             ],
-            "correct": 0,
+            "correct": 1,
             "explanation": "Giới hạn tọa độ x của súng trong khoảng an toàn."
           }
         ]
@@ -316,23 +316,23 @@
           {
             "question": "Lệnh nào giúp quản lý nhiều viên đạn cùng lúc?",
             "options": [
-              "dan.append(vien)",
               "dan = vien",
               "muc_tieu.append(vien)",
+              "dan.append(vien)",
               "vien = dan"
             ],
-            "correct": 0,
+            "correct": 2,
             "explanation": "append thêm viên đạn mới vào list dan."
           },
           {
             "question": "Viên đạn mới nên xuất hiện ở đâu?",
             "options": [
-              "Ngay trên đầu súng",
               "Góc trên trái màn hình",
               "Vị trí ngẫu nhiên",
-              "Tại mục tiêu đầu tiên"
+              "Tại mục tiêu đầu tiên",
+              "Ngay trên đầu súng"
             ],
-            "correct": 0,
+            "correct": 3,
             "explanation": "Đạn xuất phát từ nòng súng: sung.xcor(), sung.ycor() + 20."
           }
         ]
@@ -354,23 +354,23 @@
           {
             "question": "Vì sao viết for vien in dan[:] thay vì for vien in dan?",
             "options": [
-              "Để xóa đạn khỏi list an toàn khi đang lặp",
               "Để đạn bay nhanh hơn",
+              "Để xóa đạn khỏi list an toàn khi đang lặp",
               "Để tiết kiệm bộ nhớ",
               "Không có lý do"
             ],
-            "correct": 0,
+            "correct": 1,
             "explanation": "dan[:] là bản copy — tránh lỗi khi remove() trong vòng for."
           },
           {
             "question": "Hàm nào giúp vòng lặp game chạy lại sau một khoảng rất ngắn?",
             "options": [
-              "man_hinh.ontimer(cap_nhat, 40)",
               "time.sleep(40)",
               "turtle.done()",
+              "man_hinh.ontimer(cap_nhat, 40)",
               "man_hinh.listen()"
             ],
-            "correct": 0,
+            "correct": 2,
             "explanation": "ontimer lập lịch gọi cap_nhat định kỳ — lõi vòng lặp game."
           }
         ]
@@ -391,23 +391,23 @@
           {
             "question": "Lệnh nào kiểm tra đạn có trúng mục tiêu?",
             "options": [
-              "vien.distance(mt) < 25",
               "vien.xcor() == mt.xcor()",
               "vien.ycor() > 260",
-              "len(dan) == 0"
+              "len(dan) == 0",
+              "vien.distance(mt) < 25"
             ],
-            "correct": 0,
+            "correct": 3,
             "explanation": "distance() đo khoảng cách giữa hai Turtle."
           },
           {
             "question": "Khi trúng mục tiêu, cần làm gì?",
             "options": [
-              "Xóa đạn và mục tiêu, cộng điểm",
               "Chỉ cộng điểm, không xóa gì",
+              "Xóa đạn và mục tiêu, cộng điểm",
               "Xóa hết mọi viên đạn",
               "Tạo ngay 5 mục tiêu mới"
             ],
-            "correct": 0,
+            "correct": 1,
             "explanation": "Nhánh Có trên biểu đồ: xóa cả hai và diem += 10."
           }
         ]
@@ -428,23 +428,23 @@
           {
             "question": "Điều kiện thắng đúng là gì?",
             "options": [
-              "List mục tiêu rỗng (đã bắn hết)",
               "List đạn rỗng và điểm > 0",
               "Biến thang đang False",
+              "List mục tiêu rỗng (đã bắn hết)",
               "Đạn bay quá đỉnh màn hình"
             ],
-            "correct": 0,
+            "correct": 2,
             "explanation": "Hết mục tiêu trên màn hình nghĩa là thắng."
           },
           {
             "question": "Khi đã thắng, vì sao cần return (không gọi ontimer)?",
             "options": [
-              "Để dừng vòng lặp game",
               "Để đạn bay nhanh hơn",
               "Để đưa điểm về 0",
-              "Vì turtle.done() phải nằm trong cap_nhat"
+              "Vì turtle.done() phải nằm trong cap_nhat",
+              "Để dừng vòng lặp game"
             ],
-            "correct": 0,
+            "correct": 3,
             "explanation": "Không gọi lại ontimer thì game loop dừng lại sau màn THẮNG."
           }
         ]

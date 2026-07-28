@@ -249,22 +249,22 @@
           {
             "question": "Vì sao không nên vẽ mê cung bằng forward rồi right(90) liên tục?",
             "options": [
-              "Chỉ tạo một đường gấp khúc — không phải nhiều bức tường riêng",
               "Turtle không có lệnh forward",
+              "Chỉ tạo một đường gấp khúc — không phải nhiều bức tường riêng",
               "Không được quay phải",
               "Vì for không dùng được với list"
             ],
-            "correct": 0
+            "correct": 1
           },
           {
             "question": "Hàm ve_tuong(x1, y1, x2, y2) dùng để làm gì?",
             "options": [
-              "Vẽ một đoạn tường từ điểm này sang điểm kia",
               "Xóa hết tường",
               "Di chuyển rùa người chơi",
+              "Vẽ một đoạn tường từ điểm này sang điểm kia",
               "Phát tiếng động"
             ],
-            "correct": 0
+            "correct": 2
           }
         ]
       },
@@ -285,22 +285,22 @@
           {
             "question": "Vì sao rùa không đặt sát tường ngoài (ví dụ y = 180)?",
             "options": [
-              "Để rùa đứng trong khoảng trống — không bị kẹt tường ngay từ đầu",
               "Vì Turtle chỉ nhận số âm",
               "Vì đích cũng ở đó",
-              "Không có lý do"
+              "Không có lý do",
+              "Để rùa đứng trong khoảng trống — không bị kẹt tường ngay từ đầu"
             ],
-            "correct": 0
+            "correct": 3
           },
           {
             "question": "Lúc bắt đầu game, biến thang nên là gì?",
             "options": [
-              "False (chưa thắng)",
               "True (đã thắng)",
+              "False (chưa thắng)",
               "0",
               "\"thang\""
             ],
-            "correct": 0
+            "correct": 1
           }
         ]
       },
@@ -321,22 +321,22 @@
           {
             "question": "Hàm cham_tuong cần biết những vị trí nào?",
             "options": [
-              "Cả chỗ cũ và chỗ mới (4 số)",
               "Chỉ chỗ mới (2 số)",
               "Chỉ hướng đi",
+              "Cả chỗ cũ và chỗ mới (4 số)",
               "Không cần vị trí"
             ],
-            "correct": 0
+            "correct": 2
           },
           {
             "question": "Vì sao cần kiểm tra min(y_cu, y_moi) ≤ y_tường ≤ max(y_cu, y_moi)?",
             "options": [
-              "Để biết đoạn đi có cắt ngang tường ngang hay không",
               "Để tăng điểm nhanh hơn",
               "Để đổi màu tường",
-              "Vì Python bắt buộc vậy"
+              "Vì Python bắt buộc vậy",
+              "Để biết đoạn đi có cắt ngang tường ngang hay không"
             ],
-            "correct": 0
+            "correct": 3
           }
         ]
       },
@@ -357,22 +357,22 @@
           {
             "question": "List DANH_SACH_TUONG dùng để làm gì?",
             "options": [
-              "Vừa để vẽ tường, vừa để kiểm tra va chạm",
               "Chỉ để ghi điểm",
+              "Vừa để vẽ tường, vừa để kiểm tra va chạm",
               "Chỉ để đổi màu",
               "Không dùng trong game"
             ],
-            "correct": 0
+            "correct": 1
           },
           {
             "question": "Khi nào game báo thắng?",
             "options": [
-              "Khi rùa gần đích vàng (distance < 25)",
               "Khi chạm tường ngoài",
               "Khi đi hơn 50 bước",
+              "Khi rùa gần đích vàng (distance < 25)",
               "Khi list tường rỗng"
             ],
-            "correct": 0
+            "correct": 2
           }
         ]
       }

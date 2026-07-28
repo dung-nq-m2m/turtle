@@ -257,22 +257,22 @@
           {
             "question": "Lề trắng của đường nằm ở đâu?",
             "options": [
-              "Hai bên đường (x = ±150)",
               "Giữa đường (x = 0)",
+              "Hai bên đường (x = ±150)",
               "Chỉ bên trái",
               "Không có lề trắng"
             ],
-            "correct": 0
+            "correct": 1
           },
           {
             "question": "Nền màu darkgreen dùng để làm gì?",
             "options": [
-              "Làm lề cỏ hai bên đường",
               "Tô màu xe đối thủ",
               "Tô màu chữ điểm",
+              "Làm lề cỏ hai bên đường",
               "Tắt cập nhật màn hình"
             ],
-            "correct": 0
+            "correct": 2
           }
         ]
       },
@@ -291,22 +291,22 @@
           {
             "question": "Xe của em được đứng ở những làn nào?",
             "options": [
-              "Ba làn: −100, 0, 100",
               "Bất kỳ chỗ nào trên màn hình",
               "Chỉ làn giữa",
-              "Chỉ hai làn ngoài"
+              "Chỉ hai làn ngoài",
+              "Ba làn: −100, 0, 100"
             ],
-            "correct": 0
+            "correct": 3
           },
           {
             "question": "Khi song = False (đã tông), còn đổi làn được không?",
             "options": [
-              "Không",
               "Có",
+              "Không",
               "Chỉ sang trái",
               "Ngẫu nhiên"
             ],
-            "correct": 0
+            "correct": 1
           }
         ]
       },
@@ -326,22 +326,22 @@
           {
             "question": "Vì sao phải hỏi lan_co_xe trước khi tạo xe mới?",
             "options": [
-              "Để tránh hai xe chồng cùng một làn",
               "Để tăng điểm nhanh hơn",
               "Để đổi màu xe của em",
+              "Để tránh hai xe chồng cùng một làn",
               "Vì Python bắt buộc vậy"
             ],
-            "correct": 0
+            "correct": 2
           },
           {
             "question": "Ba làn của xe đối thủ là những số nào?",
             "options": [
-              "−100, 0, 100",
               "−200, 0, 200",
               "0, 50, 100",
-              "Chỉ làn giữa"
+              "Chỉ làn giữa",
+              "−100, 0, 100"
             ],
-            "correct": 0
+            "correct": 3
           }
         ]
       },
@@ -362,22 +362,22 @@
           {
             "question": "Vì sao viết for xe in xe_doi[:] thay vì for xe in xe_doi?",
             "options": [
-              "Để xóa xe khỏi list an toàn khi đang lặp",
               "Để xe chạy nhanh hơn",
+              "Để xóa xe khỏi list an toàn khi đang lặp",
               "Vì Turtle bắt buộc vậy",
               "Không khác gì nhau"
             ],
-            "correct": 0
+            "correct": 1
           },
           {
             "question": "ontimer(cap_nhat, 40) nghĩa là gì?",
             "options": [
-              "Gọi lại cap_nhat sau 40 mili-giây",
               "Dừng game 40 giây",
               "Tạo 40 xe mới",
+              "Gọi lại cap_nhat sau 40 mili-giây",
               "Xóa 40 điểm"
             ],
-            "correct": 0
+            "correct": 2
           }
         ]
       },
@@ -397,22 +397,22 @@
           {
             "question": "Vì sao Đua xe dùng abs() ngang/dọc thay vì distance()?",
             "options": [
-              "Vì xe hình chữ nhật — cần kiểm tra ngang và dọc riêng",
               "Vì abs() luôn nhanh hơn",
               "Vì không có hàm distance()",
-              "Vì Turtle bắt buộc vậy"
+              "Vì Turtle bắt buộc vậy",
+              "Vì xe hình chữ nhật — cần kiểm tra ngang và dọc riêng"
             ],
-            "correct": 0
+            "correct": 3
           },
           {
             "question": "Sau khi tông xe, vì sao cần return ngay?",
             "options": [
-              "Để dừng vòng lặp game (không chạy tiếp)",
               "Để cộng thêm điểm",
+              "Để dừng vòng lặp game (không chạy tiếp)",
               "Để tạo thêm 10 xe",
               "Vì Python bắt buộc vậy"
             ],
-            "correct": 0
+            "correct": 1
           }
         ]
       }
