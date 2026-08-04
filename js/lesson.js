@@ -110,10 +110,25 @@ function renderLesson(lesson) {
       <div class="turtle-demo" id="animation-demo"></div>
     </div>
 
-    ${lesson.assetsGuide ? `
+    ${lesson.assetsGuide || lesson.assetDownloads?.length ? `
     <div class="card card-assets-guide">
       <div class="card-title"><span class="icon">🎨</span> Hình ảnh & âm thanh (mở rộng)</div>
-      <div class="assets-guide-body">${lesson.assetsGuide}</div>
+      ${lesson.assetsGuide ? `<div class="assets-guide-body">${lesson.assetsGuide}</div>` : ''}
+      ${lesson.assetDownloads?.length ? `
+      <p class="assets-download-intro">📥 Em tải hình về máy, đặt <strong>cùng thư mục</strong> với <code>dua-xe.py</code>, rồi chạy game:</p>
+      <div class="asset-download-grid">
+        ${lesson.assetDownloads.map(a => `
+          <div class="asset-download-card">
+            ${a.preview ? `<div class="asset-preview" style="background:${a.bg || '#2a2a2a'}"><img src="${a.file}" alt="${a.title}"></div>` : ''}
+            <div class="asset-download-info">
+              <strong>${a.icon || '🖼️'} ${a.title}</strong>
+              <span class="asset-download-meta">${a.note || a.file}</span>
+              <a class="btn btn-primary btn-sm" href="${a.file}" download="${a.file.split('/').pop()}">⬇️ Tải về</a>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
     </div>
     ` : ''}
 

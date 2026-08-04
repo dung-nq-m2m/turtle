@@ -1086,6 +1086,73 @@ body.is-lesson-fullscreen .content-area {
   font-weight: 800;
 }
 
+.assets-download-intro {
+  margin: 1rem 0 0.75rem;
+  font-size: 0.92rem;
+  color: #444;
+}
+
+.asset-download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+.asset-download-card {
+  background: white;
+  border: 2px solid #dde8dd;
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.asset-download-card:hover {
+  border-color: var(--scratch-green);
+  box-shadow: var(--shadow);
+}
+
+.asset-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+  padding: 0.75rem;
+}
+
+.asset-preview img {
+  max-width: 56px;
+  max-height: 80px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.asset-download-info {
+  padding: 0.65rem 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-top: 1px solid #eef2ee;
+}
+
+.asset-download-info strong {
+  font-size: 0.88rem;
+  color: var(--scratch-dark);
+}
+
+.asset-download-meta {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 600;
+}
+
+.asset-download-info .btn {
+  align-self: stretch;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
 .arch-layers {
   display: flex;
   flex-wrap: wrap;

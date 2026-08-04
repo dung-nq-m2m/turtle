@@ -11,20 +11,22 @@ Dành cho học sinh lớp 6 · Học viện Turtle Python
 3. **Va chạm chữ nhật** — `cham_xe()` dùng `abs()` ngang/dọc (xe GIF ≈ 40×60)
 4. **Điểm** — mỗi xe vượt qua màn hình `+10`
 
-## 1. Hình ô tô — đã tạo sẵn ✅
+## 1. Hình ô tô — tải từ bài học ✅
 
-Đặt cạnh `dua-xe.py` (đã có trong thư mục `games/`):
+Trên website (bài **Đua xe** → mục Hình ảnh): xem trước và bấm **Tải về**.
 
-| File | Mô tả |
-|------|--------|
-| `xe-em.gif` | Xe người chơi — **xanh dương**, nhìn từ trên xuống |
-| `xe-doi.gif` | Xe đối thủ — **đỏ** |
-| `xe-doi-cam.gif` | Xe đối thủ — **cam** |
-| `xe-doi-tim.gif` | Xe đối thủ — **tím** |
+Hoặc lấy trực tiếp trong thư mục `games/`:
 
-Kích thước mỗi xe: **40×60** px · nền trong suốt · định dạng **GIF** (turtle yêu cầu).
+| File | Mô tả | Link |
+|------|--------|------|
+| `xe-em.gif` | Xe người chơi — xanh | [Tải](../xe-em.gif) |
+| `xe-doi.gif` | Xe đối thủ — đỏ | [Tải](../xe-doi.gif) |
+| `xe-doi-cam.gif` | Xe đối thủ — cam | [Tải](../xe-doi-cam.gif) |
+| `xe-doi-tim.gif` | Xe đối thủ — tím | [Tải](../xe-doi-tim.gif) |
 
-Code tự `addshape()` khi tìm thấy file. Không có file → dùng `square` như cũ.
+Kích thước: **40×60** px · nền trong suốt · định dạng **GIF**.
+
+Đặt file **cùng thư mục** với `dua-xe.py`. Code tự `addshape()` khi tìm thấy file.
 
 ### Tạo lại hình (nếu cần)
 
