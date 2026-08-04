@@ -733,14 +733,38 @@ body.is-lesson-fullscreen .content-area {
 }
 
 .exercise-item {
-  padding: 1rem;
+  padding: 1rem 1.15rem;
   background: #f9f9f9;
   border-radius: var(--radius);
   margin-bottom: 0.75rem;
   border: 1px solid #eee;
+  border-left: 4px solid var(--scratch-purple);
 }
 
-.exercise-item h4 { color: var(--scratch-purple); margin-bottom: 0.25rem; }
+.exercise-item h4 {
+  color: var(--scratch-purple);
+  margin-bottom: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exercise-hint {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff8e6;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #5c4a00;
+}
+
+.exercise-goal {
+  margin-top: 0.4rem;
+  font-size: 0.88rem;
+  color: #2d8a2d;
+  font-weight: 600;
+}
 
 .quiz-options { display: grid; gap: 0.5rem; margin: 1rem 0; }
 

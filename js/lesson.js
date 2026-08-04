@@ -145,8 +145,10 @@ function renderLesson(lesson) {
       <div class="card-title"><span class="icon">📝</span> Bài tập (tự gõ — không cần xem code)</div>
       ${lesson.exercises.map(ex => `
         <div class="exercise-item">
-          <h4>Bài ${ex.number}: ${ex.title}</h4>
+          <h4>Bài ${ex.number}: ${ex.title}${ex.difficulty ? ` <span class="difficulty ${ex.difficulty === 'Dễ' ? 'easy' : ex.difficulty === 'Khó' ? 'hard' : 'medium'}">${ex.difficulty}</span>` : ''}</h4>
           <p>${ex.description}</p>
+          ${ex.hint ? `<p class="exercise-hint"><strong>Gợi ý:</strong> ${ex.hint}</p>` : ''}
+          ${ex.goal ? `<p class="exercise-goal"><strong>Đạt được:</strong> ${ex.goal}</p>` : ''}
         </div>
       `).join('')}
     </div>

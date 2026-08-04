@@ -10,8 +10,9 @@
     "Quản lý nhiều xe đối thủ bằng list",
     "Dùng tracer(0) + ontimer làm game loop",
     "Kiểm tra làn trống trước khi tạo xe (tránh chồng)",
-    "Va chạm bằng abs() 60×40 — khớp kích thước xe",
-    "Dùng biến song giống Né bom"
+    "Va chạm bằng abs() — khớp kích thước xe",
+    "Dùng biến song giống Né bom",
+    "Mở rộng: Level, thời gian, tăng tốc độ (bài tập)"
   ],
   "explanation": "Game <strong>Đua xe</strong> kết hợp Né bom (trạng thái <code>song</code>) và list nhiều đối tượng như Bắn bóng.\n\n• <code>ve_duong()</code> — lề cỏ xanh, mặt xám, lề trắng ±150, vạch vàng\n• <code>xe_em</code> — ← → đổi 3 làn <code>LAN_XE</code>\n• <code>lan_co_xe()</code> — chỉ tạo xe khi làn phía trên còn trống\n• Né được → +10 điểm; tông → GAME OVER",
   "architecture": {
@@ -186,23 +187,74 @@
     },
     {
       "tip": "Xe hình chữ nhật → dùng abs(), không distance()!"
+    },
+    {
+      "tip": "Mở rộng: toc_do, level, giay / thoi_gian — xem mục Bài tập!"
     }
   ],
   "exercises": [
     {
       "number": 1,
-      "title": "Sơ đồ song",
-      "description": "Vẽ nhánh né được vs tông xe."
+      "title": "Sơ đồ trạng thái",
+      "difficulty": "Dễ",
+      "description": "Vẽ trên giấy 2 nhánh: (A) né được → +10 điểm, (B) tông xe → song=False → TÔNG RỒI. Nộp giáo viên trước khi mở rộng code.",
+      "goal": "Sơ đồ có đủ nhánh điểm và GAME OVER."
     },
     {
       "number": 2,
-      "title": "Tự code",
-      "description": "Viết từ giả mã, test 3 làn."
+      "title": "Tăng tốc độ theo điểm",
+      "difficulty": "Trung bình",
+      "description": "Thêm biến <code>toc_do = 6</code>. Trong <code>cap_nhat</code>, xe đối đi xuống bằng <code>toc_do</code> (thay vì số cố định 6). Mỗi khi điểm đạt bội số 50 (50, 100, 150…), tăng <code>toc_do</code> thêm 1 (tối đa 14).",
+      "hint": "Dùng <code>if diem > 0 and diem % 50 == 0:</code> — nhớ chỉ tăng một lần mỗi mốc (có thể lưu <code>moc_toc_do</code>).",
+      "goal": "Điểm càng cao, xe đối lao xuống càng nhanh."
     },
     {
       "number": 3,
-      "title": "Độ khó",
-      "description": "Tăng tốc độ hoặc tỉ lệ spawn."
+      "title": "Hệ thống Level",
+      "difficulty": "Trung bình",
+      "description": "Thêm biến <code>level = 1</code>. Mỗi 100 điểm → <code>level += 1</code>. Hiện trên bảng: <code>Điểm: … | Level: … | ← →</code>. Khi lên level: tăng tỉ lệ spawn (ví dụ <code>0.03 + level * 0.01</code>, tối đa 0.12) và tăng <code>toc_do</code>.",
+      "hint": "Hàm <code>ve_bang()</code> nên ghi cả điểm lẫn level. Khi lên level có thể <code>print</code> hoặc viết tạm \"LEVEL UP!\" giữa màn hình 1 giây.",
+      "goal": "Chơi lâu thấy Level tăng, xe xuất hiện dày hơn và nhanh hơn."
+    },
+    {
+      "number": 4,
+      "title": "Đếm thời gian sống",
+      "difficulty": "Trung bình",
+      "description": "Thêm biến <code>giay = 0</code>. Dùng <code>ontimer</code> riêng (hoặc đếm trong <code>cap_nhat</code>) để mỗi giây <code>giay += 1</code>. Hiện <code>Thời gian: XXs</code> trên bảng điểm. Khi tông xe, hiện cả điểm lẫn thời gian sống được.",
+      "hint": "Cách đơn giản: biến <code>dem_khung = 0</code>; mỗi lần <code>cap_nhat</code> (40ms) thì <code>dem_khung += 1</code>; khi <code>dem_khung % 25 == 0</code> thì được khoảng 1 giây.",
+      "goal": "Màn hình hiện thời gian; khi thua thấy đã sống bao nhiêu giây."
+    },
+    {
+      "number": 5,
+      "title": "Giới hạn thời gian (Survival)",
+      "difficulty": "Khó",
+      "description": "Chế độ đua có hạn: bắt đầu với <code>thoi_gian = 60</code> (giây). Mỗi giây giảm 1. Hiện đếm ngược trên bảng. Hết giờ mà chưa tông → <strong>THẮNG!</strong> (hiện điểm + level). Tông trước khi hết giờ → thua như cũ.",
+      "hint": "Trong vòng đếm giây: <code>if thoi_gian &lt;= 0: song = False</code> rồi hiện THẮNG (khác nhánh TÔNG RỒI). Có thể thưởng thêm điểm theo giây còn thừa.",
+      "goal": "Chơi được 2 kết thúc: TÔNG RỒI hoặc THẮNG khi hết giờ."
+    },
+    {
+      "number": 6,
+      "title": "Mạng sống (3 mạng)",
+      "difficulty": "Khó",
+      "description": "Thêm <code>mang = 3</code>. Khi tông xe: <code>mang -= 1</code>, xóa hết <code>xe_doi</code>, đưa <code>xe_em</code> về làn giữa, tạm dừng spawn ~1 giây. Chỉ khi <code>mang == 0</code> mới GAME OVER. Hiện trái tim hoặc số mạng trên bảng.",
+      "hint": "Sau khi mất mạng, đặt cờ <code>bat_tu = True</code> vài khung hình để không mất 2 mạng liền.",
+      "goal": "Tông 1 lần chưa thua ngay — còn mạng thì chơi tiếp."
+    },
+    {
+      "number": 7,
+      "title": "Kỷ lục điểm cao",
+      "difficulty": "Trung bình",
+      "description": "Lưu điểm cao nhất vào file <code>diem_cao.txt</code> (hoặc biến trong phiên chơi). Khi GAME OVER / THẮNG: nếu <code>diem</code> &gt; kỷ lục thì cập nhật. Hiện <code>Kỷ lục: …</code> góc màn hình lúc bắt đầu và lúc kết thúc.",
+      "hint": "Đọc file bằng <code>open(...)</code> trong <code>try/except</code>; nếu chưa có file thì kỷ lục = 0.",
+      "goal": "Chơi lại nhiều ván — thấy kỷ lục được giữ / phá."
+    },
+    {
+      "number": 8,
+      "title": "Mini dự án — Đường đua hoàn chỉnh",
+      "difficulty": "Khó",
+      "description": "Kết hợp ít nhất <strong>3 ý</strong>: Level + thời gian (đếm xuôi hoặc đếm ngược) + tăng tốc độ. Thêm hiệu ứng ngắn khi lên level (đổi màu bảng / chữ LEVEL UP). Dùng hình <code>xe-em.gif</code> / <code>xe-doi*.gif</code> đã có sẵn.",
+      "hint": "Làm từng phần: (1) toc_do, (2) level, (3) đồng hồ — chạy thử sau mỗi phần.",
+      "goal": "Nộp một file <code>dua-xe-mo-rong.py</code> chạy được, có Level và thời gian trên bảng."
     }
   ],
   "quiz": {
@@ -232,7 +284,7 @@
     "syntax": "ontimer + lan_co_xe + abs",
     "example": "Đổi làn tránh xe đối",
     "result": "TÔNG RỒI khi va chạm",
-    "exercise": "Thêm làn thứ 4"
+    "exercise": "Level + thời gian + tăng tốc"
   },
   "prev": "game-me-cung",
   "next": "game-ban-bong",

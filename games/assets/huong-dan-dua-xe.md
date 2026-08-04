@@ -64,3 +64,31 @@ python dua-xe.py
 ```
 
 Phím: **← →** đổi làn · Né xe đối thủ · Mỗi xe vượt qua = +10 điểm!
+
+## 5. Bài tập mở rộng (sau khi chạy được game cơ bản)
+
+| Bài | Nội dung | Độ khó |
+|-----|----------|--------|
+| 1 | Sơ đồ né / tông | Dễ |
+| 2 | Tăng `toc_do` theo điểm | Trung bình |
+| 3 | **Level** — mỗi 100 điểm lên cấp, spawn dày hơn | Trung bình |
+| 4 | **Thời gian sống** — đếm giây trên bảng | Trung bình |
+| 5 | **Đếm ngược 60s** — hết giờ = THẮNG | Khó |
+| 6 | **3 mạng** — tông chưa thua ngay | Khó |
+| 7 | Lưu điểm cao (`diem_cao.txt`) | Trung bình |
+| 8 | Mini dự án: Level + thời gian + tốc độ | Khó |
+
+Chi tiết từng bài xem trên website: **Bài học Đua xe → mục Bài tập**.
+
+### Gợi ý biến mới
+
+```python
+toc_do = 6
+level = 1
+giay = 0          # thời gian sống (đếm xuôi)
+thoi_gian = 60    # đếm ngược (bài 5)
+mang = 3          # mạng sống (bài 6)
+```
+
+Khi lên level / hết giờ / mất mạng — nhớ cập nhật `ve_bang()` để học sinh thấy rõ trên màn hình.
+
