@@ -4,29 +4,59 @@
 
 Dành cho học sinh lớp 6 · Học viện Turtle Python
 
-## Logic quan trọng (đã review)
+## Logic quan trọng
 
 1. **3 làn** — `LAN_XE = [-100, 0, 100]`
 2. **Không chồng xe** — `lan_co_xe(lan)` kiểm tra trước khi `tao_xe_doi()`
-3. **Va chạm chữ nhật** — `cham_xe()` dùng `abs() < 60` ngang và `< 40` dọc (xe ≈ 60×40)
-4. **Điểm** — mỗi xe vượt qua màn hình `+10` (hiển thị `Điểm: …`)
+3. **Va chạm chữ nhật** — `cham_xe()` dùng `abs()` ngang/dọc (xe GIF ≈ 40×60)
+4. **Điểm** — mỗi xe vượt qua màn hình `+10`
 
-## 1. Cấu trúc thư mục
+## 1. Hình ô tô — đã tạo sẵn ✅
+
+Đặt cạnh `dua-xe.py` (đã có trong thư mục `games/`):
+
+| File | Mô tả |
+|------|--------|
+| `xe-em.gif` | Xe người chơi — **xanh dương**, nhìn từ trên xuống |
+| `xe-doi.gif` | Xe đối thủ — **đỏ** |
+| `xe-doi-cam.gif` | Xe đối thủ — **cam** |
+| `xe-doi-tim.gif` | Xe đối thủ — **tím** |
+
+Kích thước mỗi xe: **40×60** px · nền trong suốt · định dạng **GIF** (turtle yêu cầu).
+
+Code tự `addshape()` khi tìm thấy file. Không có file → dùng `square` như cũ.
+
+### Tạo lại hình (nếu cần)
+
+```bash
+cd games
+python _make_car_gifs.py
+```
+
+## 2. File tùy chọn thêm
 
 ```
 games/
 ├── dua-xe.py
-├── nen-duong.gif   ← nền đường (tùy chọn)
-├── xe-em.gif       ← xe người chơi (tùy chọn)
-├── xe-doi.gif      ← xe đối thủ (tùy chọn)
-└── tong.wav        ← tiếng tông xe (tùy chọn)
+├── xe-em.gif        ✅ sẵn
+├── xe-doi.gif       ✅ sẵn
+├── xe-doi-cam.gif   ✅ sẵn
+├── xe-doi-tim.gif   ✅ sẵn
+├── nen-duong.gif    ← nền đường (tùy chọn, 400×600)
+└── tong.wav         ← tiếng tông xe (tùy chọn)
 ```
 
-**Lưu ý:** File ảnh/âm đặt **cùng thư mục** với `dua-xe.py`.
+## 3. Cách dùng trong code
 
-Chưa có file → nền xám, xe square xanh / đỏ-cam-tím.
+```python
+man_hinh.addshape("xe-em.gif")
+xe_em.shape("xe-em.gif")
 
-## 2. Chạy thử
+man_hinh.addshape("xe-doi.gif")
+xe.shape("xe-doi.gif")
+```
+
+## 4. Chạy thử
 
 ```bash
 cd games
@@ -34,5 +64,3 @@ python dua-xe.py
 ```
 
 Phím: **← →** đổi làn · Né xe đối thủ · Mỗi xe vượt qua = +10 điểm!
-
-Đường có: **lề cỏ xanh** · **mặt đường xám** · **lề trắng ±150** · **vạch vàng đứt** giữa 3 làn.
